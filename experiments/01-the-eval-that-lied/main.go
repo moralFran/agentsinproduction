@@ -364,7 +364,11 @@ func regrade(in, questionsPath, out string) {
 		if r.Passed {
 			before++
 		}
-		r.Expected = exp[r.QID]
+		e, ok := exp[r.QID]
+		if !ok || strings.TrimSpace(e) == "" {
+			fatalf("regrade: no expectation for %s in %s (an empty expectation would pass every answer)", r.QID, questionsPath)
+		}
+		r.Expected = e
 		r.Passed = r.HTTPError == "" && passes(r.Answer, r.Expected)
 		if r.Passed {
 			after++

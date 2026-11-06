@@ -207,13 +207,25 @@ QUESTIONS = [
     ("q60", "A delivery arrives with a timestamp 10 minutes old. Should it be accepted?", "no|not|reject"),
 ]
 
+# Grader v2 (the fix shown in the video): for the five "not in the docs" questions, also accept the refusal
+# phrasings the model actually uses ("don't", "couldn't", "no mention", ...). Grader v1 is QUESTIONS as written.
+REFUSALS_V2 = ("not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|"
+               "no mention|not mention|isn't|is not|no phone|no refund")
+GRADER_V2 = {qid: REFUSALS_V2 for qid in ("q50", "q51", "q52", "q53", "q54")}
+
+
+def write_questions(path, overrides):
+    with open(path, "w") as f:
+        for qid, q, exp in QUESTIONS:
+            f.write(json.dumps({"id": qid, "question": q, "expected_contains": overrides.get(qid, exp)}) + "\n")
+
+
 def main():
     for name, body in DOCS.items():
         (CORPUS / name).write_text(body.format(**FACTS))
-    with open(ROOT / "questions.jsonl", "w") as f:
-        for qid, q, exp in QUESTIONS:
-            f.write(json.dumps({"id": qid, "question": q, "expected_contains": exp}) + "\n")
-    print(f"wrote {len(DOCS)} docs and {len(QUESTIONS)} questions")
+    write_questions(ROOT / "questions.v1.jsonl", {})          # grader v1: the one the experiment started with
+    write_questions(ROOT / "questions.jsonl", GRADER_V2)      # grader v2: the corrected answer key
+    print(f"wrote {len(DOCS)} docs, questions.v1.jsonl (grader v1) and questions.jsonl (grader v2), {len(QUESTIONS)} questions each")
 
 if __name__ == "__main__":
     main()
