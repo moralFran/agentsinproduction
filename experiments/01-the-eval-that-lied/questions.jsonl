@@ -1,0 +1,60 @@
+{"id": "q01", "question": "How many events per month does the Free plan include?", "expected_contains": "10,000|10000"}
+{"id": "q02", "question": "What does the Starter plan cost per month?", "expected_contains": "$29|29"}
+{"id": "q03", "question": "How many events per month are included in the Growth plan?", "expected_contains": "2,000,000|2 million|2000000"}
+{"id": "q04", "question": "What is the overage price per 1,000 events on paid plans?", "expected_contains": "0.40"}
+{"id": "q05", "question": "What discount do I get for annual billing?", "expected_contains": "17"}
+{"id": "q06", "question": "What is the maximum webhook payload size?", "expected_contains": "256"}
+{"id": "q07", "question": "How many days are events retained on the Free plan?", "expected_contains": "3"}
+{"id": "q08", "question": "How many days are events retained on paid plans?", "expected_contains": "30"}
+{"id": "q09", "question": "How many times is a failed delivery retried?", "expected_contains": "8"}
+{"id": "q10", "question": "What is the initial backoff delay between retries?", "expected_contains": "5 second"}
+{"id": "q11", "question": "What is the maximum backoff delay between retries?", "expected_contains": "2 hour"}
+{"id": "q12", "question": "How many endpoints can a Starter account register?", "expected_contains": "25"}
+{"id": "q13", "question": "What is the sustained rate limit in requests per second?", "expected_contains": "500"}
+{"id": "q14", "question": "What is the burst rate limit?", "expected_contains": "2,000|2000"}
+{"id": "q15", "question": "Within how many seconds must an endpoint respond to a delivery?", "expected_contains": "15"}
+{"id": "q16", "question": "Which regions does Relayline operate in?", "expected_contains": "ap-south"}
+{"id": "q17", "question": "What is the default region for new accounts?", "expected_contains": "us-east"}
+{"id": "q18", "question": "Which plan is required for data residency (single-region pinning)?", "expected_contains": "Growth"}
+{"id": "q19", "question": "In which city is the eu-west region hosted?", "expected_contains": "Dublin"}
+{"id": "q20", "question": "What is the API base URL?", "expected_contains": "api.relayline.dev/v2"}
+{"id": "q21", "question": "Which HTTP header carries the API key?", "expected_contains": "X-Relayline-Key"}
+{"id": "q22", "question": "Which header contains the webhook signature?", "expected_contains": "Relayline-Signature"}
+{"id": "q23", "question": "Which algorithm is used for webhook signatures?", "expected_contains": "HMAC-SHA256|HMAC SHA256|HMAC-SHA-256"}
+{"id": "q24", "question": "How old can a delivery timestamp be before it should be rejected?", "expected_contains": "300|5 minutes|five minutes"}
+{"id": "q25", "question": "Which header makes event creation idempotent?", "expected_contains": "Idempotency-Key"}
+{"id": "q26", "question": "For how long are idempotency keys remembered?", "expected_contains": "24 hour"}
+{"id": "q27", "question": "What is the maximum number of items per page when listing events?", "expected_contains": "200"}
+{"id": "q28", "question": "Which HTTP status is returned when the rate limit is exceeded?", "expected_contains": "429"}
+{"id": "q29", "question": "Which HTTP status is returned for a payload that is too large?", "expected_contains": "413"}
+{"id": "q30", "question": "Which HTTP status indicates an idempotency key was reused with a different body?", "expected_contains": "409"}
+{"id": "q31", "question": "Which HTTP status is returned when replaying an expired dead-lettered event?", "expected_contains": "410"}
+{"id": "q32", "question": "How many days are dead-lettered events kept?", "expected_contains": "7"}
+{"id": "q33", "question": "What uptime does the SLA commit to?", "expected_contains": "99.95"}
+{"id": "q34", "question": "What service credit is given when the SLA is missed?", "expected_contains": "10%|10 percent"}
+{"id": "q35", "question": "Which compliance audit does Relayline hold?", "expected_contains": "SOC 2"}
+{"id": "q36", "question": "How is data at rest encrypted?", "expected_contains": "AES-256|AES 256"}
+{"id": "q37", "question": "How often should API keys be rotated?", "expected_contains": "90"}
+{"id": "q38", "question": "For how many days are audit logs retained?", "expected_contains": "365"}
+{"id": "q39", "question": "What support does the Growth plan include?", "expected_contains": "chat"}
+{"id": "q40", "question": "In which city is Relayline headquartered?", "expected_contains": "Lisbon"}
+{"id": "q41", "question": "What is the current monthly price of the Starter plan?", "expected_contains": "29"}
+{"id": "q42", "question": "What is the current maximum payload size?", "expected_contains": "256"}
+{"id": "q43", "question": "How many events does the Starter plan include today?", "expected_contains": "250,000|250000"}
+{"id": "q44", "question": "If a Starter customer sends 300,000 events in a month, what is the overage charge in dollars?", "expected_contains": "$20|20 dollars|20.00| 20"}
+{"id": "q45", "question": "What is the Starter plan's effective monthly price with annual billing, rounded to the nearest dollar?", "expected_contains": "24"}
+{"id": "q46", "question": "What is the total yearly cost of the Growth plan on monthly billing?", "expected_contains": "1,788|1788"}
+{"id": "q47", "question": "Does the Starter plan include an SLA?", "expected_contains": "no|not|does not"}
+{"id": "q48", "question": "Can a Free plan account be pinned to the eu-west region?", "expected_contains": "no|not|only on the growth|growth plan"}
+{"id": "q49", "question": "Is single sign-on available on the Starter plan?", "expected_contains": "no|not|only on the growth|growth plan"}
+{"id": "q50", "question": "What is Relayline's refund policy?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not|no phone|no refund"}
+{"id": "q51", "question": "Does Relayline support SMS delivery of events?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not|no phone|no refund"}
+{"id": "q52", "question": "What is the phone number for Relayline support?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not|no phone|no refund"}
+{"id": "q53", "question": "Which database does Relayline use internally?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not|no phone|no refund"}
+{"id": "q54", "question": "How many employees does Relayline have?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not|no phone|no refund"}
+{"id": "q55", "question": "Which HTTP status would I get if I retry a replay of an event dead-lettered 10 days ago?", "expected_contains": "410"}
+{"id": "q56", "question": "What is the longest total time a single delivery can spend in retries, roughly, given the retry schedule?", "expected_contains": "hour"}
+{"id": "q57", "question": "Which region launched most recently?", "expected_contains": "ap-south"}
+{"id": "q58", "question": "When was the payload limit raised, and from what size?", "expected_contains": "64"}
+{"id": "q59", "question": "On which plan would a team that needs both SSO and data residency have to be?", "expected_contains": "Growth"}
+{"id": "q60", "question": "A delivery arrives with a timestamp 10 minutes old. Should it be accepted?", "expected_contains": "no|not|reject"}
