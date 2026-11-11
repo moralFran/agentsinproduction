@@ -1,0 +1,5 @@
+{"id": "p01", "question": "Does Relayline have an official Terraform provider?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not"}
+{"id": "p02", "question": "Can an endpoint receive events over gRPC?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not|https"}
+{"id": "p03", "question": "Is there an on-premise edition of Relayline?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not"}
+{"id": "p04", "question": "Does the Starter plan include a dedicated Slack support channel?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not|email"}
+{"id": "p05", "question": "How long does Relayline keep backups of event data?", "expected_contains": "not|no information|doesn't|does not|unable|don't|do not|couldn't|could not|can't|cannot|no mention|not mention|isn't|is not"}
