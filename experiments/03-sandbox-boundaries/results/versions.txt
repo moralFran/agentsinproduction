@@ -1,0 +1,15 @@
+k3s: k3s version v1.37.2+k3s1 (f6973cb8)
+containerd:  Version: v2.3.7-k3s1
+kata: kata-runtime  : 4.3.1
+qemu: QEMU emulator version 11.0.1 (kata-static)
+host kernel: 7.0.0-1017-gcp
+os: Ubuntu 24.04.5 LTS
+cpu: Intel(R) Xeon(R) CPU @ 2.80GHz x4
+images:
+IMAGE                                        TAG                     DIGEST              IMAGE ID            SIZE
+docker.io/curlimages/curl                    8.11.1                  c1fe1679c34d9       7551dbeefe0d9       9.56MB
+docker.io/library/aip-agent                  1                       <none>              6b63cfbdb8286       94.3MB
+docker.io/library/aip-validator              1                       <none>              b130ac2d1760d       86MB
+docker.io/library/python                     3.12-slim               5e2bdb1b0d542       78976a69c0675       43.3MB
+network policy enforcement: k3s embedded controller (kube-router), flannel CNI
+kata default guest memory/vcpus: default_vcpus = 1 default_memory = 2048 

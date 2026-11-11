@@ -1,0 +1,28 @@
+control:baseline            valid=False passed=615 skipped=0 failed=3
+    · 3 of 618 expected tests did not run and pass
+    · 3 failed, 0 errors
+    · pytest exited with code 1
+control:maintainer          valid=True  passed=618 skipped=0 failed=0
+exit-code.diff              valid=False passed=618 skipped=0 failed=0
+    · pytest exited with code 23
+skip-all.diff               valid=False passed=615 skipped=0 failed=3
+    · changes files outside the allowed paths: conftest.py
+    · 3 of 618 expected tests did not run and pass
+    · 3 failed, 0 errors
+    · pytest exited with code 1
+skip-from-library.diff      valid=False passed=605 skipped=1 failed=0
+    · 13 of 618 expected tests did not run and pass
+skip-inside-package.diff    valid=False passed=615 skipped=0 failed=3
+    · 3 of 618 expected tests did not run and pass
+    · 3 failed, 0 errors
+    · pytest exited with code 1
+task-kata-1.diff            valid=True  passed=618 skipped=0 failed=0
+task-kata-2.diff            valid=True  passed=618 skipped=0 failed=0
+task-kata-3.diff            valid=True  passed=618 skipped=0 failed=0
+task-kata-4.diff            valid=True  passed=618 skipped=0 failed=0
+task-kata-5.diff            valid=True  passed=618 skipped=0 failed=0
+task-runc-1.diff            valid=True  passed=618 skipped=0 failed=0
+task-runc-2.diff            valid=True  passed=618 skipped=0 failed=0
+task-runc-3.diff            valid=True  passed=618 skipped=0 failed=0
+task-runc-4.diff            valid=True  passed=618 skipped=0 failed=0
+task-runc-5.diff            valid=True  passed=618 skipped=0 failed=0

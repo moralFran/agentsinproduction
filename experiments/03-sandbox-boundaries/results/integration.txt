@@ -1,0 +1,14 @@
+== inside the agent's container (final spec, kata-qemu)
+user: 1000:1000
+env vars whose NAME mentions key/token/secret/password: 1
+env names: GATEWAY_URL GPG_KEY HOME HOSTNAME KUBERNETES_PORT KUBERNETES_PORT_443_TCP KUBERNETES_PORT_443_TCP_ADDR KUBERNETES_PORT_443_TCP_PORT KUBERNETES_PORT_443_TCP_PROTO KUBERNETES_SERVICE_HOST KUBERNETES_SERVICE_PORT KUBERNETES_SERVICE_PORT_HTTPS LANG MAX_CALLS MAX_SECONDS MODEL PATH PWD PYTHON_SHA256 PYTHON_VERSION RUN_ID 
+service-account token dir exists: no
+CapEff: 0000000000000000   NoNewPrivs: 1
+kernel: 6.18.56
+outside endpoint -> URLError [Errno 111] Connection refused
+internal api -> URLError [Errno 111] Connection refused
+gcp metadata -> URLError [Errno 111] Connection refused
+kubernetes api -> URLError [Errno 111] Connection refused
+gateway other path -> http 403
+gateway model call -> http 200
+namespaces: namespace/lab-agent namespace/lab-gateway namespace/lab-internal namespace/lab-perf namespace/lab-validate 

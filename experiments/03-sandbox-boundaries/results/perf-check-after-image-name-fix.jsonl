@@ -1,0 +1,2 @@
+{"i": 1, "runtime": "runc", "pod": "p-runc-01", "outcome": "ok", "start_ms": 566, "create_call_ms": 183, "sandbox": "231b459ade52", "pss_kb_total": 25912, "pss_kb_by_process": {"containerd-shim-runc-v2": 6725, "pause": 112, "python3": 19075}, "n_procs": 3}
+{"i": 1, "runtime": "kata-qemu", "pod": "p-kata-01", "outcome": "ok", "start_ms": 4058, "create_call_ms": 171, "sandbox": "7db9fb2b6b90", "pss_kb_total": 360628, "pss_kb_by_process": {"containerd-shim-kata-v2": 34376, "virtiofsd": 15408, "qemu-system-x86_64": 310844}, "n_procs": 4}

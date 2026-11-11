@@ -1,0 +1,16 @@
+# Four namespaces: the agent's sandbox, the gateway (outside the sandbox), a fake internal system, and the RBAC lab.
+apiVersion: v1
+kind: Namespace
+metadata: {name: lab-agent}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: lab-gateway}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: lab-internal}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: lab-rbac}

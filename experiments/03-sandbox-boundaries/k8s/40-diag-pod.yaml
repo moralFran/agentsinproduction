@@ -1,0 +1,20 @@
+# Fixed diagnostic pod: same namespace, labels, service account and runtime as the agent's pod.
+# RUNTIME is substituted by the scripts (kata-qemu, or removed for the default runtime, runc).
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: agent, namespace: lab-agent}
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: diag, namespace: lab-agent, labels: {app: agent}}
+spec:
+  runtimeClassName: RUNTIME
+  serviceAccountName: agent
+  automountServiceAccountToken: false
+  restartPolicy: Never
+  containers:
+  - name: diag
+    image: curlimages/curl:8.11.1@sha256:c1fe1679c34d9784c1b0d1e5f62ac0a79fca01fb6377cdd33e90473c6f9f9a69
+    command: ["sleep", "86400"]
+    resources: {limits: {cpu: "1", memory: 512Mi}}

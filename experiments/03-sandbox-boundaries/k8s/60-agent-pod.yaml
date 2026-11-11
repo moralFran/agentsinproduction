@@ -1,0 +1,28 @@
+# The agent's pod. No service-account token, no GitHub or provider credential, a disposable workspace, fixed limits.
+# NAME, RUNTIME_LINE and RUN_ID are substituted by agent/run-attempts.sh. Limits are enforced from outside the agent:
+# activeDeadlineSeconds here (15 min, the limit that counts), the money cap in the gateway. MAX_SECONDS is the agent's own
+# cooperative limit, one minute shorter, so a well-behaved run can still report before the hard stop.
+apiVersion: v1
+kind: Pod
+metadata: {name: NAME, namespace: lab-agent, labels: {app: agent}}
+spec:
+  RUNTIME_LINE
+  serviceAccountName: agent
+  automountServiceAccountToken: false
+  restartPolicy: Never
+  activeDeadlineSeconds: 900           # 15 min: hard stop enforced by Kubernetes, whatever the agent is doing
+  securityContext: {runAsNonRoot: true, runAsUser: 1000}
+  containers:
+  - name: agent
+    image: aip-agent:3
+    imagePullPolicy: Never
+    env:
+    - {name: GATEWAY_URL, value: "http://10.43.200.10:8080"}
+    - {name: MODEL, value: "claude-sonnet-5-5"}
+    - {name: RUN_ID, value: "RUN_ID"}
+    - {name: MAX_CALLS, value: "40"}
+    - {name: MAX_SECONDS, value: "840"}
+    securityContext: {allowPrivilegeEscalation: false, capabilities: {drop: ["ALL"]}}
+    resources: {limits: {cpu: "2", memory: 2Gi}}
+    volumeMounts: [{name: work, mountPath: /work}]
+  volumes: [{name: work, emptyDir: {sizeLimit: 1Gi}}]

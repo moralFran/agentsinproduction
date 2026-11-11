@@ -1,0 +1,7 @@
+1. pod with a 20 s deadline running 'sleep 3600': phase=Failed reason=DeadlineExceeded after 22 s
+2. valid call through the new gateway: HTTP 200
+   booked before restart: {"spent_usd": 3.7999999999999996e-06, "requests": 1, "in_tok": 18, "out_tok": 4}
+   booked after restart:  {"spent_usd": 3.7999999999999996e-06, "requests": 1, "in_tok": 18, "out_tok": 4}
+3. same call with the cap set to $0.000001: HTTP 429 {"error": "gateway budget: call could cost up to $0.0000, $0.0000 left"}
+   booked after the refused call: {"spent_usd": 3.7999999999999996e-06, "requests": 1, "in_tok": 18, "out_tok": 4}
+{"ts": 1794392594.583, "event": "start", "models": ["claude-haiku-5-5", "claude-sonnet-5-5"], "budget_usd": 5.0, "spent_usd": 4e-06}

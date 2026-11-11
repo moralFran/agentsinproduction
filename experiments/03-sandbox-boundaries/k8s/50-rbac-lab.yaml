@@ -1,0 +1,44 @@
+# RBAC lab, separate from the agent: one dummy Secret, two identities. "reader" is deliberately granted get on that
+# one Secret; "noaccess" gets nothing beyond the defaults. Tokens are mounted here on purpose; never in the agent's pod.
+apiVersion: v1
+kind: Secret
+metadata: {name: dummy-credentials, namespace: lab-rbac}
+stringData: {password: "not-a-real-secret-0000"}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: reader, namespace: lab-rbac}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: noaccess, namespace: lab-rbac}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: read-dummy, namespace: lab-rbac}
+rules:
+- {apiGroups: [""], resources: ["secrets"], resourceNames: ["dummy-credentials"], verbs: ["get"]}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: reader-reads-dummy, namespace: lab-rbac}
+subjects: [{kind: ServiceAccount, name: reader, namespace: lab-rbac}]
+roleRef: {kind: Role, name: read-dummy, apiGroup: rbac.authorization.k8s.io}
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: id-reader, namespace: lab-rbac}
+spec:
+  runtimeClassName: kata-qemu
+  serviceAccountName: reader
+  restartPolicy: Never
+  containers: [{name: c, image: "curlimages/curl:8.11.1@sha256:c1fe1679c34d9784c1b0d1e5f62ac0a79fca01fb6377cdd33e90473c6f9f9a69", command: ["sleep", "86400"]}]
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: id-noaccess, namespace: lab-rbac}
+spec:
+  runtimeClassName: kata-qemu
+  serviceAccountName: noaccess
+  restartPolicy: Never
+  containers: [{name: c, image: "curlimages/curl:8.11.1@sha256:c1fe1679c34d9784c1b0d1e5f62ac0a79fca01fb6377cdd33e90473c6f9f9a69", command: ["sleep", "86400"]}]

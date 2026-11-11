@@ -1,0 +1,368 @@
+{
+ "about": "Terminal captures of the V4 video. Each step is typed and then run for real by capture/play.py on the machine named in 'where' (mac, vm = aip-kata-01, endpoint = aip-endpoint-01). 76x17 terminal = the channel's 36 px theme. 'scene' ties the capture to the script.",
+ "phase_a": [
+  "c04b-host",
+  "c05a-versions",
+  "c06a-policy",
+  "c07b-attempt",
+  "c08a-validate",
+  "c08b-attempts",
+  "c11a-open",
+  "c11b-restricted",
+  "c11c-tally",
+  "c11d-gwlog",
+  "c12a-rbac",
+  "c12b-tally",
+  "c13a-kernel",
+  "c13b-sandbox",
+  "c15-perf",
+  "c11f-https-pinned"
+ ],
+ "phase_b": [
+  "c05b-image",
+  "c06c-identity",
+  "c07a-failing",
+  "c14-final"
+ ],
+ "no_pods": [
+  "c04a-vms",
+  "c11e-endpoint",
+  "c06b-gateway",
+  "c06d-budget"
+ ],
+ "captures": {
+  "c04a-vms": {
+   "where": "mac",
+   "steps": [
+    {
+     "cmd": "infra/list.sh"
+    }
+   ],
+   "scene": "04 · what was created: name prefix, labels, machine type, nested virtualization, no GPU, no service account"
+  },
+  "c04b-host": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "nproc"
+    },
+    {
+     "cmd": "lscpu | grep -E 'Virtualization|Hypervisor'"
+    },
+    {
+     "cmd": "ls /dev/kvm"
+    }
+   ],
+   "scene": "04 · 4 vCPUs; the VM itself can run a guest VM"
+  },
+  "c05a-versions": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "k3s --version | head -1"
+    },
+    {
+     "cmd": "/opt/kata/bin/kata-runtime --version | head -1"
+    },
+    {
+     "cmd": "kubectl get runtimeclass kata-qemu"
+    },
+    {
+     "cmd": "kubectl describe pod rt-kata | grep -i 'runtime class'"
+    }
+   ],
+   "scene": "05 · versions; a RuntimeClass selects the runtime; this pod uses Kata"
+  },
+  "c05b-image": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl exec inspect -- pip list | grep -E 'anthropic|pytest'"
+    },
+    {
+     "cmd": "kubectl exec inspect -- ls /task/repo"
+    }
+   ],
+   "scene": "05 · dependencies and checkout are already in the agent's image"
+  },
+  "c06a-policy": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl get networkpolicy"
+    },
+    {
+     "cmd": "kubectl describe networkpolicy | tail -8"
+    }
+   ],
+   "scene": "06 · the network rule: egress only to the gateway pod, port 8080"
+  },
+  "c06b-gateway": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl -n lab-gateway describe deploy gateway | grep -A4 Mounts"
+    }
+   ],
+   "scene": "06 · the gateway holds the key (read-only mount) and its budget state"
+  },
+  "c06c-identity": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl exec inspect -- id"
+    },
+    {
+     "cmd": "kubectl exec inspect -- ls /var/run/secrets"
+    },
+    {
+     "cmd": "kubectl exec inspect -- grep -E 'CapEff|NoNewPrivs' /proc/self/status"
+    },
+    {
+     "cmd": "kubectl get pod inspect -o yaml | grep -E '^  (active|runtime|automount)'"
+    }
+   ],
+   "scene": "06 · the agent's own pod: non-root, no token mounted, no capabilities, 15-minute deadline"
+  },
+  "c06d-budget": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "python3 gateway/test_budget.py --short",
+     "after": 2.0
+    }
+   ],
+   "scene": "06 · the gateway's offline budget and format test, run live against a fake upstream (11 checks, about 15 s): estimated reservation written before the call, refusals, halt when a response exceeds its reservation, long-prompt price tier"
+  },
+  "c07a-failing": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "task/test-in-pod.sh inspect"
+    }
+   ],
+   "scene": "07 · the frozen commit fails 3 tests before the agent touches it"
+  },
+  "c07b-attempt": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "python3 agent/show.py results/task.jsonl task-kata-3"
+    }
+   ],
+   "scene": "07 · what one recorded attempt ran (collection data)"
+  },
+  "c08a-validate": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "validator/revalidate.sh /tmp/v.jsonl results/patches/task-kata-1.diff",
+     "after": 2.0
+    }
+   ],
+   "scene": "08 · the validator, live: controls first (untouched checkout, maintainer's fix, four cheats), then one collected patch; about 2.5 min, time-lapse in the edit"
+  },
+  "c08b-attempts": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "python3 agent/summary.py results/task.jsonl"
+    }
+   ],
+   "scene": "08/09 · all 10 attempts of the collection"
+  },
+  "c11a-open": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl delete -f k8s/30-agent-netpol.yaml -o name"
+    },
+    {
+     "cmd": "diag/once.sh"
+    }
+   ],
+   "scene": "11 · positive control, live: no policy, every target answers"
+  },
+  "c11b-restricted": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl apply -f k8s/30-agent-netpol.yaml",
+     "after": 15.0
+    },
+    {
+     "cmd": "diag/once.sh"
+    }
+   ],
+   "scene": "11 · same probes with the policy, live (15 s wait after apply for the controller: cut in the edit)"
+  },
+  "c11c-tally": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "python3 diag/tally.py results/net.jsonl | grep 'kata.*restr'"
+    }
+   ],
+   "scene": "11 · the 10x collection, restricted phase, Kata"
+  },
+  "c11d-gwlog": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "jq -r 'select(.why)|.why' results/gateway.log | sort | uniq -c"
+    },
+    {
+     "cmd": "grep -c forwarded results/gateway.log"
+    }
+   ],
+   "scene": "11 · the gateway's own log of the collection: what it refused and why, what it forwarded"
+  },
+  "c11e-endpoint": {
+   "where": "endpoint",
+   "steps": [
+    {
+     "cmd": "grep -c /probe/control /var/log/aip-endpoint.log"
+    },
+    {
+     "cmd": "grep -c /probe/restricted /var/log/aip-endpoint.log"
+    },
+    {
+     "cmd": "grep -c via-gateway /var/log/aip-endpoint.log"
+    }
+   ],
+   "scene": "11 · the endpoint's own log: 20 control hits, none restricted, none through the gateway"
+  },
+  "c11f-https-pinned": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl delete -f k8s/30-agent-netpol.yaml -o name"
+    },
+    {
+     "cmd": "diag/https-once.sh"
+    },
+    {
+     "cmd": "kubectl apply -f k8s/30-agent-netpol.yaml",
+     "after": 15.0
+    },
+    {
+     "cmd": "diag/https-once.sh"
+    },
+    {
+     "cmd": "python3 diag/tally.py results/net-https.jsonl"
+    }
+   ],
+   "scene": "11 · HTTPS to a public site without depending on DNS: address pinned, certificate still checked. No policy: both ways answer. With the policy: by name fails at the lookup, pinned is refused at the connection (15 s wait after apply: cut in the edit). Last command: the 10x collection, both runtimes"
+  },
+  "c12a-rbac": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "diag/rbac-once.sh"
+    }
+   ],
+   "scene": "12 · the two identities, live: real API answers"
+  },
+  "c12b-tally": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "python3 diag/tally-rbac.py results/rbac.jsonl"
+    }
+   ],
+   "scene": "12 · the 10x collection"
+  },
+  "c13a-kernel": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "uname -r"
+    },
+    {
+     "cmd": "kubectl exec rt-runc -- uname -r"
+    },
+    {
+     "cmd": "kubectl exec rt-kata -- uname -r"
+    }
+   ],
+   "scene": "13 · host kernel, kernel seen by the default-runtime pod, kernel seen by the Kata pod"
+  },
+  "c13b-sandbox": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "sudo perf/sandbox.py rt-runc"
+    },
+    {
+     "cmd": "sudo perf/sandbox.py rt-kata"
+    },
+    {
+     "cmd": "pgrep -a sleep"
+    }
+   ],
+   "scene": "13/16 · each pod's sandbox on the host: runtime handler, host processes and their Pss; the runc pod's sleep is a host process, the Kata pod's (sleep 42002) is not. These are two idle `sleep` pods looked at live; the 20-start measurement of section 5 used a Python process and waited 15 s, so its totals (24.8 and 351.4 MiB) are different numbers and are the ones the narration uses"
+  },
+  "c14-final": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "kubectl get ns | grep lab-"
+    },
+    {
+     "cmd": "kubectl exec -i inspect -- python3 - < diag/reach.py"
+    }
+   ],
+   "scene": "14 · final configuration: RBAC lab gone; from the agent's own image, every target refused, the model call works"
+  },
+  "c15-perf": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "python3 perf/summary.py results/perf.jsonl | grep -v process"
+    }
+   ],
+   "scene": "15/16 · start time and memory, 20 starts per runtime (collection data)"
+  },
+  "c16-bench-live": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "sudo perf/sandbox.py bench-runc lab-perf"
+    },
+    {
+     "cmd": "sudo perf/sandbox.py bench-kata lab-perf"
+    }
+   ],
+   "scene": "16 · the benchmark's own workload looked at live (Python process, 1 CPU, 512Mi, idle): one pod per runtime, host processes and Pss. This is the capture to pair with the memory numbers of the narration; c13b shows `sleep` pods and is only for the kernel/process point. The narration's medians come from the 20 starts (c15)"
+  },
+  "c20-cleanup": {
+   "where": "mac",
+   "steps": [
+    {
+     "cmd": "infra/destroy.sh",
+     "after": 2.0
+    },
+    {
+     "cmd": "infra/list.sh"
+    }
+   ],
+   "scene": "result · cleanup, recorded once at 2026-11-11T13:53Z: only this experiment's two VMs selected and deleted (use up to the two 'deleted' lines; gcloud warnings about an empty filter follow)"
+  },
+  "c20b-nothing-left": {
+   "where": "mac",
+   "steps": [
+    {
+     "cmd": "infra/list.sh"
+    }
+   ],
+   "scene": "result · after the deletion: the same listing as scene 04 now finds nothing"
+  }
+ },
+ "bench": [
+  "c16-bench-live"
+ ],
+ "at_deletion": [
+  "c20-cleanup",
+  "c20b-nothing-left"
+ ]
+}

@@ -1,0 +1,9 @@
+# The validator's namespace: no egress or ingress at all, no credentials. One short-lived pod per check.
+apiVersion: v1
+kind: Namespace
+metadata: {name: lab-validate}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: deny-all, namespace: lab-validate}
+spec: {podSelector: {}, policyTypes: [Ingress, Egress]}

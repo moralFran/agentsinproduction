@@ -1,0 +1,26 @@
+# A fake internal service with dummy data, in another namespace: "the company's other systems".
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: billing-internal, namespace: lab-internal}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: billing-internal}}
+  template:
+    metadata: {labels: {app: billing-internal}}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: api
+        image: python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
+        command: ["python3", "-u", "/app/server.py"]
+        ports: [{containerPort: 8080}]
+        volumeMounts: [{name: app, mountPath: /app}]
+      volumes: [{name: app, configMap: {name: internal-api-code}}]
+---
+apiVersion: v1
+kind: Service
+metadata: {name: billing-internal, namespace: lab-internal}
+spec:
+  clusterIP: 10.43.200.20
+  selector: {app: billing-internal}
+  ports: [{port: 8080, targetPort: 8080}]

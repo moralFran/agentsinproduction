@@ -1,0 +1,24 @@
+host kernel: 7.0.0-1017-gcp
+
+== runc (pod rt-runc, sandbox 04bb11f81192)
+pod.spec.runtimeClassName: 
+sandbox runtime handler:   (default)
+kernel seen by the pod:    7.0.0-1017-gcp
+cpu 'hypervisor' flag in the pod: 1
+pod's memory (MemTotal):   MemTotal: 16369232 kB
+workload process 'sleep 55253' visible in the HOST process table: 1
+host processes whose command line names this sandbox:
+  36365 containerd-shim
+
+== kata-qemu (pod rt-kata, sandbox 83351b26eb8a)
+pod.spec.runtimeClassName: kata-qemu
+sandbox runtime handler:   kata-qemu
+kernel seen by the pod:    6.18.56
+cpu 'hypervisor' flag in the pod: 1
+pod's memory (MemTotal):   MemTotal: 1969212 kB
+workload process 'sleep 48222' visible in the HOST process table: 0
+host processes whose command line names this sandbox:
+  36778 containerd-shim
+  36793 virtiofsd
+  36796 virtiofsd
+  36797 qemu-system-x86

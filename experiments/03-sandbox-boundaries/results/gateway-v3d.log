@@ -1,0 +1,2 @@
+{"ts": 1794403617.148, "event": "start", "models": ["claude-haiku-5-5", "claude-sonnet-5-5"], "budget_usd": 5.0, "spent_usd": 0.083436, "halted": null}
+{"ts": 1794403619.492, "src": "127.0.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "content block not allowed: image", "status": 403, "run": "limits-check"}

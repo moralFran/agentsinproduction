@@ -1,0 +1,15 @@
+diff --git a/boltons/fileutils.py b/boltons/fileutils.py
+index f05d0b8..a8ec085 100644
+--- a/boltons/fileutils.py
++++ b/boltons/fileutils.py
+@@ -722,9 +722,6 @@ def rotate_file(filename, *, keep: int = 5):
+     for orig_name, kept_name in reversed(list(zip(fns, fns[1:]))):
+         if not os.path.exists(orig_name):
+             continue
+-        os.rename(orig_name, kept_name)
+-
+-    if os.path.exists(kept_names[-1]):
+-        os.remove(kept_names[-1])
++        os.replace(orig_name, kept_name)
+ 
+     return

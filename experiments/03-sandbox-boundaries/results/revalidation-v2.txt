@@ -1,0 +1,15 @@
+control:baseline                             valid=False  passed=615 skipped=0 failed=3  3 of 618 expected tests did not run and pass; 3 failed, 0 errors
+control:maintainer                           valid=True  passed=618 skipped=0 failed=0  
+validator/controls/skip-all.diff             valid=False  passed=615 skipped=0 failed=3  changes files outside the allowed paths: conftest.py; 3 of 618 expected tests did not run and pass; 3 failed, 0 errors
+validator/controls/skip-from-library.diff    valid=False  passed=605 skipped=1 failed=0  13 of 618 expected tests did not run and pass
+validator/controls/skip-inside-package.diff  valid=False  passed=615 skipped=0 failed=3  3 of 618 expected tests did not run and pass; 3 failed, 0 errors
+results/patches/task-kata-1.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-kata-2.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-kata-3.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-kata-4.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-kata-5.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-runc-1.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-runc-2.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-runc-3.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-runc-4.diff             valid=True  passed=618 skipped=0 failed=0  
+results/patches/task-runc-5.diff             valid=True  passed=618 skipped=0 failed=0  

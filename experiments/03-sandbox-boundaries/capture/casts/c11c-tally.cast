@@ -1,0 +1,12 @@
+{"version":2,"width":76,"height":17,"timestamp":1794401567,"command":"capture/run-one.sh c11c-tally","env":{"SHELL":"/bin/zsh"}}
+[5.434479, "o", "\u001b[38;2;74;222;128m❯\u001b[0m "]
+[5.843072, "o", "pytho"]
+[5.84507, "o", "n3 di"]
+[5.988634, "o", "ag/tally.py results/net.jsonl | grep 'kata.*rest"]
+[5.989367, "o", "r"]
+[5.992812, "o", "'"]
+[6.356034, "o", "\r\n"]
+[6.356955, "o", "kata-qemu  endpoint_direct    restricted 10× conn_refused\r\nkata-qemu  gw_as_http_proxy   restricted 10× http_403\r\nkata-qemu  gw_connect_tunnel  restricted 10× curl_err_56\r\nkata-qemu  gw_model_call      restricted 10× http_200\r\nkata-qemu  gw_other_path      restricted 10× http_403\r\nkata-qemu  internal_api       restricted 10× conn_refused\r\nkata-qemu  internet           restricted 10× timeout\r\nkata-qemu  kube_api           restricted 10× conn_refused\r\nkata-qemu  metadata_info      restricted 10× conn_refused\r\nkata-qemu  metadata_token     restricted 10× conn_refused\r\nkata-qemu  node_kubelet       restricted 10× conn_refused\r\n"]
+[7.538491, "o", "\u001b[38;2;74;222;128m❯\u001b[0m "]
+[9.531253, "o", "\r\n"]
+[9.647331, "x", "0"]
