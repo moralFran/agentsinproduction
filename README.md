@@ -6,6 +6,7 @@ AI agents, run for real, with the numbers you see on screen.
 | # | Video | Folder |
 |---|---|---|
 | 01 | [My AI agent eval reported a regression that didn't exist (540 runs, 1 word)](https://youtu.be/GPKgb4FtGU4) | [`experiments/01-the-eval-that-lied`](experiments/01-the-eval-that-lied) |
+| 02 | [I poisoned my AI agent's docs. My tests didn't notice.](https://youtu.be/wfrVLXcVJLo) (Nov 12, 2026) | [`experiments/02-poisoned-docs`](experiments/02-poisoned-docs) |
 
 Each experiment folder has its own README with how to run it, the question set, the grader(s), the saved raw
 answers of every run and a `results.md` with the numbers and their limits.
