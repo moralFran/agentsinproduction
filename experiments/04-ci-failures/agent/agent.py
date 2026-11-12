@@ -26,7 +26,7 @@ TOOLS = [{"name": "bash", "description": "Run a shell command and return its exi
 def bash(cmd, limit):
     t = time.monotonic()
     try:
-        p = subprocess.run(["bash", "-lc", cmd], cwd=WD, capture_output=True, text=True, timeout=limit)
+        p = subprocess.run(["bash", "-o", "pipefail", "-lc", cmd], cwd=WD, capture_output=True, text=True, timeout=limit)
         out, rc = (p.stdout + p.stderr), p.returncode
     except subprocess.TimeoutExpired:
         out, rc = f"command timed out after {limit:.0f} s", 124
@@ -91,7 +91,7 @@ def main():
     except Exception as e:
         r["outcome"] = "error"; r["error"] = f"{type(e).__name__}: {str(e)[:300]}"
     subprocess.run("git add -A", shell=True, **g)
-    r["patch"] = subprocess.run("git diff --cached --binary", shell=True, **g).stdout
+    r["patch"] = subprocess.run("git diff --cached --binary --no-ext-diff --no-textconv", shell=True, **g).stdout
     r["total_s"] = round(time.monotonic() - t_start, 2); r["model_s"] = round(r["model_s"], 2); r["tool_s"] = round(r["tool_s"], 2)
     print("RESULT " + json.dumps(r), flush=True)
 

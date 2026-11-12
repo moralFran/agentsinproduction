@@ -19,25 +19,38 @@ else
   grep -q "^$cid," cases/cases.csv 2>/dev/null || { echo "case $cid is not in the frozen cases.csv"; exit 1; }
   base=results
 fi
+run="$round-$(echo "$cid" | md5sum | cut -c1-8)-r$rep"; out="$base/attempts-$round.jsonl"; pd="$base/patches/$round"
+# A recorded attempt is complete for round scheduling, including a recorded failure. Never spend or overwrite it.
+# Parse the journal rather than depending on JSON whitespace; malformed records still stop the runner.
+recorded=$(python3 - "$out" "$run" <<'PY'
+import json, pathlib, sys
+p = pathlib.Path(sys.argv[1])
+rows = [json.loads(line) for line in p.read_text().splitlines() if line.strip()] if p.exists() else []
+print("yes" if any(row.get("run") == sys.argv[2] for row in rows) else "no")
+PY
+)
+[ "$recorded" = yes ] && { echo "run $run already recorded; skipping"; exit 0; }
 [ -s "/srv/ci/cases/$cid/failure.txt" ] || { echo "case $cid has no failure.txt (written at the freeze, or by smoke-failure.py)"; exit 1; }
-run="$round-$(echo "$cid" | md5sum | cut -c1-8)-r$rep"; out="$base/attempts-$round.jsonl"; pd="$base/patches/$round"; mkdir -p "$pd"
-grep -q "\"run\": \"$run\"" "$out" 2>/dev/null && { echo "run $run already recorded"; exit 1; }
-curl -sf -X POST "$ADMIN/runs" -d "{\"run\": \"$run\", \"cap_usd\": $CAP}" >/dev/null || { echo "gateway refused to open run $run"; exit 1; }
+mkdir -p "$pd"
+ADMIN_KEY_FILE="${ADMIN_KEY_FILE:-/srv/ci/admin-key}"
+[ -s "$ADMIN_KEY_FILE" ] || { echo "missing gateway admin key: run infra/setup-lab.sh" >&2; exit 1; }
+admin() { printf 'header = "Authorization: Bearer %s"\n' "$(cat "$ADMIN_KEY_FILE")" | curl -sf --config - "$@"; }
+admin -X POST "$ADMIN/runs" -d "{\"run\": \"$run\", \"cap_usd\": $CAP}" >/dev/null || { echo "gateway refused to open run $run"; exit 1; }
 t0=$(date +%s)
 case "$round" in v2*) pv=v2;; *) pv=v1;; esac        # agent version: the system prompt template (agent/prompt-<pv>.txt)
 python3 cases/pod.py agent "$cid" "ag-$run" 1500 --env PROMPT_FILE="/code/prompt-$pv.txt" --env RUN_ID="$run" --env GATEWAY_URL=http://10.43.210.10:8080 \
   --env MAX_TOOL_CALLS=60 --env MAX_SECONDS=1440 -- /opt/agent-venv/bin/python -u /code/agent.py > "/tmp/$run.agent" 2>&1 || true
-curl -sf -X POST "$ADMIN/runs/$run/close" -d '{}' > "/tmp/$run.gw" || echo '{}' > "/tmp/$run.gw"
+admin -X POST "$ADMIN/runs/$run/close" -d '{}' > "/tmp/$run.gw" || echo '{}' > "/tmp/$run.gw"
 python3 - "/tmp/$run.agent" "$pd/$run.diff" <<'PY'
 import json, sys
-res = next((json.loads(l[7:]) for l in open(sys.argv[1]) if l.startswith("RESULT ")), {"outcome": "no_result", "patch": ""})
+res = next((json.loads(l[7:]) for l in reversed(open(sys.argv[1]).readlines()) if l.startswith("RESULT ")), {"outcome": "no_result", "patch": ""})
 open(sys.argv[2], "w").write(res.get("patch", ""))
 PY
-python3 cases/pod.py exec "$cid" "va-$run" 2400 --patch "$pd/$run.diff" -- python3 -u /code/executor.py validate > "/tmp/$run.exec" 2>&1 || true
+python3 cases/validate.py "$cid" "$pd/$run.diff" "va-$run" > "/tmp/$run.exec" 2>&1 || true
 python3 - "$round" "$cid" "$rep" "$run" "$t0" "/tmp/$run.agent" "/tmp/$run.gw" "/tmp/$run.exec" >> "$out" <<'PY'
 import json, sys, time
 rnd, cid, rep, run, t0, fa, fg, fe = sys.argv[1:]
-grab = lambda f, tag: next((json.loads(l[len(tag):]) for l in open(f) if l.startswith(tag)), {})
+grab = lambda f, tag: next((json.loads(l[len(tag):]) for l in reversed(open(f).readlines()) if l.startswith(tag)), {})
 agent = grab(fa, "RESULT "); agent.pop("patch", None); apod = grab(fa, "POD "); ex = grab(fe, "EXECUTOR "); epod = grab(fe, "POD ")
 gw = json.loads(open(fg).read() or "{}")
 print(json.dumps({"round": rnd, "case": cid, "rep": int(rep), "run": run, "agent": agent or {"outcome": "no_result"}, "agent_pod": apod,

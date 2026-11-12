@@ -5,7 +5,7 @@ bytes / 1. In the smoke test the bytes/1 reservation passed the US$0.33 per-atte
 spending. The check that halts the gateway when a call costs more than its reservation stays.
 Changes from v3 (experiment 03):
   - PER-RUN BUDGETS. Every call must carry the x-run-id of a run opened by the runner on the ADMIN port (8081), which
-    the agent's NetworkPolicy does not allow it to reach. A run has its own cap (US$0.75 in this experiment); a call that
+    the agent's NetworkPolicy does not allow it to reach. A run has its own cap (US$0.33 in this experiment); a call that
     would pass it is refused (429) before it is forwarded. Unknown or closed run ids are refused (403). The total cap
     (BUDGET_USD) still applies on top. Reservations carry their run id, so a crash books them to that run.
   - PROMPT CACHING, priced. cache_control {"type": "ephemeral"} (5-minute TTL only) is allowed on text and
@@ -17,12 +17,12 @@ Inference gateway: the only thing the agent's pod may talk to. It holds the prov
 operation (POST /v1/messages) to exactly one host, enforces a budget, and logs every request. It is not a proxy:
 any other method, path or absolute URL is refused with 403.
 
-Request format (v3): only what this agent needs. Top-level fields model, max_tokens, messages, system (a string),
+Request format (v4): only what this agent needs. Top-level fields model, max_tokens, messages, system (a string),
 tools (client tools: name, description, input_schema) and tool_choice; message content is text, tool_use and
 tool_result blocks, plus the thinking blocks the model itself returned, sent back unchanged in assistant turns (the
 model may return them even when thinking was not requested; they are text the gateway holds, like the rest).
 Everything else is refused before it is forwarded: images and documents (inline, by URL or by file id), server-side
-tools, MCP servers, cache_control, the thinking parameter, streaming, unknown fields. So nothing the provider fetches
+tools, MCP servers, unsupported cache TTLs, the thinking parameter, streaming, unknown fields. So nothing the provider fetches
 or runs on its side can add tokens or fees the gateway did not count.
 
 Budget (v3): a conservative ESTIMATED reservation per call, made durable before the call, and a stop when what the
@@ -42,23 +42,60 @@ that call has already happened; the gateway can only refuse the next ones.
   as spent at their reserved amount. A state file that exists but cannot be read, or a state that cannot be written,
   stops the gateway instead of starting from zero. If a response costs more than its reservation, the gateway halts
   (503 from then on) and says so in the log."""
-import json, os, sys, threading, time, urllib.request, urllib.error, uuid
+import hmac, json, math, os, sys, threading, time, urllib.request, urllib.error, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 UPSTREAM = os.environ.get("UPSTREAM", "https://api.anthropic.com/v1/messages")
 KEY = open(os.environ.get("KEY_FILE", "/secrets/key")).read().strip()
+ADMIN_KEY = open(os.environ.get("ADMIN_KEY_FILE", "/admin-secrets/key")).read().strip()
+if not ADMIN_KEY: raise ValueError("admin key must not be empty")
 # USD per million tokens: [input, output], or [input, output, T, input_long, output_long] when a request whose prompt
 # is over T tokens pays the long prices on all of its tokens. Only models listed here are allowed.
 # Checked against https://platform.claude.com/docs/en/about-claude/pricing on 2026-11-11.
 PRICES = json.loads(os.environ.get("PRICES", '{"claude-sonnet-5-5": [2.0, 10.0], "claude-haiku-5-5": [0.1, 0.5, 100000, 0.5, 2.5]}'))
 BUDGET_USD = float(os.environ.get("BUDGET_USD", "5"))
+if not math.isfinite(BUDGET_USD) or BUDGET_USD <= 0: raise ValueError("invalid total budget")
 MAX_TOKENS_PER_CALL = int(os.environ.get("MAX_TOKENS_PER_CALL", "8192"))
 OVERHEAD_TOK = int(os.environ.get("OVERHEAD_TOK", "2000"))
 UPSTREAM_TIMEOUT_S = int(os.environ.get("UPSTREAM_TIMEOUT_S", "300"))
 STATE_FILE = os.environ.get("STATE_FILE", "/state/budget.json")
 ADMIN_PORT = int(os.environ.get("ADMIN_PORT", "8081"))
+MAX_RUN_USD = float(os.environ.get("MAX_RUN_USD", "0.33"))
+if not math.isfinite(MAX_RUN_USD) or MAX_RUN_USD <= 0: raise ValueError("invalid maximum run budget")
 WRITE_X = 1.25                                                       # 5-minute cache write
 READ_X = {"claude-sonnet-5-5": 0.05, "claude-haiku-5-5": 0.1}         # cache hit, as a fraction of the base input price
+HTTP_READ_TIMEOUT_S = float(os.environ.get("HTTP_READ_TIMEOUT_S", "15"))
+MAX_CONNECTIONS = int(os.environ.get("MAX_CONNECTIONS", "32"))
+if MAX_CONNECTIONS <= 0 or not math.isfinite(HTTP_READ_TIMEOUT_S) or HTTP_READ_TIMEOUT_S <= 0:
+    raise ValueError("invalid HTTP resource limits")
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs): return None
+
+UPSTREAM_HTTP = urllib.request.build_opener(NoRedirect)
+
+class BoundedHTTPServer(ThreadingHTTPServer):
+    daemon_threads = True
+    def __init__(self, *args, **kwargs):
+        self.slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
+        super().__init__(*args, **kwargs)
+    def process_request(self, request, client_address):
+        if not self.slots.acquire(blocking=False):
+            self.shutdown_request(request); return
+        try: super().process_request(request, client_address)
+        except Exception:
+            self.slots.release(); raise
+    def process_request_thread(self, request, client_address):
+        try: super().process_request_thread(request, client_address)
+        finally: self.slots.release()
+    def handle_error(self, request, client_address):
+        log(event="http_connection_error")  # no headers or credentials in diagnostics
+
+class TimedHandler(BaseHTTPRequestHandler):
+    def setup(self):
+        super().setup()
+        self.connection.settimeout(HTTP_READ_TIMEOUT_S)
+
 lock = threading.Lock()
 state = {"spent_usd": 0.0, "requests": 0, "in_tok": 0, "out_tok": 0, "reserved": {}, "halted": None, "runs": {}}
 
@@ -133,7 +170,7 @@ def format_error(body):
             if not block_ok(b, m["role"]): return "content block not allowed: " + str(b.get("type") if isinstance(b, dict) else type(b).__name__)[:40]
     return None
 
-class H(BaseHTTPRequestHandler):
+class H(TimedHandler):
     protocol_version = "HTTP/1.1"
     def refuse(self, code, why):
         log(src=self.client_address[0], method=self.command, path=self.path[:200], verdict="refused", why=why, status=code,
@@ -150,7 +187,8 @@ class H(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path != "/v1/messages":            # also catches absolute URLs sent by clients that treat us as a proxy
             return self.refuse(403, "only POST /v1/messages is allowed")
-        n = int(self.headers.get("content-length") or 0)
+        try: n = int(self.headers.get("content-length") or 0)
+        except ValueError: return self.refuse(400, "bad body size")
         if n <= 0 or n > 4_000_000: return self.refuse(413, "bad body size")
         raw = self.rfile.read(n)
         try: body = json.loads(raw)
@@ -163,7 +201,7 @@ class H(BaseHTTPRequestHandler):
         with lock: r = state["runs"].get(run)
         if not r or not r.get("open"): return self.refuse(403, "unknown or closed run id")
         try: body["max_tokens"] = max(1, min(int(body.get("max_tokens") or 1024), MAX_TOKENS_PER_CALL))
-        except (TypeError, ValueError): return self.refuse(400, "max_tokens is not a number")
+        except (TypeError, ValueError, OverflowError): return self.refuse(400, "max_tokens is not a number")
         payload = json.dumps(body).encode()
         bound_in = (len(payload) + 1) // 2 + OVERHEAD_TOK          # bytes / 2 (amendment of 12/11, criteria.md)
         bound = usd(model, bound_in, body["max_tokens"], cache_write=bound_in)   # estimate: every input token a cache write
@@ -186,7 +224,7 @@ class H(BaseHTTPRequestHandler):
                "anthropic-version": self.headers.get("anthropic-version", "2023-06-01")}
         t0 = time.time(); status, out, err = None, b"", None
         try:
-            with urllib.request.urlopen(urllib.request.Request(UPSTREAM, data=payload, headers=hdr, method="POST"), timeout=UPSTREAM_TIMEOUT_S) as resp:
+            with UPSTREAM_HTTP.open(urllib.request.Request(UPSTREAM, data=payload, headers=hdr, method="POST"), timeout=UPSTREAM_TIMEOUT_S) as resp:
                 status, out = resp.status, resp.read()
         except urllib.error.HTTPError as e: status, out = e.code, e.read()
         except Exception as e: err = type(e).__name__
@@ -216,23 +254,39 @@ class H(BaseHTTPRequestHandler):
         self.send_header("content-length", str(len(out))); self.end_headers(); self.wfile.write(out)
     def log_message(self, *a): pass
 
-class Admin(BaseHTTPRequestHandler):
+class Admin(TimedHandler):
     """Runner-only port (the agent's NetworkPolicy allows 8080 only). POST /runs {"run": id, "cap_usd": x} opens a run;
     POST /runs/<id>/close closes it; GET /runs/<id> reports it; GET /state reports the totals."""
     protocol_version = "HTTP/1.1"
     def reply(self, code, obj):
         out = json.dumps(obj).encode(); self.send_response(code); self.send_header("content-type", "application/json")
         self.send_header("content-length", str(len(out))); self.end_headers(); self.wfile.write(out)
+    def authenticated(self):
+        if hmac.compare_digest(self.headers.get("Authorization", "").encode(), ("Bearer " + ADMIN_KEY).encode()): return True
+        self.close_connection = True
+        self.reply(401, {"error": "admin authentication required"})
+        return False
     def do_GET(self):
+        if not self.authenticated(): return
         with lock:
             if self.path == "/state": return self.reply(200, {k: state[k] for k in ("spent_usd", "requests", "in_tok", "out_tok", "halted")} | {"reserved_usd": reserved_total(), "budget_usd": BUDGET_USD})
             r = state["runs"].get(self.path.rsplit("/", 1)[-1])
         return self.reply(200, r) if r else self.reply(404, {"error": "no such run"})
     def do_POST(self):
-        n = int(self.headers.get("content-length") or 0); body = json.loads(self.rfile.read(n) or b"{}")
+        if not self.authenticated(): return
+        try:
+            n = int(self.headers.get("content-length") or 0)
+            if not 0 < n <= 16384: return self.reply(400, {"error": "bad body size"})
+            body = json.loads(self.rfile.read(n))
+            if not isinstance(body, dict): return self.reply(400, {"error": "body must be an object"})
+        except (ValueError, UnicodeError): return self.reply(400, {"error": "invalid JSON body"})
         with lock:
             if self.path == "/runs":
-                run, cap = str(body.get("run", "")), float(body.get("cap_usd", 0))
+                run = str(body.get("run", ""))
+                try: cap = float(body.get("cap_usd", 0))
+                except (TypeError, ValueError, OverflowError): return self.reply(400, {"error": "invalid run cap"})
+                if not math.isfinite(cap) or not 0 < cap <= MAX_RUN_USD:
+                    return self.reply(400, {"error": "run cap must be finite, positive and within MAX_RUN_USD"})
                 if not run or run in state["runs"]: return self.reply(409, {"error": "missing or reused run id"})
                 state["runs"][run] = {"cap_usd": cap, "spent_usd": 0.0, "calls": 0, "open": True, "opened": time.time()}
             elif self.path.startswith("/runs/") and self.path.endswith("/close"):
@@ -252,5 +306,5 @@ if __name__ == "__main__":
     except Exception as e:
         log(event="refusing_to_start", why=f"budget state unusable: {type(e).__name__}: {str(e)[:120]}"); sys.exit(1)
     log(event="start", models=sorted(PRICES), budget_usd=BUDGET_USD, spent_usd=round(state["spent_usd"], 6), halted=state["halted"])
-    threading.Thread(target=ThreadingHTTPServer(("0.0.0.0", ADMIN_PORT), Admin).serve_forever, daemon=True).start()
-    ThreadingHTTPServer(("0.0.0.0", int(os.environ.get("PORT", "8080"))), H).serve_forever()
+    threading.Thread(target=BoundedHTTPServer(("0.0.0.0", ADMIN_PORT), Admin).serve_forever, daemon=True).start()
+    BoundedHTTPServer(("0.0.0.0", int(os.environ.get("PORT", "8080"))), H).serve_forever()

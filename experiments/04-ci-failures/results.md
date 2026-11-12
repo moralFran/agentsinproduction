@@ -157,7 +157,7 @@ Exception: see the ws limit below.
   change) were fixed for future runs only; nothing collected was re-run or re-classified.
 
 ## Fixes after the collection (2026-11-12)
-Six harness problems found by an external review of this copy, all fixed on 2026-11-12 **after** the collection, the
+Six harness problems found by the first external review of this copy, all fixed on 2026-11-12 **after** the collection, the
 audit and the judging. They are harness fixes, not method changes (`criteria.md` is unchanged). Nothing was re-run or
 re-classified.
 
@@ -180,7 +180,7 @@ records and a mocked pod invocation; no archived case code runs and no recorded 
 Offline test of the new checks: `executor/test_executor.py`, **31/31** on a synthetic repository built by the test. It
 covers paths with spaces, tabs and non-ASCII characters, CI files, `vendor/`, `Makefile`, a rename of a test file, a
 deletion, malformed patches, the old regex's blindness, the audit's stop on a failed apply, and 14 pattern checks. The
-gateway's offline test still passes 13/13.
+gateway's offline test passed 13/13 at this stage; the later security changes extend it to 17 checks.
 
 **Archived patches, re-read with Git's parser** (`git apply --numstat -z` on each file; nothing applied, nothing run):
 - 68 files: 66 from v1/v2 (`results/patches/`) and 2 from the smoke test. 10 of the 66 are empty: the 5 + 5 attempts
@@ -201,7 +201,40 @@ hidden-test logs with patch + maintainer test changes, `qd-a`, `qd-b`, `qd-c`, `
 and `qd-e` apply nothing. No audit command ran on an unpatched tree, so the QuantDinger, scc and gobwas/ws conclusions
 stand as written.
 
-**Answer: no recorded outcome would change** under the fixed validator.
+**Scope of that check:** none of the recorded patches changes outcome under the corrected path rules above. This
+is not a claim that the archived experiments were rerun under every later security or sampling change.
+
+### Additional isolation and reliability changes (same date, after collection)
+
+The [future-run addendum](FUTURE-RUNS.md) describes the additional fixes: per-case Kata preparation without the secret
+mount or host network; separate broken/fixed Go caches; init-container patch application followed by test containers
+without input diffs; a fresh pod per sample; content/status integrity checks; authenticated and resource-bounded gateway
+administration with finite caps and ingress policy; redirect blocking; `pipefail`, complete-round checks, robust tally
+categories and same-origin JSON verdict writes. The gateway's outdated cap/caching docstrings were corrected.
+
+**Method changes for future runs:** hidden tests must pass 3/3, with mixed results reported as flaky rather than worse.
+Reproduction records three fixed-tree hidden samples and three on broken code plus only the maintainer's test changes.
+These are new controls, not amendments applied to the old outcomes. The historical hidden check ran once; later audit
+logs provide additional observations, not a retrospective three-sample protocol.
+
+A follow-up fixes two regressions in that new harness. Completed attempt records are skipped successfully on restart,
+preserving their patches and avoiding new gateway calls. Reproduction also applies the same tree-integrity check to
+every sample of the maintainer's original and hidden suites, restoring and reapplying the fix each time. If the suite
+itself leaves output or coverage files, the case is recorded as `incompatible_test_side_effects` before freezing.
+`freeze.py` requires a clean maintainer integrity control; earlier reproduction records need that control rerun.
+These checks apply to future collections only; no archived case was excluded or reclassified by this rule.
+
+**Historical checks:** all 66 attempt records and patches, frozen cases, blind packets/verdicts and audit logs remain
+unchanged. Recomputing `results/final.json`, `results/final-summary.md` and `cases/funnel.md` in a temporary copy produced
+identical bytes. Each archived version passes the new completeness check with 33 distinct attempts. No archived agent
+patch contains `/in/secret`, `/srv/ci`, `fix.diff` or `hidden.diff`. The two mined candidates whose fix changed
+`go.mod`/`go.sum` (centrifugo and templ) were not in the frozen case set. These checks found no recorded evidence of the
+identified answer-file/cache exposure being used; they do not prove the absence of all possible interference.
+
+**Verification limits:** 22 security regression tests, 31 executor checks, 8 workflow tests and 17 gateway checks passed
+locally on synthetic inputs/a fake upstream. No VM was started and no third-party suite or Kubernetes/Kata integration
+was rerun. A deliberate production-code `os._exit(0)` negative control still bypasses an assertion without changing the
+tree; semantic review of green patches remains required. See the addendum for the exact boundary.
 
 ## Where the sources disagree
 - **Repositories examined.** The amendment of 11/11 (`criteria.md`) says "about 700 repositories examined"; the funnel
@@ -217,5 +250,5 @@ stand as written.
 - **Codex's own tally.** `codex-review-2026-11-12/summary.txt` reports 21 equivalent, 1 valid, 19 worse, 2
   inconclusive over all 43 packets of the 11 cases, before the exclusions and before the in-box probes; the final
   numbers are over the 30 packets of the 8 main cases.
-- **Gateway docstring.** `gateway/gateway.py` still says the per-run cap is "US$0.75 in this experiment"; the runs
-  were opened with US$ 0.33 (`run_opened … "cap_usd": 0.33` in `results/gateway-v*.log`; amendment of 11/11).
+- **Gateway docstring.** `gateway/gateway.py` said the per-run cap was "US$0.75 in this experiment" at the first
+  export; the docstring was corrected after review. The runs were opened with US$ 0.33 (`run_opened … "cap_usd": 0.33` in `results/gateway-v*.log`; amendment of 11/11).

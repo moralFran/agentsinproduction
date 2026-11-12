@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Executor: runs in a throw-away Kata pod with NO network and NO credentials. Mounts (read-only): the case snapshot at
-/in/snapshot, its offline dependencies at their prepared paths, the maintainer's fix and hidden tests at /in/secret, a
-patch at /in/patch.diff. The working copy goes to an empty dir at the path the case was prepared for.
+"""Executor: runs in a throw-away Kata pod with NO network and NO credentials. Mounts (read-only):
+the case snapshot and offline dependencies at their prepared paths. Validation init containers apply the agent patch
+and (for hidden tests) /in/hidden.diff without running case code. The test container receives no input diffs.
+/in/fix.diff is for repro fixed only. The working copy goes to an empty dir at the path the case was prepared for.
   repro <broken|fixed> <N>   run the case's test command N times on the broken tree, or on broken + maintainer's fix
-  validate                   the protocol's mandatory checks on an agent patch, in order:
+  validate <suite|hidden>     one fresh-pod sample, aggregated 3/3 by cases/validate.py (post-collection):
                                (a) it applies; (b) it touches no test, CI, lint/test configuration, dependency or lock
                                file; (c) the original test command passes 3/3; (d) with the maintainer's test-file changes
-                               added on top, the hidden test command passes (when the fix had test changes).
+                               added on top, the hidden test command passes 3/3 (when the fix had test changes).
 Prints one line EXECUTOR <json>.
 Harness fixes of 2026-11-12, made AFTER the v1/v2 collection and the post-collection audit (nothing recorded was re-run):
   - the changed paths come from Git itself, NUL-separated (`git apply --numstat -z` on the patch, plus `git status -z`
@@ -15,7 +16,7 @@ Harness fixes of 2026-11-12, made AFTER the v1/v2 collection and the post-collec
   - FORBIDDEN matches everything UNDER CI directories (.github/, .circleci/, ...), not only the directory name itself;
   - `run` (audit mode) stops before the command when a patch or the maintainer's test changes do not apply.
 Offline test: executor/test_executor.py (synthetic repository, no case code)."""
-import json, os, re, shutil, subprocess, sys, time
+import hashlib, json, os, re, shutil, subprocess, sys, time
 
 RUN_TIMEOUT = 600
 # test files, including test EXPECTATIONS: snapshot files (__snapshots__/, *.snap) and golden files (*.golden, golden/).
@@ -28,7 +29,7 @@ TESTFILE = re.compile(r"(^|/)(tests?|testdata|testing|__snapshots__|golden|fixtu
 FORBIDDEN = re.compile(r"(^|/)(\.github|\.circleci|\.gitlab|\.buildkite|\.woodpecker|vendor)(/|$)|"
                        r"(^|/)(\.gitlab-ci\.yml|\.travis\.yml|\.drone\.yml|azure-pipelines\.ya?ml|appveyor\.ya?ml|Jenkinsfile|Makefile|go\.mod|go\.sum|go\.work(\.sum)?|"
                        r"requirements[^/]*\.txt|poetry\.lock|uv\.lock|Pipfile(\.lock)?|pdm\.lock|pyproject\.toml|setup\.cfg|setup\.py|tox\.ini|noxfile\.py|"
-                       r"pytest\.ini|\.coveragerc|\.golangci\.ya?ml|\.pre-commit-config\.yaml|\.flake8|ruff\.toml|\.ruff\.toml|mypy\.ini|sitecustomize\.py|usercustomize\.py)$")
+                       r"\.?pytest\.(ini|toml)|\.coveragerc|\.golangci\.ya?ml|\.pre-commit-config\.yaml|\.flake8|ruff\.toml|\.ruff\.toml|mypy\.ini|sitecustomize\.py|usercustomize\.py)$")
 CASE = REPO = WD = None; M = {}
 
 def _decode(b): return b.decode("utf-8", "surrogateescape")
@@ -76,7 +77,8 @@ def overlay():
 
 def fresh():
     # the working copy is an empty dir owned by root (mode 0777): copy the content, never the dir's own owner or times
-    subprocess.run(["rsync", "-rl", "--delete", "--no-perms", "--chmod=u+rwX", "--omit-dir-times", f"{CASE}/snapshot/", f"{REPO}/"], check=True)
+    # Reproduction resets this directory repeatedly: timestamps/size alone can miss same-size edits in one second.
+    subprocess.run(["rsync", "-rl", "--checksum", "--delete", "--no-perms", "--chmod=u+rwX", "--omit-dir-times", f"{CASE}/snapshot/", f"{REPO}/"], check=True)
     overlay()
 
 def sh(cmd, cwd=None, timeout=None):
@@ -96,22 +98,79 @@ def runs(cmd, n):
         if i == 0: open(f"/tmp/run-output.txt", "w").write(o[-60000:])
     return out
 
+def tree_state(repo):
+    """Git status plus content hashes: status alone misses a second edit to an already modified source file.
+    This detects persistent changes to tracked/non-ignored files, not in-process test-runner tampering."""
+    status = status_entries(repo)
+    p = subprocess.run(["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=repo, capture_output=True)
+    if p.returncode: raise ValueError("cannot enumerate working tree")
+    content = {}
+    for raw in p.stdout.split(b"\0"):
+        if not raw: continue
+        name = _decode(raw); path = os.path.join(repo, name)
+        if os.path.islink(path): content[name] = ("link", os.readlink(path))
+        elif os.path.isfile(path):
+            digest = hashlib.sha256()
+            with open(path, "rb") as f:
+                for chunk in iter(lambda: f.read(1024 * 1024), b""): digest.update(chunk)
+            content[name] = ("file", digest.hexdigest(), os.stat(path).st_mode & 0o777)
+        else: content[name] = ("missing",)
+    return status, content
+
+
+def checked_run(cmd, repo, cwd, output_path=None):
+    try:
+        before = tree_state(repo)
+        rc, output, dt = sh(cmd, cwd=cwd, timeout=RUN_TIMEOUT)
+        if output_path:
+            with open(output_path, "w") as f: f.write(output[-60000:])
+        after = tree_state(repo)
+    except (ValueError, OSError) as e:
+        return {"outcome": "infra_error", "why": f"cannot verify test-tree integrity: {e}"}
+    sample = {"rc": rc, "s": round(dt, 1), "tail": output.strip().splitlines()[-1][:200] if output.strip() else ""}
+    if before != after:
+        paths = sorted(changed_by(before[0], after[0]) | changed_by(before[1], after[1]))
+        return {"outcome": "rejected_by_validator", "why": "test command changed the working tree: " + ", ".join(paths[:6]), "run": sample}
+    return {"outcome": "sampled", "run": sample}
+
+
+def fixed_runs(cmd, n):
+    """Calibrate the validation integrity rule on the maintainer fix, starting clean for every sample/phase.
+    Preserve command exit codes separately from integrity outcomes: side effects are a case limitation, not a bad fix.
+    """
+    samples = []
+    for i in range(n):
+        fresh()
+        rc, output, _ = sh("git apply --binary /in/fix.diff")
+        if rc: raise ValueError("maintainer fix does not apply: " + output[-200:])
+        check = checked_run(cmd, REPO, WD, output_path="/tmp/run-output.txt" if i == 0 else None)
+        sample = check.pop("run", {"rc": None})
+        samples.append({**sample, "integrity": check})
+    return samples
+
+
 def main():
     global CASE, M, REPO, WD
     CASE = f"/srv/ci/cases/{os.environ['CASE_ID']}"
-    M = json.load(open("/in/secret/meta.json"))          # the case meta plus the hidden command (never visible to the agent)
+    M = json.load(open(f"{CASE}/meta.json"))          # public broken-tree metadata only
+    M["hidden_cmd"] = os.environ.get("HIDDEN_COMMAND", "")
     REPO = f"{CASE}/repo"; WD = os.path.normpath(os.path.join(REPO, M.get("workdir", ".")))
     mode = sys.argv[1]; r = {"id": M["id"], "mode": mode}
-    fresh()
+    if mode != "validate-run": fresh()
     if mode == "repro":
         which, n = sys.argv[2], int(sys.argv[3]); r["tree"] = which
-        if which == "fixed":
-            rc, o, _ = sh("git apply --binary /in/secret/fix.diff")
-            if rc: r.update(error="maintainer fix does not apply: " + o[-200:]); print("EXECUTOR " + json.dumps(r)); sys.exit(0)
-        r["runs"] = runs(M["test_cmd"], n)
+        if which == "hidden-broken":
+            if not M.get("hidden_cmd"):
+                r.update(not_applicable=True); print("EXECUTOR " + json.dumps(r)); return
+            rc, o, _ = sh("git apply --binary /in/hidden.diff")
+            if rc: r.update(error="hidden tests do not apply: " + o[-200:]); print("EXECUTOR " + json.dumps(r)); return
+        try:
+            r["runs"] = fixed_runs(M["test_cmd"], n) if which == "fixed" else runs(M["hidden_cmd"] if which == "hidden-broken" else M["test_cmd"], n)
+            if which == "fixed" and M.get("hidden_cmd"):
+                r["hidden_runs"] = fixed_runs(M["hidden_cmd"], n)
+        except ValueError as e:
+            r.update(error=str(e)); print("EXECUTOR " + json.dumps(r)); return
         r["pass"] = sum(x["rc"] == 0 for x in r["runs"]); r["fail"] = n - r["pass"]
-        if which == "fixed" and M.get("hidden_cmd"):
-            r["hidden_runs"] = runs(M["hidden_cmd"], 1)
         try: r["output_head"] = open("/tmp/run-output.txt").read()[-6000:]
         except OSError: pass
     elif mode == "run":
@@ -124,7 +183,7 @@ def main():
         steps = []
         if os.path.exists("/in/patch.diff") and open("/in/patch.diff").read().strip():
             steps.append(("patch", "git apply --binary --whitespace=nowarn /in/patch.diff"))
-        if with_hidden: steps.append(("maintainer test changes", "git apply --binary /in/secret/hidden.diff"))
+        if with_hidden: steps.append(("maintainer test changes", "git apply --binary /in/hidden.diff"))
         notes, failed = apply_steps(steps, REPO)
         print("NOTES " + " | ".join(notes)); print("COMMAND " + cmd)
         if failed:
@@ -132,25 +191,35 @@ def main():
         rc, o, dt = sh(cmd, cwd=WD, timeout=1500)
         print("OUTPUT_BEGIN"); print(o[-120000:]); print(f"OUTPUT_END rc={rc} s={dt:.1f}", flush=True)
         sys.exit(0)
-    elif mode == "validate":
+    elif mode in ("validate", "validate-prepare"):
+        # Exactly ONE command per pod. The trusted host orchestrates three fresh pods for each phase.
+        phase = sys.argv[2]
+        if phase not in ("suite", "hidden"): raise ValueError("validate requires suite or hidden")
+        r["phase"] = phase
         diff = open("/in/patch.diff").read()
         if not diff.strip(): r.update(outcome="no_patch", files=[])
         else:
-            rc, o, _ = sh("git apply --check --binary --whitespace=nowarn /in/patch.diff")
-            if rc: r.update(outcome="did_not_apply", why=o[-300:], files=[])
-            else: r.update(validate_patch("/in/patch.diff", REPO))
+            r.update(validate_patch("/in/patch.diff", REPO))
             if r.get("outcome") == "applied":
-                r.pop("outcome")
-                r["suite_runs"] = runs(M["test_cmd"], 3); passed = sum(x["rc"] == 0 for x in r["suite_runs"])
-                r["suite_pass"] = passed
-                if passed < 3: r.update(outcome="ci_still_red" if passed == 0 else "ci_flaky_after_patch")
-                elif M.get("hidden_cmd"):
-                    rc, o, _ = sh("git apply --binary /in/secret/hidden.diff")
+                if phase == "hidden":
+                    rc, o, _ = sh("git apply --binary /in/hidden.diff")
                     if rc: r.update(outcome="hidden_tests_did_not_apply", why=o[-300:])
-                    else:
-                        r["hidden_runs"] = runs(M["hidden_cmd"], 1)
-                        r["outcome"] = "green_passes_hidden" if r["hidden_runs"][0]["rc"] == 0 else "green_fails_hidden"
-                else: r["outcome"] = "green_no_hidden_tests"
+                if r.get("outcome") == "applied" and mode == "validate":
+                    cmd = M["test_cmd"] if phase == "suite" else M.get("hidden_cmd")
+                    if not cmd: r.update(outcome="infra_error", why="missing test command")
+                    else: r.update(checked_run(cmd, REPO, WD))
+        if mode == "validate-prepare":
+            # /validation is read-only in the test container. Preparation failures still produce a normal record.
+            with open("/validation/prepared.json", "w") as f: json.dump(r, f)
+    elif mode == "validate-run":
+        r = json.load(open("/validation/prepared.json"))
+        r["mode"] = "validate"
+        phase = sys.argv[2]
+        if phase not in ("suite", "hidden") or r.get("phase") != phase: raise ValueError("invalid preparation record")
+        if r.get("outcome") == "applied":
+            cmd = M["test_cmd"] if phase == "suite" else M.get("hidden_cmd")
+            if not cmd: r.update(outcome="infra_error", why="missing test command")
+            else: r.update(checked_run(cmd, REPO, WD))
     print("EXECUTOR " + json.dumps(r), flush=True)
 
 def apply_steps(steps, repo):

@@ -5,7 +5,8 @@ that reproduces, no selection, once every candidate is settled; floor of 8 (belo
 interleaved, the order the workers claim them), whose reproduction verdict is "reproduced" (broken fails 3/3, maintainer's
 fix passes 3/3). Writes cases/cases.csv, cases/intermittent.csv and cases/not-reproduced.csv, and, for each frozen case,
 the failure the agent will be shown (<case>/failure.txt: the broken tree's test output from our reproduction).
-Prints the sha256 of cases.csv. Refuses to run twice (the list is frozen once)."""
+Prints the sha256 of cases.csv. Refuses to run twice (the list is frozen once). Future runs also require a clean
+maintainer integrity control in reproduction, so suite-generated output cannot make every agent patch fail validation."""
 import csv, hashlib, itertools, json, os, re, sys
 import os as _os, sys as _sys
 if _os.path.exists("ARCHIVE") and _os.environ.get("ALLOW_ARCHIVE_WRITE") != "1": _sys.exit("this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1")   # added 2026-11-12, after the collection
@@ -21,7 +22,10 @@ frozen, inter, notrep = [], [], []
 for c in order:
     r = rep.get(cid(c))
     if not r: continue
-    if r["verdict"] == "reproduced": frozen.append((c, r))
+    if r["verdict"] == "reproduced":
+        if r.get("integrity_control", {}).get("outcome") != "clean":
+            sys.exit(f"case {cid(c)} lacks a clean maintainer integrity control: rerun cases/repro.sh before freezing")
+        frozen.append((c, r))
     elif r["verdict"] == "intermittent": inter.append((c, r))
     elif r["verdict"] != "reproduced": notrep.append((c, r))
 # every candidate must be settled (a verdict, or a failed preparation)

@@ -19,10 +19,14 @@ The budget works on ESTIMATED reservations (see gateway.py); these checks show t
 import json, os, signal, subprocess, sys, tempfile, threading, time, urllib.request, urllib.error
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-HERE = os.path.dirname(os.path.abspath(__file__)); calls = []
+HERE = os.path.dirname(os.path.abspath(__file__)); calls = []; redirects = []
 class Fake(BaseHTTPRequestHandler):
     def do_POST(self):
         body = json.loads(self.rfile.read(int(self.headers["content-length"])))
+        if body.get("system") == "redirect":
+            calls.append(body)
+            self.send_response(302); self.send_header("Location", "http://127.0.0.1:18081/redirect-target")
+            self.send_header("Content-Length", "0"); self.end_headers(); return
         calls.append(body); time.sleep(3 if body.get("system") == "slow" else 0.2)
         tin = {"huge": 10 ** 9, "long": 150}.get(body.get("system"), 10)
         usage = {"input_tokens": tin, "output_tokens": body["max_tokens"]}                                   # uses all it may
@@ -30,12 +34,16 @@ class Fake(BaseHTTPRequestHandler):
         out = json.dumps({"usage": usage}).encode()
         try: self.send_response(200); self.send_header("content-length", str(len(out))); self.end_headers(); self.wfile.write(out)
         except OSError: pass
+    def do_GET(self):
+        redirects.append(True)
+        self.send_response(418); self.send_header("Content-Length", "0"); self.end_headers()
     def log_message(self, *a): pass
 threading.Thread(target=ThreadingHTTPServer(("127.0.0.1", 18081), Fake).serve_forever, daemon=True).start()
 
 tmp = tempfile.mkdtemp(); open(f"{tmp}/key", "w").write("fake"); sdir = f"{tmp}/state"; os.mkdir(sdir); SF = f"{sdir}/budget.json"
+open(f"{tmp}/admin-key", "w").write("fake-admin")
 def start(budget, wait=True):
-    env = dict(os.environ, UPSTREAM="http://127.0.0.1:18081/v1/messages", KEY_FILE=f"{tmp}/key", STATE_FILE=SF, OVERHEAD_TOK="0",
+    env = dict(os.environ, UPSTREAM="http://127.0.0.1:18081/v1/messages", KEY_FILE=f"{tmp}/key", ADMIN_KEY_FILE=f"{tmp}/admin-key", STATE_FILE=SF, OVERHEAD_TOK="0", MAX_RUN_USD="1000000000000000", HTTP_READ_TIMEOUT_S="2",
                PRICES='{"m": [1000000, 1000000], "t": [1000000, 1000000, 100, 5000000, 5000000]}', BUDGET_USD=str(budget), PORT="18080", ADMIN_PORT="18082")      # $1 per token: money == tokens
     p = subprocess.Popen([sys.executable, f"{HERE}/gateway.py"], env=env, stdout=subprocess.DEVNULL)
     for _ in range(50):
@@ -45,8 +53,8 @@ def start(budget, wait=True):
     if wait and p.poll() is None: admin("/runs", {"run": RUN, "cap_usd": 10 ** 15})
     return p
 RUN = "t"
-def admin(path, body=None):
-    req = urllib.request.Request("http://127.0.0.1:18082" + path, data=json.dumps(body).encode() if body is not None else None)
+def admin(path, body=None, token="fake-admin"):
+    req = urllib.request.Request("http://127.0.0.1:18082" + path, data=json.dumps(body).encode() if body is not None else None, headers={"Authorization": "Bearer " + token} if token else {})
     try: return json.loads(urllib.request.urlopen(req, timeout=10).read())
     except urllib.error.HTTPError as e: return {"status": e.code}
 def stop(p): p.terminate(); p.wait()
@@ -61,7 +69,7 @@ def reset():
 spent = lambda: json.load(open(SF))["spent_usd"]
 ok = True
 def check(name, cond, detail):
-    global ok; ok &= bool(cond); print(("PASS" if cond else "FAIL"), name, *(() if "--short" in sys.argv else ("-", detail)), flush=True)
+    global ok; ok &= bool(cond); print(("PASS" if cond else "FAIL"), name, *(() if "--short" in sys.argv and cond else ("-", detail)), flush=True)
 size = lambda **kw: len(json.dumps({"model": "m", "max_tokens": 8, "messages": [], **kw}).encode())   # input bound, in tokens
 W = 1.25                                              # v4 reserves every input token as a cache write
 half = lambda n: (n + 1) // 2                         # v4 since 12/11: input estimate = request bytes / 2
@@ -157,5 +165,21 @@ hr = post({"model": "m", "max_tokens": 8, "messages": [{"role": "user", "content
 booked = json.load(open(SF))["spent_usd"]
 want = 10 + 1.25 * 40 + 1.0 * 100 + 8     # model "m" has no read multiplier listed: reads are booked at the full price (conservative)
 check("10 cache writes and reads are priced; 1-hour TTL is refused", cc == 200 and hr == 403 and abs(booked - want) < 1e-6, f"5-min cache call {cc}, booked {booked} (expected {want}); 1-hour TTL {hr}")
+before = json.load(open(SF))
+missing = admin("/state", token=None); wrong = admin("/runs", {"run": "unauthorized", "cap_usd": 999}, token="wrong")
+check("11 admin authentication rejects absent and wrong credentials without state changes",
+      missing.get("status") == 401 and wrong.get("status") == 401 and json.load(open(SF)) == before,
+      f"missing={missing.get('status')}, wrong={wrong.get('status')}")
+invalid = [admin("/runs", {"run": "bad-cap", "cap_usd": cap}) for cap in (0, -1, float('inf'), float('nan'), 10 ** 16)]
+check("12 invalid administrative run caps cannot change state", all(v.get("status") == 400 for v in invalid) and json.load(open(SF)) == before, str(invalid))
+stop(p); reset(); p = start(budget=10 ** 9)  # the cache-price fixture may have halted its previous gateway
+redirect_status = call(8, system="redirect")
+check("13 upstream redirects are not followed", redirect_status == 302 and not redirects, f"status={redirect_status}, followed={redirects}")
+import socket
+with socket.create_connection(("127.0.0.1", 18080), timeout=5) as conn:
+    conn.sendall(b"POST /v1/messages HTTP/1.1\r\nHost: localhost\r\nContent-Length: 100\r\n\r\n{")
+    conn.settimeout(5)
+    closed = conn.recv(1) == b""
+check("14 incomplete request bodies time out", closed, "slow client disconnected")
 stop(p)
 sys.exit(0 if ok else 1)

@@ -13,8 +13,9 @@ numbering and were kept, because the recorded results and the cleanup filter ref
 
 ## Setup
 One ephemeral GCP VM (`n2-standard-8`, nested virtualization, **no service account**), with k3s and Kata Containers
-(`kata-qemu` runtime class). Every pod that touches a case's code is a throw-away Kata pod (its own guest kernel),
-uid 1000, all capabilities dropped, no service-account token.
+(`kata-qemu` runtime class). Agent and executor pods use Kata (their own guest kernel), uid 1000, dropped capabilities and no service-account
+token. The current preparation stage also uses Kata; the collected run used a Docker preparation container.
+The table describes the collected run. See [future-run changes](FUTURE-RUNS.md) for the current isolation and sampling rules.
 
 | Role | Where | What it can reach |
 |---|---|---|
@@ -66,15 +67,16 @@ separately (amendments 24 and 27 in `criteria.md`), and the main analysis covers
 **This folder is the historical record.** `cases/cases.csv` (frozen, sha256 in `cases/cases.csv.sha256`),
 `cases/repro.jsonl`, `results/attempts-v*.jsonl`, the patches, the blind packets, the key and the verdicts are what the
 recorded run produced, and the `ARCHIVE` file marks the folder as such: the scripts that write records refuse to run in a
-folder with that file (`freeze.py` also refuses to freeze twice, and `attempt.sh` refuses a run id that is already
-recorded). A new run happens in a **new folder**:
+folder with that file (`freeze.py` also refuses to freeze twice, and `attempt.sh` skips an already recorded run without
+overwriting it or returning an error, so interrupted rounds can continue past completed attempts). A new run happens in a **new folder**:
 ```
 infra/new-run.sh ../04-fresh                     # code only, no record
 infra/new-run.sh ../04-fresh --with-candidates   # plus the 113 archived candidates and sanitized mining logs
                                                  # on the same set without mining again; the archived cases.csv sha256 is
                                                  # copied to cases/archived-cases.csv.sha256 for comparison
 ```
-Then work only inside that folder. Everything that runs a case's code runs on the VM, inside Kata pods; nothing from a
+Read [`FUTURE-RUNS.md`](FUTURE-RUNS.md) before a new collection; the current harness adds controls after the historical
+protocol. Then work only inside that folder. Everything that runs a case's code runs on the VM, inside Kata pods; nothing from a
 third-party repository runs on your machine. `/srv/ci` on the VM holds the prepared cases, so use a fresh VM per run.
 The candidate mode copies both `candidates-*.jsonl` and `candidates-*.log`: the latter are the mining evidence used by
 `cases/funnel.py`, not a new mining run. Both modes initialize `results/blind/excluded.json` to `{}` (no exclusions).
@@ -94,20 +96,22 @@ On your machine (needs `gcloud`), from the new folder:
 
 On `aip-ci-01`, from the copied folder:
 4. `infra/install-docker.sh` (Ubuntu's `docker.io`; `DOCKER_IO_VERSION=<apt version>` pins it, otherwise the installed
-   version is printed; enables the daemon and adds you to the `docker` group, because `cases/pipeline.sh` calls `docker`
-   without sudo), then **log out and in again**.
+   version is printed), plus host Git/rsync. Docker builds the lab image via sudo; dependency preparation uses Kata.
 5. `infra/install-k3s-kata.sh` (k3s v1.37.2+k3s1, Helm v3.22.1, Kata 4.3.1, admin kubeconfig 0600), then
    `infra/build-images.sh` (the one box image, `infra/Dockerfile.box`, imported into k3s without a registry).
 6. `<provider key on stdin> | infra/setup-lab.sh`: namespaces and NetworkPolicies (`k8s/00-base.yaml`), the gateway
-   (`k8s/10-gateway.yaml`; the key goes from stdin into a Secret, never into a file), the code ConfigMaps.
-7. Cases: `cases/pipeline.sh <worker-id>` (several workers may run; each prepares a candidate with network in the box
-   image, `cases/prep.py`, then reproduces it in executor pods without network, `cases/repro.sh`), then
+   (`k8s/10-gateway.yaml`; the provider key goes from stdin into a Secret, never into a file), the code ConfigMaps and
+   a separate administrative token at `/srv/ci/admin-key` (0600), also stored as the gateway admin Secret.
+7. Cases: `cases/pipeline.sh <worker-id>` (several workers may run; `cases/prep.py` prepares each candidate using
+   isolated `ci-prep` pods with dependency-download egress, then `cases/repro.sh` reproduces it in executor pods). Wait
+   for all workers to finish the candidate set; inspect the hidden stability/discrimination controls in the addendum, then
    `cases/retry-infra.sh`, `cases/recheck.py`, `cases/freeze.py` (freezes `cases.csv`, prints its sha256),
    `cases/funnel.py` (writes `cases/funnel.md`), `cases/status.py`.
 8. Negative control: `cases/control-skip.sh <case> /tmp/skip.diff && cases/validate.sh <case> /tmp/skip.diff` (a patch
    that skips the failing tests must be rejected before anything runs).
 9. Collection: set the gateway's total budget, then `cases/run-round.sh v1` and later `cases/run-round.sh v2`
-   (`cases/attempt.sh` per attempt; `cases/queue.py <round>` shows the queue). `SMOKE=1 cases/attempt.sh smoke-1 …`
+   (`cases/attempt.sh` per attempt; `cases/queue.py <round>` shows the queue). Each round must pass the final
+   `cases/check-round.py <round>` completeness check. `SMOKE=1 cases/attempt.sh smoke-1 …`
    was the smoke test.
 10. Blind packets: `cases/blind.py v1 v2`, then `cases/blind-shuffle.py` (re-randomises ids and order, and reports any
     packet that mentions a run id, a round or a version).
@@ -127,14 +131,16 @@ The judging page never opens `key.jsonl`. `verdicts.jsonl` is append-only (the l
 `rule` (green but failed the hidden tests); excluded cases are shown with `source=excluded`. In the archive, point the
 judge at a copy of `verdicts.jsonl` if you only want to look: it writes to the files it is given.
 
-Offline, no cluster: `python3 gateway/test_budget.py` (the gateway against a fake upstream, 13 checks) and
+Offline, no cluster: `python3 gateway/test_budget.py --short` (the gateway against a fake upstream, 17 checks) and
 `python3 executor/test_executor.py` (the executor's patch checks on a synthetic repository, 31 checks; no case code).
 From this historical folder, `python3 infra/test_workflow.py` runs 8 regression tests for fresh-run setup, the funnel,
 the tally and audit resumption. It uses temporary folders and synthetic results; pod invocation is mocked, with no VM
-or provider calls.
+or provider calls. `python3 -B infra/test_security.py` adds 22 synthetic tests for isolation contracts, separate
+preparation/execution, cache separation, runner failures, the tally and judging; it includes a negative control that
+documents the remaining test-runner bypass. No live Kubernetes/Kata verification was performed for these changes.
 
 ## Fixes after the collection (2026-11-12)
-An external review of this copy found six harness problems. All six were fixed on 2026-11-12, **after** the v1/v2
+The first external review of this copy found six harness problems. All six were fixed on 2026-11-12, **after** the v1/v2
 collection, the post-collection audit and the judging. They are harness fixes, not method changes, so `criteria.md`
 is unchanged. Nothing recorded was re-run or re-classified. Details and counts are in
 [`results.md`](results.md#fixes-after-the-collection-2026-11-12).
@@ -154,8 +160,9 @@ is unchanged. Nothing recorded was re-run or re-classified. Details and counts a
    runs now go to a new folder (`infra/new-run.sh`), and the scripts that write records refuse to run in a folder with an
    `ARCHIVE` file. The candidate mode includes the mining logs needed by the funnel, and both modes start with an empty
    exclusions file for the new judging and tally.
-5. **Docker on a fresh VM.** Nothing installed it, and `cases/pipeline.sh` calls it without sudo. Added
-   `infra/install-docker.sh`, plus checks in `infra/build-images.sh` and `cases/pipeline.sh`.
+5. **Docker on a fresh VM.** Nothing installed it for the original preparation path. Added
+   `infra/install-docker.sh` and preflight checks. Later hardening moved dependency preparation into Kata; Docker now
+   only builds/exports the lab image.
 6. **Local temp paths** in `results/blind/codex-review-2026-11-12/checks.json`: the reviewer machine's temp prefix is
    replaced by `<local-tmp>` (7 occurrences; the files are otherwise unchanged).
 
@@ -167,9 +174,21 @@ The one smoke patch that changes a snapshot file is the known case behind the sn
 attempts are not data. Every one of the 25 post-collection audit logs shows `rc=0` for each apply (two runs apply
 nothing), so no audit command ran on the wrong tree.
 
+A second review led to further fixes on the same date: preparation mounts are per case; fixed-tree Go dependencies
+stay private; validation uses a trusted init stage and fresh pods for every sample; the admin API is authenticated,
+bounded and protected by ingress policy; runner failures and incomplete rounds are detected; judging requires JSON and
+same-origin browser writes. Hidden tests now use three samples and additional reproduction controls. **Those sampling
+changes apply only to future collections.** The [dated addendum](FUTURE-RUNS.md) records the details, local test evidence
+and remaining trust boundaries. The archived records, verdicts and totals were preserved.
+
+A follow-up fixes round resumption by skipping recorded attempts successfully, and calibrates the integrity rule on
+the maintainer's fix before freezing. If the fixed suite itself generates unignored output or changes source files,
+the case is marked incompatible with this validator, rather than letting every agent patch be rejected for that effect.
+
 ## Folder map
 | Path | What it is |
 |---|---|
+| `FUTURE-RUNS.md` | post-collection security changes, future sampling controls, regression evidence and remaining limitations |
 | `criteria.md` | selection rules 1–20 and amendments 21–27, with dates and whether each came before or after the collection (English translation) |
 | `results.md` | the numbers and their limits |
 | `mining/` | `mine.py` (GitHub API, read-only) and every examined candidate: `candidates-<lang>.log` (verdict per repository and per failure/fix pair; the 4 excluded-owner repositories are replaced by `<excluded owner>/<repo n>`) and `candidates-<lang>.jsonl` (the 113 candidates) |

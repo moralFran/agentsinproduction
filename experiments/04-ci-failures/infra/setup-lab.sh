@@ -8,6 +8,10 @@ sudo mkdir -p /srv/ci/cases /srv/ci/secret /srv/ci/work /srv/ci/uv /srv/ci/logs 
 kubectl apply -f k8s/00-base.yaml
 kubectl -n ci-gateway create configmap gateway-code --from-file=gateway/gateway.py -o yaml --dry-run=client | kubectl apply -f -
 kubectl -n ci-gateway get secret gateway-key >/dev/null 2>&1 || kubectl -n ci-gateway create secret generic gateway-key --from-file=key=/dev/stdin
+# Separate runner credential; never mounted into case pods or sent to the model.
+(umask 077; [ -s /srv/ci/admin-key ] || python3 -c 'import secrets; print(secrets.token_hex(32))' > /srv/ci/admin-key)
+chmod 600 /srv/ci/admin-key
+kubectl -n ci-gateway create secret generic gateway-admin-key --from-file=key=/srv/ci/admin-key -o yaml --dry-run=client | kubectl apply -f -
 kubectl apply -f k8s/10-gateway.yaml
 kubectl -n ci-gateway rollout status deploy/gateway --timeout=180s
 infra/code-configmap.sh

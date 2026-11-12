@@ -18,7 +18,7 @@ cd "$src"
 files=(agent/agent.py agent/prompt-v1.txt agent/prompt-v2.txt executor/executor.py executor/test_executor.py
        gateway/gateway.py gateway/test_budget.py k8s/00-base.yaml k8s/10-gateway.yaml judge/server.py judge/page.html judge/start.sh
        mining/mine.py results/analyze.py results/blind/codex-review-2026-11-12/writer_review_test.go
-       capture/captures.json capture/play.py capture/record.sh criteria.md)
+       capture/captures.json capture/play.py capture/record.sh criteria.md FUTURE-RUNS.md infra/test_security.py)
 files+=(infra/*.sh infra/Dockerfile.box cases/*.py cases/*.sh)
 [ "${2:-}" = --with-candidates ] && files+=(mining/candidates-go.jsonl mining/candidates-python.jsonl
                                          mining/candidates-go.log mining/candidates-python.log)

@@ -22,16 +22,19 @@ spec:
         command: ["python3", "-u", "/app/gateway.py"]
         env:
         - {name: BUDGET_USD, value: "2"}            # phase 1 (smoke test) cap; raised to the version reserve before v1
+        - {name: ADMIN_KEY_FILE, value: "/admin-secrets/key"}
         - {name: PRICES, value: '{"claude-sonnet-5-5": [2.0, 10.0]}'}
         ports: [{containerPort: 8080}, {containerPort: 8081}]
         readinessProbe: {httpGet: {path: /healthz, port: 8080}, periodSeconds: 2}
         volumeMounts:
         - {name: app, mountPath: /app}
         - {name: key, mountPath: /secrets, readOnly: true}
+        - {name: admin-key, mountPath: /admin-secrets, readOnly: true}
         - {name: state, mountPath: /state}
       volumes:
       - {name: app, configMap: {name: gateway-code}}
       - {name: key, secret: {secretName: gateway-key}}
+      - {name: admin-key, secret: {secretName: gateway-admin-key}}
       - {name: state, persistentVolumeClaim: {claimName: gateway-state}}
 ---
 apiVersion: v1

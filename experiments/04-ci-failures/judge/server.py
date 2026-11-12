@@ -113,9 +113,23 @@ class Handler(BaseHTTPRequestHandler):
         self.send(404, "{}")
 
     def do_POST(self):
-        if self.path != "/api/verdict" or self.headers.get("Host", "").split(":")[0] not in ("127.0.0.1", "localhost"):
+        host = self.headers.get("Host", "")
+        port = self.server.server_address[1]
+        hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
+        if port == 80: hosts |= {"127.0.0.1", "localhost"}
+        if self.path != "/api/verdict" or host not in hosts:
             return self.send(404, "{}")
-        r = json.loads(self.rfile.read(int(self.headers.get("Content-Length", "0")) or 0) or b"{}")
+        if self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+            return self.send(415, json.dumps({"error": "Content-Type must be application/json"}))
+        origin = self.headers.get("Origin")
+        if origin is not None and origin != "http://" + host:
+            return self.send(403, json.dumps({"error": "cross-origin verdict submission refused"}))
+        try:
+            size = int(self.headers.get("Content-Length", "0"))
+            if not 0 < size <= 16384: return self.send(400, "{}")
+            r = json.loads(self.rfile.read(size))
+            if not isinstance(r, dict): return self.send(400, "{}")
+        except (ValueError, UnicodeError): return self.send(400, "{}")
         p = next((x for x in self.packets if x["id"] == r.get("packet")), None)
         if not p or r.get("verdict") not in VERDICTS: return self.send(400, json.dumps({"error": "pacote ou veredito inválido"}))
         if p["excluded"]: return self.send(400, json.dumps({"error": "este pacote está fora da análise principal"}))
