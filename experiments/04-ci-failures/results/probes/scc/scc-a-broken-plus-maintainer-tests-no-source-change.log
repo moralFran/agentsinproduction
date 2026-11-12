@@ -1,0 +1,6 @@
+NOTES maintainer test changes applied rc=0 
+COMMAND go test -count=1 ./processor github.com/boyter/scc/v4/processor
+OUTPUT_BEGIN
+ok  	github.com/boyter/scc/v4/processor	30.628s
+
+OUTPUT_END rc=0 s=150.9

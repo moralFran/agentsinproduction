@@ -1,0 +1,35 @@
+diff --git a/backend_api_python/app/services/pending_order_worker.py b/backend_api_python/app/services/pending_order_worker.py
+index 4694aac..be6b68e 100644
+--- a/backend_api_python/app/services/pending_order_worker.py
++++ b/backend_api_python/app/services/pending_order_worker.py
+@@ -117,6 +117,18 @@ ALPACA_FILL_DELTA_EPSILON = 1e-8
+ _serialized_live_dispatch = lambda func: serialized_live_dispatch(func, strategy_loader=lambda strategy_id: load_strategy_configs(strategy_id))
+ 
+ 
++
++def _close_retry_client_order_id_factory(*, exchange_id: str, strategy_id: int, order_id: int):
++    """Return a callable building the client order id for close-reconciliation retry ``attempt``."""
++
++    def _build(attempt: int) -> str:
++        return make_client_order_id(
++            exchange_id=exchange_id, strategy_id=strategy_id, order_id=order_id, phase=f"r{attempt}",
++        )
++
++    return _build
++
++
+ class PendingOrderWorker(
+     SubmissionRecoveryMixin,
+     PendingOrderLoops,
+@@ -2266,8 +2278,9 @@ class PendingOrderWorker(
+             close_outcome = maybe_reconcile_strategy_market_close(
+                 enabled=reduce_only and execution_algo != "limit" and not use_limit_first,
+                 context=locals(),
+-                client_order_id=lambda attempt: make_client_order_id(exchange_id=exchange_id,
+-                    strategy_id=strategy_id, order_id=order_id, phase=f"r{attempt}"),
++                client_order_id=_close_retry_client_order_id_factory(
++                    exchange_id=exchange_id, strategy_id=strategy_id, order_id=order_id,
++                ),
+                 apply_result=lambda result: apply_execution_result(fills, result), append_log=append_strategy_log)
+             if close_outcome:
+                 close_reconciliation, retry_order_id, retry_client_id = close_outcome

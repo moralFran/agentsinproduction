@@ -1,0 +1,13 @@
+diff --git a/db.go b/db.go
+index 8727e00..a1c11d0 100644
+--- a/db.go
++++ b/db.go
+@@ -217,7 +217,7 @@ func (db *RedisDB) stringIncr64(k string, delta int64) (int64, error) {
+ 	if sv, ok := db.stringKeys[k]; ok {
+ 		var err error
+ 		v, err = strconv.ParseInt(sv, 10, 64)
+-		if err != nil {
++		if err != nil || strconv.FormatInt(v, 10) != sv {
+ 			return 0, ErrIntValueError
+ 		}
+ 	}

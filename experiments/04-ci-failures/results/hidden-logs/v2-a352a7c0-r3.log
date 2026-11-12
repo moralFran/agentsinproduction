@@ -1,0 +1,45 @@
+NOTES patch applied rc=0  | maintainer test changes applied rc=0 
+COMMAND python -m pytest -q -p no:cacheprovider tests/test_live_exchange_fees.py tests/test_live_order_support.py
+OUTPUT_BEGIN
+.........................F...........................                    [100%]
+=================================== FAILURES ===================================
+_ test_exchange_funding_payments_use_signed_cash_flow[client2-response2--0.35] _
+
+client = <app.services.live_trading.bitget.BitgetMixClient object at 0x7f4e27dbec30>
+response = {'data': {'list': [{'id': '1', 'symbol': 'BTCUSDT', 'balanceChange': '-0.35', 'coin': 'USDT', ...}]}}
+expected = -0.35
+
+    @pytest.mark.parametrize(
+        ("client", "response", "expected"),
+        [
+            (BinanceFuturesClient(api_key="key", secret_key="secret"),
+             {"raw": [{"tranId": 1, "symbol": "BTCUSDT", "income": "-0.25", "asset": "USDT", "time": 10}]}, -0.25),
+            (OkxClient(api_key="key", secret_key="secret", passphrase="pass"),
+             {"data": [{"billId": "1", "instId": "BTC-USDT-SWAP", "balChg": "0.15", "ccy": "USDT", "ts": "10"}]}, 0.15),
+            (BitgetMixClient(api_key="key", secret_key="secret", passphrase="pass"),
+             {"data": {"list": [{"id": "1", "symbol": "BTCUSDT", "balanceChange": "-0.35", "coin": "USDT", "ts": "10"}]}}, -0.35),
+            (BybitClient(api_key="key", secret_key="secret"),
+             {"result": {"list": [{"id": "1", "symbol": "BTCUSDT", "funding": "0.45", "currency": "USDT", "transactionTime": "10"}]}}, 0.45),
+            (GateUsdtFuturesClient(api_key="key", secret_key="secret"),
+             [{"id": "1", "contract": "BTC_USDT", "type": "fund", "change": "-0.55", "time": 10}], -0.55),
+            (HtxClient(api_key="key", secret_key="secret", market_type="swap"),
+             {"status": "ok", "data": {"financial_record": [{"id": "1", "contract": "BTC-USDT", "type": 30, "amount": "0.65", "created_at": 10}]}}, 0.65),
+        ],
+    )
+    def test_exchange_funding_payments_use_signed_cash_flow(client, response, expected):
+        method = "_swap_private_request_raw" if isinstance(client, HtxClient) else "_signed_request"
+        with patch.object(client, method, return_value=response):
+            rows = client.get_funding_payments(
+                symbol="BTC/USDT", start_time_ms=1, end_time_ms=100, limit=100,
+            )
+    
+>       assert len(rows) == 1
+E       AssertionError: assert 4 == 1
+E        +  where 4 = len([{'id': '1', 'symbol': 'BTCUSDT', 'amount': -0.35, 'asset': 'USDT', ...}, {'id': '1', 'symbol': 'BTCUSDT', 'amount': -...USDT', 'amount': -0.35, 'asset': 'USDT', ...}, {'id': '1', 'symbol': 'BTCUSDT', 'amount': -0.35, 'asset': 'USDT', ...}])
+
+tests/test_live_exchange_fees.py:491: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_live_exchange_fees.py::test_exchange_funding_payments_use_signed_cash_flow[client2-response2--0.35]
+1 failed, 52 passed in 5.16s
+
+OUTPUT_END rc=1 s=9.1

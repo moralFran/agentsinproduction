@@ -1,0 +1,43 @@
+# The gateway (v4) runs outside the agent's sandbox and is the only holder of the provider key (Secret gateway-key).
+# Port 8080: model requests (reachable from ci-agent). Port 8081: the runner opens and closes runs (not reachable from ci-agent).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: {name: gateway-state, namespace: ci-gateway}
+spec: {accessModes: [ReadWriteOnce], resources: {requests: {storage: 16Mi}}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: gateway, namespace: ci-gateway}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app: gateway}}
+  template:
+    metadata: {labels: {app: gateway}}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: gateway
+        image: python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
+        command: ["python3", "-u", "/app/gateway.py"]
+        env:
+        - {name: BUDGET_USD, value: "2"}            # phase 1 (smoke test) cap; raised to the version reserve before v1
+        - {name: PRICES, value: '{"claude-sonnet-5-5": [2.0, 10.0]}'}
+        ports: [{containerPort: 8080}, {containerPort: 8081}]
+        readinessProbe: {httpGet: {path: /healthz, port: 8080}, periodSeconds: 2}
+        volumeMounts:
+        - {name: app, mountPath: /app}
+        - {name: key, mountPath: /secrets, readOnly: true}
+        - {name: state, mountPath: /state}
+      volumes:
+      - {name: app, configMap: {name: gateway-code}}
+      - {name: key, secret: {secretName: gateway-key}}
+      - {name: state, persistentVolumeClaim: {claimName: gateway-state}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: gateway, namespace: ci-gateway}
+spec:
+  clusterIP: 10.43.210.10
+  selector: {app: gateway}
+  ports: [{name: model, port: 8080, targetPort: 8080}, {name: admin, port: 8081, targetPort: 8081}]

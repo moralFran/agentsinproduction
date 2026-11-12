@@ -1,0 +1,79 @@
+{
+ "about": "Terminal captures of the V5 experiment, recorded ON aip-ci-01 by capture/record.sh (asciinema, 76x17); commands run for real, only the typing is simulated by capture/play.py.",
+ "captures": {
+  "v5-repro": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "REPRO_OUT=/tmp/r.jsonl cases/repro.sh ludwig-ai-ludwig-6a122a8e 3"
+    },
+    {
+     "cmd": "python3 cases/show-repro.py /tmp/r.jsonl"
+    }
+   ],
+   "scene": "a real CI failure reproduced in our box: broken commit fails 3/3, maintainer's fix passes 3/3 (executor pods, Kata, no network); minutes long, time-lapse in the edit"
+  },
+  "v5-reject": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "cases/control-skip.sh ludwig-ai-ludwig-6a122a8e /tmp/skip.diff"
+    },
+    {
+     "cmd": "cases/validate.sh ludwig-ai-ludwig-6a122a8e /tmp/skip.diff"
+    }
+   ],
+   "scene": "negative control: a patch that skips the failing tests instead of fixing anything is rejected by the executor before any test runs"
+  },
+  "v5-queue": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "for i in $(seq 8); do clear; python3 cases/queue.py v1; sleep 12; done",
+     "after": 1.0
+    }
+   ],
+   "scene": "the v1 queue running: each frozen case x 3 repetitions, at most 3 attempts at a time (\"Here's the queue running, one attempt at a time\")"
+  },
+  "v5-prompt-diff": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "diff agent/prompt-v1.txt agent/prompt-v2.txt | fold -s -w 74",
+     "after": 2.5
+    }
+   ],
+   "scene": "the changed instruction, diffed: v1 -> v2 system prompt, the only difference between the two versions"
+  },
+  "v5-probe-fixed": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "cases/probe-ws.sh fixed",
+     "after": 2.0
+    }
+   ],
+   "scene": "control: the second reviewer's three probe tests for gobwas/ws pass on the maintainer's fix (executor pod, Kata, no network)"
+  },
+  "v5-probe-patch-r2": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "cases/probe-ws.sh v2-e88f0806-r2",
+     "after": 2.0
+    }
+   ],
+   "scene": "the same probes on an agent patch that had passed the maintainer's hidden tests"
+  },
+  "v5-probe-patch-r3": {
+   "where": "vm",
+   "steps": [
+    {
+     "cmd": "cases/probe-ws.sh v2-e88f0806-r3",
+     "after": 2.0
+    }
+   ],
+   "scene": "the same probes on another agent patch that had passed the maintainer's hidden tests"
+  }
+ }
+}

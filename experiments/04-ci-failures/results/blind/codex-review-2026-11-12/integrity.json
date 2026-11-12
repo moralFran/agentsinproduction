@@ -1,0 +1,15 @@
+{
+  "records": 43,
+  "csv_jsonl_consistent": true,
+  "packet_hashes_match": true,
+  "minify_production_diffs_equal": 6,
+  "cosign_production_diffs_equal_ignoring_comment_and_diff_metadata": 6,
+  "pyinfra_entire_file_ast_equal_to_maintainer": 4,
+  "official_verdicts_jsonl_exists": false,
+  "tally": {
+    "pior": 19,
+    "equivalente": 21,
+    "valida": 1,
+    "inconclusiva": 2
+  }
+}

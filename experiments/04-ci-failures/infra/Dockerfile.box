@@ -1,0 +1,10 @@
+# The one image of experiment 04: Go (newer toolchains come from each case's module cache, GOTOOLCHAIN=auto), Python 3
+# and git for the cases, an isolated venv with the Anthropic SDK for the agent loop, and uv for the preparation step.
+# Case code and dependencies are NOT in the image: they are prepared per case on the VM and mounted read-only.
+FROM golang:1.27-bookworm@sha256:4fa7c968ba93f1635670522dbb01a2c78150443e1385746924566079f36570ea
+RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends python3 python3-venv python3-pip rsync >/dev/null \
+ && rm -rf /var/lib/apt/lists/* \
+ && python3 -m venv /opt/agent-venv && /opt/agent-venv/bin/pip install -q --no-cache-dir anthropic==2.8.0 \
+ && python3 -m venv /opt/uv && /opt/uv/bin/pip install -q --no-cache-dir uv==0.9.5 && ln -s /opt/uv/bin/uv /usr/local/bin/uv \
+ && useradd -m -u 1000 agent && git config --system user.name aip && git config --system user.email aip@example.invalid \
+ && git config --system --add safe.directory '*'

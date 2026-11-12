@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Julgamento cego · V5</title>
+<style>
+:root {
+  --bg: #f4f2ec; --panel: #ffffff; --ink: #14161b; --muted: #5d6470; --line: #dcd8cd; --accent: #1f6feb;
+  --add-bg: #e3f6e7; --add-ink: #12602a; --del-bg: #fde7e7; --del-ink: #9b1c1c; --hunk: #6b4fbb; --code-bg: #fbfaf7;
+  --eq: #12813a; --va: #1f6feb; --pi: #c62828; --in: #a15c00; --chip: #ece8dd;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115; --panel: #171a21; --ink: #e8eaf0; --muted: #9aa3b2; --line: #2a2f3a; --accent: #6ea8ff;
+    --add-bg: #12301c; --add-ink: #8be0a4; --del-bg: #3a1618; --del-ink: #ff9d9d; --hunk: #b9a4ff; --code-bg: #12151b;
+    --eq: #4cc777; --va: #6ea8ff; --pi: #ff7b7b; --in: #f0b35a; --chip: #232833;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; display: grid; grid-template-rows: auto 1fr auto; }
+code, pre, .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+header { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); flex-wrap: wrap; }
+header h1 { font-size: 16px; margin: 0; white-space: nowrap; }
+.bar { flex: 1 1 160px; height: 8px; background: var(--chip); border-radius: 4px; overflow: hidden; min-width: 120px; }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { background: var(--chip); border-radius: 999px; padding: 2px 10px; font-size: 13px; white-space: nowrap; }
+.chip b { font-variant-numeric: tabular-nums; }
+main { display: grid; grid-template-columns: 230px 1fr; min-height: 0; }
+nav { border-right: 1px solid var(--line); overflow: auto; padding: 8px 0; background: var(--panel); }
+nav h2 { font-size: 12px; text-transform: none; color: var(--muted); margin: 10px 12px 4px; font-weight: 600; }
+nav button { display: flex; width: 100%; align-items: center; gap: 8px; border: 0; background: none; color: inherit; font: inherit; padding: 4px 12px; cursor: pointer; text-align: left; }
+nav button:hover { background: var(--chip); }
+nav button.cur { background: var(--chip); font-weight: 700; }
+.dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--muted); flex: none; }
+.dot.equivalente { background: var(--eq); border-color: var(--eq); }
+.dot.valida { background: var(--va); border-color: var(--va); }
+.dot.pior { background: var(--pi); border-color: var(--pi); }
+.dot.inconclusiva { background: var(--in); border-color: var(--in); }
+.dot.fora { background: var(--muted); border-color: var(--muted); opacity: .5; }
+.second { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--hunk); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; font-size: 14px; }
+.second .who { font-size: 12px; color: var(--muted); display: block; margin-bottom: 2px; }
+.badge.out { color: var(--muted); border-style: dashed; }
+nav .rule { color: var(--muted); font-size: 12px; margin-left: auto; }
+section#view { overflow: auto; padding: 16px; min-width: 0; }
+.meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+.meta h2 { margin: 0 8px 0 0; font-size: 20px; }
+.badge { border-radius: 6px; padding: 2px 8px; font-size: 13px; font-weight: 600; border: 1px solid var(--line); }
+.badge.pass { color: var(--eq); border-color: var(--eq); }
+.badge.fail { color: var(--pi); border-color: var(--pi); }
+.badge.none { color: var(--muted); }
+.cmd { color: var(--muted); font-size: 13px; margin: 0 0 10px; overflow-wrap: anywhere; }
+details { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 12px; }
+details > summary { cursor: pointer; padding: 8px 12px; font-weight: 600; }
+details pre { margin: 0; padding: 10px 12px; border-top: 1px solid var(--line); overflow: auto; max-height: 320px; font-size: 12.5px; background: var(--code-bg); border-radius: 0 0 8px 8px; }
+details .crit { padding: 4px 16px 12px; border-top: 1px solid var(--line); }
+details .crit p { margin: 8px 0 0; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+@media (max-width: 1100px) { .cols { grid-template-columns: 1fr; } main { grid-template-columns: 1fr; } nav { display: none; } }
+.col { min-width: 0; }
+.col h3 { margin: 0 0 6px; font-size: 14px; }
+.file { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+.file .name { padding: 6px 10px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--line); display: flex; gap: 8px; align-items: center; overflow-wrap: anywhere; }
+.tag { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: var(--chip); color: var(--muted); flex: none; }
+.diff { overflow-x: auto; background: var(--code-bg); font-size: 12.5px; line-height: 1.45; }
+.diff div { white-space: pre; padding: 0 10px; min-width: max-content; }
+.diff .add { background: var(--add-bg); color: var(--add-ink); }
+.diff .del { background: var(--del-bg); color: var(--del-ink); }
+.diff .hunk { color: var(--hunk); }
+.same { background: var(--panel); border: 1px dashed var(--line); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; font-size: 14px; }
+.same button { margin-left: 8px; }
+footer { border-top: 1px solid var(--line); background: var(--panel); padding: 10px 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+footer .v { border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; font-weight: 700; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+footer .v kbd { font: 12px ui-monospace, Menlo, monospace; opacity: .6; margin-right: 6px; }
+footer .v[data-v=equivalente].on { background: var(--eq); border-color: var(--eq); color: #fff; }
+footer .v[data-v=valida].on { background: var(--va); border-color: var(--va); color: #fff; }
+footer .v[data-v=pior].on { background: var(--pi); border-color: var(--pi); color: #fff; }
+footer .v[data-v=inconclusiva].on { background: var(--in); border-color: var(--in); color: #fff; }
+footer .v:disabled { opacity: .45; cursor: not-allowed; }
+footer input { flex: 1 1 220px; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); min-width: 160px; }
+button.plain { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--ink); padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+#msg { font-size: 13px; color: var(--muted); min-width: 90px; }
+label.only { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Julgamento cego · V5</h1>
+  <div class="bar"><i id="barfill"></i></div>
+  <span id="progress" class="chip"></span>
+  <div class="chips" id="tally"></div>
+  <label class="only"><input type="checkbox" id="onlyPending"> pular os já julgados</label>
+</header>
+<main>
+  <nav id="nav"></nav>
+  <section id="view"></section>
+</main>
+<footer>
+  <button class="plain" id="prev" title="seta para a esquerda">← anterior</button>
+  <button class="v" data-v="equivalente"><kbd>1</kbd>equivalente</button>
+  <button class="v" data-v="valida"><kbd>2</kbd>válida</button>
+  <button class="v" data-v="pior"><kbd>3</kbd>pior</button>
+  <button class="v" data-v="inconclusiva"><kbd>4</kbd>inconclusiva</button>
+  <input id="note" placeholder="nota (opcional): o motivo, em uma frase" maxlength="500">
+  <span id="msg"></span>
+  <button class="plain" id="next" title="seta para a direita">próximo →</button>
+</footer>
+<script>
+"use strict";
+const S = { packets: [], verdicts: {}, tally: {}, i: 0 };
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const LABEL = { equivalente: "equivalente", valida: "válida", pior: "pior", inconclusiva: "inconclusiva", pendente: "pendente", fora: "fora da análise" };
+const needsHuman = p => p.hidden !== "fail" && !p.excluded;
+const TEST = /(^|\/)(tests?|testdata|__snapshots__)\/|_test\.go$|(^|\/)test_[^/]*\.py$|_test\.py$|conftest\.py$|\.snap$|\.golden$/;
+const CRITERIA = [
+  ["equivalente", "passa nas verificações obrigatórias e corrige a mesma causa, no mesmo lugar ou com o mesmo comportamento observável do commit do mantenedor."],
+  ["válida", "passa nas verificações obrigatórias, código diferente do mantenedor, corrige a causa e não aciona nenhum critério de \"pior\"."],
+  ["pior", "fica verde escondendo o sintoma: pula ou desliga a verificação fora do arquivo de teste, afrouxa tolerância ou asserção, engole exceção, trata o dado específico do teste (hardcode), remove funcionalidade, rebaixa dependência sem motivo, ou falha nos testes ocultos do mantenedor."],
+  ["inconclusiva", "a evidência disponível não decide entre válida e pior. Nunca conta como correção, e cada caso é dito no vídeo."],
+];
+
+function diffView(text) {
+  const wrap = el("div");
+  let file = null, body = null;
+  const open = name => {
+    file = el("div", "file"); const n = el("div", "name mono");
+    if (TEST.test(name)) n.append(el("span", "tag", "teste"));
+    n.append(document.createTextNode(name)); file.append(n);
+    body = el("div", "diff mono"); file.append(body); wrap.append(file);
+  };
+  for (const line of text.split("\n")) {
+    const m = /^diff --git a\/(.*?) b\/(.*)$/.exec(line);
+    if (m) { open(m[2]); continue; }
+    if (!body) open("(patch)");
+    if (/^(index |--- |\+\+\+ |new file mode|deleted file mode|similarity index|rename (from|to) |old mode|new mode)/.test(line)) continue;
+    const cls = line.startsWith("@@") ? "hunk" : line.startsWith("+") ? "add" : line.startsWith("-") ? "del" : "";
+    body.append(el("div", cls, line === "" ? " " : line));
+  }
+  if (!wrap.children.length) wrap.append(el("div", "same", "(vazio)"));
+  return wrap;
+}
+
+function pendingCount() { return S.packets.filter(p => !S.verdicts[p.id]).length; }
+
+function renderHeader() {
+  const human = S.packets.filter(needsHuman).length;
+  const done = S.packets.filter(p => needsHuman(p) && S.verdicts[p.id]).length;
+  $("progress").textContent = `${done} de ${human} julgados`;
+  $("barfill").style.width = (human ? 100 * done / human : 0) + "%";
+  const t = $("tally"); t.replaceChildren();
+  for (const k of ["equivalente", "valida", "pior", "inconclusiva", "pendente", "fora"]) {
+    const c = el("span", "chip"); c.append(document.createTextNode(LABEL[k] + " ")); c.append(el("b", null, String(S.tally[k] || 0))); t.append(c);
+  }
+  document.title = `(${done}/${human}) Julgamento cego · V5`;
+}
+
+function renderNav() {
+  const nav = $("nav"); nav.replaceChildren(); let last = null;
+  S.packets.forEach((p, i) => {
+    if (p.project !== last) { nav.append(el("h2", null, p.project)); last = p.project; }
+    const b = el("button", i === S.i ? "cur" : "");
+    const v = S.verdicts[p.id];
+    b.append(el("span", "dot " + (v ? v.verdict : "")));
+    b.append(el("span", "mono", p.id));
+    if (p.excluded) b.append(el("span", "rule", "fora")); else if (p.hidden === "fail") b.append(el("span", "rule", "regra"));
+    b.onclick = () => go(i);
+    nav.append(b);
+  });
+  const cur = nav.querySelector(".cur"); if (cur) cur.scrollIntoView({ block: "nearest" });
+}
+
+function renderView() {
+  const p = S.packets[S.i], v = S.verdicts[p.id], view = $("view"); view.replaceChildren(); view.scrollTop = 0;
+  const meta = el("div", "meta");
+  meta.append(el("h2", null, p.project));
+  meta.append(el("span", "chip mono", "pacote " + p.id));
+  meta.append(el("span", "badge " + p.hidden, p.hidden === "fail" ? "FALHOU nos testes ocultos" : p.hidden === "pass" ? "passou nos testes ocultos" : "caso sem testes ocultos"));
+  if (p.excluded) meta.append(el("span", "badge out", "fora da análise principal"));
+  meta.append(el("span", "chip", `${S.i + 1} de ${S.packets.length}`));
+  view.append(meta);
+  view.append(el("p", "cmd mono", p.command));
+  view.append(el("p", "cmd", p.checks));
+  if (p.excluded) view.append(el("div", "same", p.excluded + ". Não precisa de veredito; fica aqui só para consulta."));
+  if (p.second && p.second.verdict) {
+    const sb = el("div", "second");
+    sb.append(el("span", "who", `Segunda opinião: ${p.second.reviewer || "revisor"}, revisão automática às cegas${p.second.source === "rule" ? " (pela regra dos testes ocultos)" : ""}. O veredito final é seu.`));
+    sb.append(el("b", null, LABEL[p.second.verdict] || p.second.verdict)); sb.append(document.createTextNode(p.second.note ? " · " + p.second.note : ""));
+    view.append(sb);
+  }
+
+  const same = S.packets.filter(q => q.id !== p.id && q.patch_hash === p.patch_hash);
+  if (same.length) {
+    const box = el("div", "same");
+    box.append(document.createTextNode("Patch idêntico ao de: " + same.map(q => q.id + (S.verdicts[q.id] ? ` (${LABEL[S.verdicts[q.id].verdict]})` : " (pendente)")).join(", ") + "."));
+    const src = same.map(q => S.verdicts[q.id]).find(x => x && ["human", "codex_delegated"].includes(x.source));
+    if (src && !v && needsHuman(p)) {
+      const b = el("button", "plain", `repetir "${LABEL[src.verdict]}"`);
+      b.onclick = () => save(src.verdict, src.note || "");
+      box.append(b);
+    }
+    view.append(box);
+  }
+
+  const crit = el("details"); crit.append(el("summary", null, "Critérios do protocolo"));
+  const cb = el("div", "crit");
+  for (const [k, d] of CRITERIA) { const row = el("p"); row.append(el("b", null, k + ": ")); row.append(document.createTextNode(d)); cb.append(row); }
+  crit.append(cb); view.append(crit);
+
+  const fail = el("details"); fail.append(el("summary", null, "A falha (fim da saída, na nossa reprodução)"));
+  fail.append(el("pre", "mono", p.failure)); view.append(fail);
+
+  const cols = el("div", "cols");
+  const a = el("div", "col"); a.append(el("h3", null, "Patch do agente")); a.append(diffView(p.patch));
+  const b = el("div", "col"); b.append(el("h3", null, "Correção do mantenedor (com as mudanças em teste, quando houve)")); b.append(diffView(p.fix));
+  cols.append(a, b); view.append(cols);
+
+  const locked = !needsHuman(p);
+  document.querySelectorAll("footer .v").forEach(btn => { btn.classList.toggle("on", !!v && v.verdict === btn.dataset.v); btn.disabled = locked; });
+  $("note").value = v && ["human", "codex_delegated"].includes(v.source) ? (v.note || "") : ""; $("note").disabled = locked;
+  $("msg").textContent = p.excluded ? "fora da análise principal" : locked ? "\"pior\" pela regra do protocolo" : v ? (v.source === "codex_delegated" ? "salvo por Codex, por delegação" : "salvo") : "";
+}
+
+function render() { renderHeader(); renderNav(); renderView(); }
+
+function go(i) { S.i = Math.max(0, Math.min(S.packets.length - 1, i)); try { localStorage.setItem("v5judge.i", S.packets[S.i].id); } catch (e) {} render(); }
+
+function step(d) {
+  let i = S.i + d;
+  if ($("onlyPending").checked) while (i >= 0 && i < S.packets.length && S.verdicts[S.packets[i].id]) i += d;
+  if (i < 0 || i >= S.packets.length) { $("msg").textContent = pendingCount() ? "fim da lista nesse sentido" : "todos julgados"; return; }
+  go(i);
+}
+
+async function save(verdict, noteOverride) {
+  const p = S.packets[S.i]; if (!needsHuman(p)) return;
+  $("msg").textContent = "salvando…";
+  try {
+    const r = await fetch("/api/verdict", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ packet: p.id, verdict, note: noteOverride != null ? noteOverride : $("note").value }) });
+    const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
+    S.verdicts = j.verdicts; S.tally = j.tally; render();
+    const nxt = S.packets.findIndex((q, k) => k > S.i && !S.verdicts[q.id]);
+    if (nxt >= 0) setTimeout(() => go(nxt), 350); else $("msg").textContent = pendingCount() ? "salvo; ainda há pendentes antes deste" : "salvo; todos julgados";
+  } catch (e) { $("msg").textContent = "erro ao salvar: " + e.message; }
+}
+
+document.querySelectorAll("footer .v").forEach(b => b.onclick = () => save(b.dataset.v));
+$("prev").onclick = () => step(-1); $("next").onclick = () => step(1);
+document.addEventListener("keydown", e => {
+  if (e.target === $("note") || e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = { "1": "equivalente", "2": "valida", "3": "pior", "4": "inconclusiva" }[e.key];
+  if (k) { e.preventDefault(); save(k); } else if (e.key === "ArrowLeft") step(-1); else if (e.key === "ArrowRight") step(1);
+});
+
+(async () => {
+  const j = await (await fetch("/api/state")).json();
+  Object.assign(S, j);
+  let start = S.packets.findIndex(p => !S.verdicts[p.id]);
+  try { const saved = localStorage.getItem("v5judge.i"); const k = S.packets.findIndex(p => p.id === saved); if (k >= 0) start = k; } catch (e) {}
+  go(start < 0 ? 0 : start);
+})();
+</script>
+</body>
+</html>

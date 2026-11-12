@@ -1,0 +1,186 @@
+{
+  "audit_done": true,
+  "completed_jobs": 25,
+  "ws": [
+    {
+      "patch_hash_or_control": "18d12fba200f",
+      "rc": 1,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "--- PASS: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "    writer_review_test.go:43: wire=4acb2c2a2e0100 decoded=\"first\" error=<nil>; want=\"firstsecond\" without error",
+        "--- FAIL: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "FAIL",
+        "FAIL"
+      ],
+      "packet": "0f490ef3"
+    },
+    {
+      "patch_hash_or_control": "34c4ba1c0cc2",
+      "rc": 1,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "    writer_review_test.go:33: wire= decoded=\"\" error=flate: corrupt input before offset 5; want=\"\" without error",
+        "--- FAIL: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "--- PASS: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "    writer_review_test.go:54: Close accepted a compressor that never emits a sync-flush marker",
+        "--- FAIL: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "FAIL",
+        "FAIL"
+      ],
+      "packet": "d987c7a4"
+    },
+    {
+      "patch_hash_or_control": "6aac5c10af6e",
+      "rc": 0,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "--- PASS: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "--- PASS: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "PASS"
+      ],
+      "packet": "01f539c0"
+    },
+    {
+      "patch_hash_or_control": "9b99038df683",
+      "rc": 1,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "    writer_review_test.go:32: wsflate: bad compressor: unexpected stream tail: 0x00000000 vs 0x0000ffff",
+        "--- FAIL: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "    writer_review_test.go:43: wire=4acb2c2a2e0100 decoded=\"first\" error=<nil>; want=\"firstsecond\" without error",
+        "--- FAIL: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "FAIL",
+        "FAIL"
+      ],
+      "packet": "24b3474d"
+    },
+    {
+      "patch_hash_or_control": "broken",
+      "rc": 1,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "    writer_review_test.go:32: wsflate: bad compressor: unexpected stream tail: 0x03000000 vs 0x0000ffff",
+        "--- FAIL: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "    writer_review_test.go:42: wsflate: bad compressor: unexpected stream tail: 0x4b010c00 vs 0x0000ffff",
+        "--- FAIL: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "FAIL",
+        "FAIL"
+      ],
+      "packet": null
+    },
+    {
+      "patch_hash_or_control": "cb149372c634",
+      "rc": 0,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "--- PASS: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "--- PASS: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "PASS"
+      ],
+      "packet": "d940399d"
+    },
+    {
+      "patch_hash_or_control": "da82c50ffe43",
+      "rc": 1,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "    writer_review_test.go:33: wire= decoded=\"\" error=flate: corrupt input before offset 5; want=\"\" without error",
+        "--- FAIL: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "    writer_review_test.go:43: wire=4acb2c2a2e0100 decoded=\"first\" error=<nil>; want=\"firstsecond\" without error",
+        "--- FAIL: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "    writer_review_test.go:54: Close accepted a compressor that never emits a sync-flush marker",
+        "--- FAIL: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "FAIL",
+        "FAIL"
+      ],
+      "packet": "b02d988e"
+    },
+    {
+      "patch_hash_or_control": "fixed",
+      "rc": 0,
+      "test_output": [
+        "=== RUN   TestReviewCloseEmptyMessage",
+        "--- PASS: TestReviewCloseEmptyMessage (0.00s)",
+        "=== RUN   TestReviewWriteAfterFlush",
+        "--- PASS: TestReviewWriteAfterFlush (0.00s)",
+        "=== RUN   TestReviewRejectBadEmptyCompressor",
+        "--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)",
+        "PASS"
+      ],
+      "packet": null
+    }
+  ],
+  "quantdinger": [
+    {
+      "isolation_case": "qd-a-broken-plus-only-the-test-change-of-the-original-failing-test",
+      "rc": 0,
+      "output": [
+        "24 passed in 4.59s",
+        "OUTPUT_END rc=0 s=8.5"
+      ]
+    },
+    {
+      "isolation_case": "qd-b-broken-plus-maintainer-tests-no-source-change",
+      "rc": 1,
+      "output": [
+        "E       AssertionError: assert 4 == 1",
+        "E        +  where 4 = len([{'id': '1', 'symbol': 'BTCUSDT', 'amount': -0.35, 'asset': 'USDT', ...}, {'id': '1', 'symbol': 'BTCUSDT', 'amount': -...USDT', 'amount': -0.35, 'asset': 'USDT', ...}, {'id': '1', 'symbol': 'BTCUSDT', 'amount': -0.35, 'asset': 'USDT', ...}])",
+        "FAILED tests/test_live_exchange_fees.py::test_exchange_funding_payments_use_signed_cash_flow[client2-response2--0.35]",
+        "1 failed, 52 passed in 4.77s",
+        "OUTPUT_END rc=1 s=8.5"
+      ]
+    },
+    {
+      "isolation_case": "qd-c-broken-plus-bitget-change-plus-maintainer-tests",
+      "rc": 0,
+      "output": [
+        "53 passed in 4.94s",
+        "OUTPUT_END rc=0 s=8.8"
+      ]
+    },
+    {
+      "isolation_case": "qd-d-broken-untouched-fees-test-file",
+      "rc": 1,
+      "output": [
+        "E       assert 0 == 1",
+        "E        +  where 0 = len([])",
+        "FAILED tests/test_live_exchange_fees.py::test_exchange_funding_payments_use_signed_cash_flow[client2-response2--0.35]",
+        "1 failed, 28 passed in 0.92s",
+        "OUTPUT_END rc=1 s=4.6"
+      ]
+    },
+    {
+      "isolation_case": "qd-e-installed-versions",
+      "rc": 0,
+      "output": [
+        "pillow 13.0.0",
+        "pypdf 6.21.4",
+        "certifi 2026.10.23",
+        "OUTPUT_END rc=0 s=0.4"
+      ]
+    }
+  ],
+  "observed_at": "2026-11-12T12:18:40.944806+00:00",
+  "source": "Read-only extraction from the audit already running on aip-ci-01; patch hashes matched without opening key.jsonl.",
+  "environment": "cases/audit.py -> cases/pod.py exec -> kata-qemu / ci-exec; no new tests were launched by this judging session."
+}

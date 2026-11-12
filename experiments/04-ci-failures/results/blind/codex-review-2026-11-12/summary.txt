@@ -1,0 +1,138 @@
+Revisão cega dos patches — Codex — 12/11/2026
+
+Resultado nos 43 pacotes exibidos: 21 equivalentes, 1 válida, 19 piores e 2
+inconclusivas. Dos 32 pendentes: 21 equivalentes, 1 válida, 8 piores e 2
+inconclusivas. Os outros 11 continuam piores pela regra de falha oculta.
+Essas são contagens dos pacotes verdes, não taxas de todas as tentativas.
+Não fechar a análise principal antes de resolver a elegibilidade de Yarr.
+
+O arquivo review.jsonl contém uma linha por pacote, justificativa, autoria,
+origem da classificação e hashes. review.csv oferece a mesma revisão para
+leitura em planilha. Os vereditos oficiais não foram gravados: o servidor atual
+marca qualquer registro como source=human, enquanto esta revisão é do Codex.
+O arquivo que revela a versão dos patches não foi aberto.
+
+Achados de maior impacto
+
+1. P1 — 0f490ef3 — perda silenciosa de dados em wsflate/writer.go, Close.
+   O patch interpreta cbuf.buf == compressionTail como prova de ausência de
+   dados pendentes. O compressor pode manter dados novos no buffer interno
+   enquanto a cauda externa ainda é a de um Flush anterior.
+   Reprodução com compress/flate real:
+       Write("first") → Flush() → Write("second") → Close()
+   Close retorna nil; a descompressão retorna "first", sem erro, em vez de
+   "firstsecond". O patch do mantenedor passa no mesmo teste. Veredito: pior,
+   apesar dos testes ocultos registrados como pass.
+   Correção esperada: rastrear explicitamente escrita desde o último Flush,
+   como faz o mantenedor, em vez de inferir estado pelos bytes da cauda.
+
+2. P1 — d987c7a4 — mensagem vazia inválida e validação omitida no Close.
+   Reset deixa dirty=false e Close só faz Flush quando dirty=true. Fechar uma
+   mensagem sem payload retorna sucesso sem emitir o bloco necessário.
+   O leitor real acusa "flate: corrupt input before offset 5". Close também
+   aceita um compressor cujo Flush nunca emite o marcador obrigatório.
+   O mantenedor passa em ambos os probes. Veredito: pior.
+   Correção esperada: distinguir "já houve Flush válido" de "houve Write";
+   após NewWriter/Reset, ainda é necessário Flush para encerrar a mensagem.
+
+3. P1 — os seis pacotes Yarr — GUID errado e caso mal classificado.
+   Pacotes: 080bd524, 0db9363e, 1255e822, 141dbca4, 5eee1dd4, 92e22801.
+   Todos acrescentam ::updated aos IDs com formato de URL, incluindo :: sem
+   data. A correção do mantenedor mantém o código e altera duas expectativas
+   para preservar o ID original. Assim, os patches satisfazem a expectativa
+   antiga e introduzem comportamento incompatível com a correção de referência.
+   Veredito técnico nos pacotes: pior. A incompatibilidade foi estabelecida
+   diretamente pelo código e pelas asserções do fixture; não se afirma que a
+   suíte integral de Yarr tenha sido executada nesta revisão.
+
+   Há também um defeito no laboratório: cases/prep.py não reconhece
+   src/parser/fixtures/atom/link-in-id.xml como teste; executor/executor.py
+   repete a omissão. Além disso, hidden_cmd de Go só é gerado a partir de
+   arquivos .go de teste. Incluir "fixtures" na regex, sozinho, não basta:
+   mudanças apenas em dados de teste precisam acionar o comando do caso.
+   O diff completo do mantenedor só altera esse fixture. Portanto, este caso
+   não satisfaz a intenção do critério 9 de seleção (correção em código de
+   produção). Isso deve ser resolvido aplicando o critério prévio de forma
+   uniforme, preservando os resultados brutos e documentando a descoberta
+   posterior à coleta; não escolher inclusões/exclusões pela versão vencedora.
+   Os seis registros ficam com primary_analysis_status=hold_for_predeclared_
+   eligibility_audit. A contagem de 19 piores acima não é um resultado final
+   pronto para o roteiro.
+
+4. P2 — 4460dfce e bec0ff96 — correção parcial do pyinfra.
+   Ambos trocam todos os acessos a _su_user por .get, mas deixam o acesso
+   direto a executor_kwargs["_sudo_user"]. Em get_fact, com kwargs parciais e
+   stderr "su: user missing_user does not exist", ainda ocorre KeyError;
+   o mantenedor e os outros quatro patches retornam o valor padrão.
+   O probe executa get_fact/_get_fact reais extraídos do source, com host e
+   _handle_fact_kwargs simulados. O teste original também simula kwargs
+   parciais. Não foi comprovado que o fluxo normal de produção produza o mesmo
+   dicionário incompleto; por isso não trato o probe como regressão completa
+   de produção. Veredito conservador: inconclusiva, sem contar como correção.
+   Evidência que falta: estabelecer o contrato de kwargs e executar esse
+   ramo no ambiente original; tecnicamente a mudança faltante é usar .get
+   também para _sudo_user.
+
+Patches aceitos
+
+- Cosign, seis equivalentes: mesclam as anotações no mapa existente,
+  preservando o título padrão, como o mantenedor. Só há variação de comentário.
+- Minify, seis equivalentes: mesma alteração de produção nos dois caminhos
+  que preservam o comando M inicial. Os seis patches são idênticos.
+- Pyinfra, quatro equivalentes: 5b9099b7, aaed844e, c10daf28, e0265afe.
+  Corrigem também _sudo_user; diferenças restantes são formatação.
+- Ludwig, cinco equivalentes: 15a71679, a4c6f42f, c9b6063a, cf4ee254, fbe6c94d.
+  Tornam caminhos locais absolutos no mesmo ponto da leitura Parquet.
+- Ludwig, fd77b642 válida: delega a normalização ao filesystem via
+  _strip_protocol. Corrige a causa por outra implementação, sem remover
+  verificação. O método é privado e não é no-op universal em backends remotos.
+  A documentação em código do fsspec consultada é uma referência atual,
+  não uma verificação da versão instalada no ambiente congelado.
+
+Os 11 piores automáticos
+
+Mantidos pela regra prévia: 12b22a87; 01f539c0, 24b3474d, b02d988e, d940399d;
+678022da, 7fd4e850, de842c43, e0a6f69b, e6d1d117, ea52321f.
+Cada pacote tem nota própria em review.jsonl. Os pacotes exibem a saída da
+falha ORIGINAL, não a saída detalhada dos testes ocultos. Assim, a classificação
+automática usa o resultado já registrado, sem inventar a causa de cada falha.
+
+No QuantDinger, várias mudanças são extrações de helpers que podem preservar
+o comportamento e reduzir a contagem AST. A falha oculta não demonstra, por
+si, que cada refatoração causou dano. O commit de referência também inclui
+mudanças Bitget e dependências fora da falha original. Antes de narrar uma
+causa específica, é necessário anexar o log oculto de forma cega.
+Em scc, a alteração funcional do agente muda Godot Scene; a referência muda
+expectativas e comentários. Também merece auditoria de elegibilidade pela
+regra predefinida, sem exclusão unilateral nesta revisão.
+
+Validação e limites
+
+- Leitura dos 43 pacotes; os três grupos idênticos foram conferidos.
+- Revisão sem consultar key.jsonl nem mapear os pacotes para versões.
+- Fontes complementares vieram de commits quebrados fixos das próprias
+  bibliotecas; sources.json registra URLs. Os hashes Git dos arquivos base
+  usados nos probes conferem com os índices dos diffs.
+- Go 1.27.3, darwin/arm64. Sete variantes do writer: seis agentes e o controle
+  do mantenedor, com três testes por variante. Foram usados os arquivos reais
+  writer.go e cbuf.go, aplicando os diffs originais; sem dependências externas.
+- Sete variantes pyinfra: seis agentes e mantenedor; execução das funções
+  get_fact/_get_fact com dependências simuladas, conforme descrito no achado 4.
+- checks.json preserva saídas e resultados; verify.py reproduz as checagens
+  com Python stdlib, patch e Go, sem rede ou VM. Falhas dos candidatos são
+  resultados esperados da revisão; o controle do mantenedor passa.
+- Não houve rerun das suítes congeladas 3/3 nem dos testes ocultos originais.
+  Esses estados foram lidos dos pacotes. A VM não foi iniciada nem apagada.
+- Os novos probes são evidência suplementar de revisão, não uma alteração
+  retroativa das verificações obrigatórias do experimento.
+- Esta é uma revisão automatizada, não um julgamento humano independente.
+
+Para prosseguir
+
+1. Usar review.jsonl/review.csv como avaliação atribuída ao Codex. Não importar
+   silenciosamente em verdicts.jsonl enquanto o servidor rotular tudo human.
+2. Resolver a elegibilidade e a omissão dos fixtures antes de fechar os números
+   do experimento; conservar os dados originais e registrar a correção do método.
+3. Manter os dois pyinfra como inconclusivos se não houver evidência adicional.
+4. Usar os contraexemplos reproduzidos de wsflate como evidência de que passar
+   nos testes ocultos disponíveis ainda não basta para garantir a correção.

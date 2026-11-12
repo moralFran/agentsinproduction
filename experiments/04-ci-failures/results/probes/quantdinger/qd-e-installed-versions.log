@@ -1,0 +1,8 @@
+NOTES 
+COMMAND python -c "import importlib.metadata as m; [print(n, m.version(n)) for n in ('pillow','pypdf','certifi')]"
+OUTPUT_BEGIN
+pillow 13.0.0
+pypdf 6.21.4
+certifi 2026.10.23
+
+OUTPUT_END rc=0 s=0.4

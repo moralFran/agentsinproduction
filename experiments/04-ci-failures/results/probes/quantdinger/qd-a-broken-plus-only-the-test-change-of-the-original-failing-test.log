@@ -1,0 +1,7 @@
+NOTES patch applied rc=0 
+COMMAND python -m pytest -q -p no:cacheprovider tests/test_live_order_support.py
+OUTPUT_BEGIN
+........................                                                 [100%]
+24 passed in 4.59s
+
+OUTPUT_END rc=0 s=8.5

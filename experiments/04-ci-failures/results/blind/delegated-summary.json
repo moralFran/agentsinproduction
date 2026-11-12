@@ -1,0 +1,24 @@
+{
+  "verified_at": "2026-11-12T12:19:07.966610+00:00",
+  "reviewer": "Codex",
+  "source": "codex_delegated",
+  "user_delegated": true,
+  "delegated_count": 26,
+  "delegated_tally": {
+    "equivalente": 21,
+    "valida": 1,
+    "inconclusiva": 2,
+    "pior": 2
+  },
+  "page_tally_at_completion": {
+    "pior": 12,
+    "equivalente": 21,
+    "valida": 1,
+    "inconclusiva": 2,
+    "fora": 7
+  },
+  "pending": 0,
+  "vm_evidence": "delegated-audit-evidence.json",
+  "key_opened": false,
+  "quantdinger_note": "Automatic verdicts currently remain governed by the separate eligibility and hidden-test audit; no relabeling of those six was performed by this delegation."
+}

@@ -1,0 +1,176 @@
+{
+ "main_cases": [
+  "alicebob/miniredis",
+  "gobwas/ws",
+  "ludwig-ai/ludwig",
+  "mark3labs/mcp-go",
+  "pyinfra-dev/pyinfra",
+  "rmax/scrapy-redis",
+  "sigstore/cosign",
+  "tdewolff/minify"
+ ],
+ "table": {
+  "v1": {
+   "ainda vermelho": 7,
+   "valida": 1,
+   "equivalente": 10,
+   "desistiu": 2,
+   "pior": 3,
+   "inconclusiva": 1
+  },
+  "v2": {
+   "ainda vermelho": 6,
+   "equivalente": 11,
+   "desistiu": 3,
+   "pior": 3,
+   "inconclusiva": 1
+  }
+ },
+ "per_case": {
+  "alicebob/miniredis": {
+   "v1": [
+    "ainda vermelho",
+    "ainda vermelho",
+    "ainda vermelho"
+   ],
+   "v2": [
+    "ainda vermelho",
+    "ainda vermelho",
+    "ainda vermelho"
+   ]
+  },
+  "gobwas/ws": {
+   "v1": [
+    "pior",
+    "pior",
+    "pior"
+   ],
+   "v2": [
+    "pior",
+    "pior",
+    "pior"
+   ]
+  },
+  "ludwig-ai/ludwig": {
+   "v1": [
+    "valida",
+    "equivalente",
+    "equivalente"
+   ],
+   "v2": [
+    "equivalente",
+    "equivalente",
+    "equivalente"
+   ]
+  },
+  "mark3labs/mcp-go": {
+   "v1": [
+    "ainda vermelho",
+    "ainda vermelho",
+    "ainda vermelho"
+   ],
+   "v2": [
+    "ainda vermelho",
+    "ainda vermelho",
+    "ainda vermelho"
+   ]
+  },
+  "pyinfra-dev/pyinfra": {
+   "v1": [
+    "equivalente",
+    "equivalente",
+    "inconclusiva"
+   ],
+   "v2": [
+    "equivalente",
+    "inconclusiva",
+    "equivalente"
+   ]
+  },
+  "rmax/scrapy-redis": {
+   "v1": [
+    "desistiu",
+    "desistiu",
+    "ainda vermelho"
+   ],
+   "v2": [
+    "desistiu",
+    "desistiu",
+    "desistiu"
+   ]
+  },
+  "sigstore/cosign": {
+   "v1": [
+    "equivalente",
+    "equivalente",
+    "equivalente"
+   ],
+   "v2": [
+    "equivalente",
+    "equivalente",
+    "equivalente"
+   ]
+  },
+  "tdewolff/minify": {
+   "v1": [
+    "equivalente",
+    "equivalente",
+    "equivalente"
+   ],
+   "v2": [
+    "equivalente",
+    "equivalente",
+    "equivalente"
+   ]
+  }
+ },
+ "cost_all": {
+  "v1": 2.4353434,
+  "v2": 2.5593418
+ },
+ "cost_main": {
+  "v1": 1.618343,
+  "v2": 1.6919407
+ },
+ "pior_kind": {
+  "v1": {
+   "falhou nos testes ocultos": 3
+  },
+  "v2": {
+   "falhou nos testes ocultos": 1,
+   "passou em tudo, julgado pior": 2
+  }
+ },
+ "side": {
+  "OpenByteInc/QuantDinger": {
+   "v1": {
+    "green_fails_hidden": 3
+   },
+   "v2": {
+    "green_fails_hidden": 3
+   }
+  },
+  "boyter/scc": {
+   "v1": {
+    "budget_exhausted": 3
+   },
+   "v2": {
+    "budget_exhausted": 2,
+    "green_fails_hidden": 1
+   }
+  },
+  "nkanaev/yarr": {
+   "v1": {
+    "green_no_hidden_tests": 3
+   },
+   "v2": {
+    "green_no_hidden_tests": 3
+   }
+  }
+ },
+ "verdict_sources": {
+  "rule": 4,
+  "human": 5,
+  "codex_delegated": 21
+ }
+}

@@ -1,0 +1,1340 @@
+NOTES patch applied rc=0  | maintainer test changes applied rc=0 
+COMMAND go test -count=1 ./processor github.com/boyter/scc/v4/processor
+OUTPUT_BEGIN
+ ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16237 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16238 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16239 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16240 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16241 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16242 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16243 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16244 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16245 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16246 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16247 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16248 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16249 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16250 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16251 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16252 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16253 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16254 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16255 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16256 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16257 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16258 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16259 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16260 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16261 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16262 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16263 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16264 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16265 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16266 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16267 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16268 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16269 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16270 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16271 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16272 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16273 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16274 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16275 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16276 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16277 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16278 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16279 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16280 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16281 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16282 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16283 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16284 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16285 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16286 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16287 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16288 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16289 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16290 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16291 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16292 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16293 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16294 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16295 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16296 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16297 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16298 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16299 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16300 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16301 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16302 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16303 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16304 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16305 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16306 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16307 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16308 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16309 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16310 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16311 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16312 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16313 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16314 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16315 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16316 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16317 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16318 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16319 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16320 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16321 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16322 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16323 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16324 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16325 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16326 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16327 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16328 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16329 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16330 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16331 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16332 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16333 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16334 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16335 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16336 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16337 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16338 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16339 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16340 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16341 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16342 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16343 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16344 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16345 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16346 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16347 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16348 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16349 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16350 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16351 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16352 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16353 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16354 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16355 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16356 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16357 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16358 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16359 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16360 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16361 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16362 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16363 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16364 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16365 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16366 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16367 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16368 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16369 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16370 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16371 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16372 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16373 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16374 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16375 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16376 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16377 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16378 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16379 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16380 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16381 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16382 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16383 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16384 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16385 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16386 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16387 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16388 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16389 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16390 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16391 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16392 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16393 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16394 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16395 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16396 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16397 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16398 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16399 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16400 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16401 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16402 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16403 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16404 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16405 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16406 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16407 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16408 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16409 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16410 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16411 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16412 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16413 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16414 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16415 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16416 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16417 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16418 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16419 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16420 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16421 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16422 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16423 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16424 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16425 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16426 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16427 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16428 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16429 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16430 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16431 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16432 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16433 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16434 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16435 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16436 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16437 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16438 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16439 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16440 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16441 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16442 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16443 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16444 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16445 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16446 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16447 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16448 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16449 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16450 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16451 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16452 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16453 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16454 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16455 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16456 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16457 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16458 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16459 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16460 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16461 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16462 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16463 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16464 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16465 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16466 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16467 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16468 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16469 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16470 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16471 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16472 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16473 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16474 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16475 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16476 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16477 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16478 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16479 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16480 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16481 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16482 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16483 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16484 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16485 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16486 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16487 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16488 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16489 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16490 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16491 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16492 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16493 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16494 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16495 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16496 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16497 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16498 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16499 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16500 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16501 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16502 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16503 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16504 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16505 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16506 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16507 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16508 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16509 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16510 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16511 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16512 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16513 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16514 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16515 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16516 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16517 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16518 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16519 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16520 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16521 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16522 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16523 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16524 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16525 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16526 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16527 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16528 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16529 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16530 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16531 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16532 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16533 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16534 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16535 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16536 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16537 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16538 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16539 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16540 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16541 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16542 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16543 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16544 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16545 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16546 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16547 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16548 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16549 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16550 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16551 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16552 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16553 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16554 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16555 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16556 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16557 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16558 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16559 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16560 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16561 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16562 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16563 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16564 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16565 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16566 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16567 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16568 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16569 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16570 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16571 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16572 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16573 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16574 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16575 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16576 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16577 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16578 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16579 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16580 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16581 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16582 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16583 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16584 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16585 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16586 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16587 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16588 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16589 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16590 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16591 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16592 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16593 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16594 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16595 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16596 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16597 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16598 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16599 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16600 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16601 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16602 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16603 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16604 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16605 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16606 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16607 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16608 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16609 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16610 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16611 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16612 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16613 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16614 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16615 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16616 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16617 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16618 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16619 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16620 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16621 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16622 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16623 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16624 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16625 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16626 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16627 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16628 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16629 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16630 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16631 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16632 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16633 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16634 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16635 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16636 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16637 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16638 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16639 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16640 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16641 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16642 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16643 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16644 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16645 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16646 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16647 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16648 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16649 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16650 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16651 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16652 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16653 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16654 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16655 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16656 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16657 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16658 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16659 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16660 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16661 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16662 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16663 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16664 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16665 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16666 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16667 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16668 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16669 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16670 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16671 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16672 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16673 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16674 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16675 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16676 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16677 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16678 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16679 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16680 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16681 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16682 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16683 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16684 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16685 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16686 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16687 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16688 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16689 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16690 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16691 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16692 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16693 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16694 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16695 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16696 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16697 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16698 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16699 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16700 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16701 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16702 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16703 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16704 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16705 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16706 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16707 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16708 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16709 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16710 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16711 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16712 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16713 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16714 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16715 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16716 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16717 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16718 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16719 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16720 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16721 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16722 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16723 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16724 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16725 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16726 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16727 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16728 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16729 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16730 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16731 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16732 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16733 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16734 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16735 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16736 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16737 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16738 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16739 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16740 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16741 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16742 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16743 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16744 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16745 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16746 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16747 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16748 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16749 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16750 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16751 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16752 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16753 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16754 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16755 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16756 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16757 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16758 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16759 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16760 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16761 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16762 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16763 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16764 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16765 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16766 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16767 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16768 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16769 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16770 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16771 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16772 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16773 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16774 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16775 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16776 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16777 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16778 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16779 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16780 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16781 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16782 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16783 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16784 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16785 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16786 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16787 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16788 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16789 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16790 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16791 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16792 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16793 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16794 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16795 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16796 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16797 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16798 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16799 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16800 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16801 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16802 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16803 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16804 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16805 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16806 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16807 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16808 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16809 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16810 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16811 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16812 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16813 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16814 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16815 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16816 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16817 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16818 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16819 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16820 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16821 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16822 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16823 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16824 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16825 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16826 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16827 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16828 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16829 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16830 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16831 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16832 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16833 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16834 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16835 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16836 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16837 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16838 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16839 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16840 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16841 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16842 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16843 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16844 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16845 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16846 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16847 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16848 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16849 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16850 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16851 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16852 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16853 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16854 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16855 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16856 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16857 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16858 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16859 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16860 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16861 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16862 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16863 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16864 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16865 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16866 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16867 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16868 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16869 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16870 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16871 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16872 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16873 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16874 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16875 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16876 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16877 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16878 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16879 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16880 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16881 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16882 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16883 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16884 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16885 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16886 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16887 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16888 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16889 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16890 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16891 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16892 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16893 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16894 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16895 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16896 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16897 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16898 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16899 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16900 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16901 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16902 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16903 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16904 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16905 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16906 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16907 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16908 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16909 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16910 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16911 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16912 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16913 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16914 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16915 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16916 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16917 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16918 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16919 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16920 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16921 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16922 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16923 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16924 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16925 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16926 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16927 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16928 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16929 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16930 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16931 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16932 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16933 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16934 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16935 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16936 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16937 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16938 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16939 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16940 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16941 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16942 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16943 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16944 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16945 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16946 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16947 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16948 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16949 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16950 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16951 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16952 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16953 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16954 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16955 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16956 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16957 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16958 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16959 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16960 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16961 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16962 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16963 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16964 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16965 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16966 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16967 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16968 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16969 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16970 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16971 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16972 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16973 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16974 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16975 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16976 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16977 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16978 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16979 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16980 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16981 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16982 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16983 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16984 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16985 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16986 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16987 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16988 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16989 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16990 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16991 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16992 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16993 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16994 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16995 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16996 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16997 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16998 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 16999 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17000 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17001 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17002 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17003 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17004 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17005 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17006 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17007 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17008 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17009 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17010 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17011 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17012 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17013 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17014 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17015 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17016 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17017 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17018 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17019 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17020 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17021 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17022 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17023 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17024 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17025 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17026 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17027 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17028 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17029 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17030 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17031 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17032 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17033 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17034 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17035 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17036 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17037 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17038 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17039 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17040 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17041 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17042 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17043 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17044 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17045 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17046 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17047 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17048 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17049 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17050 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17051 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17052 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17053 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17054 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17055 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17056 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17057 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17058 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17059 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17060 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17061 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17062 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17063 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17064 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17065 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17066 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17067 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17068 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17069 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17070 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17071 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17072 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17073 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17074 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17075 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17076 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17077 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17078 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17079 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17080 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17081 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17082 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17083 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17084 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17085 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17086 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17087 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17088 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17089 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17090 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17091 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17092 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17093 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17094 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17095 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17096 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17097 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17098 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17099 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17100 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17101 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17102 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17103 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17104 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17105 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17106 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17107 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17108 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17109 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17110 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17111 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17112 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17113 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17114 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17115 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17116 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17117 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17118 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17119 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17120 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17121 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17122 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17123 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17124 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17125 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17126 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17127 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17128 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17129 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17130 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17131 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17132 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17133 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17134 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17135 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17136 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17137 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17138 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17139 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17140 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17141 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17142 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17143 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17144 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17145 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17146 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17147 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17148 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17149 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17150 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17151 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17152 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17153 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17154 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17155 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17156 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17157 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17158 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17159 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17160 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17161 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17162 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17163 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17164 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17165 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17166 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17167 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17168 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17169 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17170 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17171 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17172 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17173 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17174 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17175 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17176 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17177 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17178 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17179 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17180 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17181 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17182 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17183 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17184 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17185 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17186 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17187 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17188 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17189 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17190 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17191 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17192 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17193 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17194 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17195 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17196 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17197 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17198 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17199 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17200 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17201 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17202 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17203 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17204 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17205 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17206 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17207 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17208 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17209 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17210 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17211 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17212 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: constants.go line 17213 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:31Z: nanoseconds process: constants.go: 214826246
+DEBUG 2026-11-12T12:13:31Z: milliseconds reading files into memory: 287
+DEBUG 2026-11-12T12:13:31Z: milliseconds to build formatted string: 0
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Language                    Files        Lines     Blanks   Comments         Code Complexity Complexity/Lines
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Go                            134       58,645      5,033      6,739       46,873      6,544            13.96
+Go Template                     1          574         34          0          540         17             3.15
+HTML                            1          606         31          0          575          0             0.00
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Total                         136       59,825      5,098      6,739       47,988      6,561            13.67
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Estimated Cost to Develop (organic) 1,573,370
+Estimated Schedule Effort (organic) 16.34 months
+Estimated People Required (organic) 8.55
+Processed 1,660,109 bytes, 1.660 megabytes (SI)
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+TRACE 2026-11-12T12:13:31Z: nanoseconds build extension to language: 167739
+TRACE 2026-11-12T12:13:31Z: milliseconds build language features: 261
+DEBUG 2026-11-12T12:13:31Z: set to count extension: boyter as language C Header
+TRACE 2026-11-12T12:13:31Z: nanoseconds build extension to language: 303361
+TRACE 2026-11-12T12:13:32Z: milliseconds build language features: 515
+DEBUG 2026-11-12T12:13:32Z: set to count extension: BoYtER as language C Header
+TRACE 2026-11-12T12:13:32Z: nanoseconds build extension to language: 283276
+TRACE 2026-11-12T12:13:32Z: milliseconds build language features: 539
+DEBUG 2026-11-12T12:13:32Z: set to count extension: boyter as language Jinja
+TRACE 2026-11-12T12:13:32Z: nanoseconds build extension to language: 235130
+TRACE 2026-11-12T12:13:33Z: milliseconds build language features: 548
+DEBUG 2026-11-12T12:13:33Z: set to count extension: boyter as language Jinja
+DEBUG 2026-11-12T12:13:33Z: set to count extension: retyob as language Java
+TRACE 2026-11-12T12:13:33Z: nanoseconds build extension to language: 347819
+DEBUG 2026-11-12T12:13:33Z: set to count path matching "*_spec.rb" as new language Ruby Spec based on Ruby
+TRACE 2026-11-12T12:13:33Z: milliseconds build language features: 545
+TRACE 2026-11-12T12:13:33Z: nanoseconds build extension to language: 296314
+ERROR 2026-11-12T12:13:33Z: ignoring count-as-pattern rule for "Ruby Spec": base language "Nonexistent" is not a known language or extension
+TRACE 2026-11-12T12:13:34Z: milliseconds build language features: 550
+TRACE 2026-11-12T12:13:34Z: nanoseconds build extension to language: 328212
+TRACE 2026-11-12T12:13:34Z: configured to lazy load language features
+TRACE 2026-11-12T12:13:34Z: nanoseconds to build language Go features: 2262075
+TRACE 2026-11-12T12:13:34Z: example.txt line 1 ended with state: 1: counted as comment
+TRACE 2026-11-12T12:13:34Z: example.txt line 2 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 3 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:34Z: example.txt line 4 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 6 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: nanoseconds process: example.txt: 37904
+TRACE 2026-11-12T12:13:34Z: example.txt line 1 ended with state: 1: counted as comment
+TRACE 2026-11-12T12:13:34Z: example.txt line 2 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 3 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:34Z: example.txt line 4 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 6 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: example.txt line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:34Z: nanoseconds process: example.txt: 23661
+TRACE 2026-11-12T12:13:34Z: nanoseconds build extension to language: 239184
+TRACE 2026-11-12T12:13:34Z: configured to lazy load language features
+TRACE 2026-11-12T12:13:34Z: nanoseconds build extension to language: 218568
+TRACE 2026-11-12T12:13:34Z: milliseconds build language features: 549
+TRACE 2026-11-12T12:13:34Z: nanoseconds build extension to language: 300819
+TRACE 2026-11-12T12:13:35Z: milliseconds build language features: 540
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/b.go: 1785694
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/b.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/b.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/b.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: nanoseconds process: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/b.go: 26251
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go: 2891293
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go line 6 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: nanoseconds process: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/a.go: 159244
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/config: 1651172
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/HEAD: 2067629
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/refs/heads/master: 1037864
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/index: 3483175
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/03/735ec2c55f34895789bc1fd0b5c6f9cab5d12e: 909506
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/25/674077ed3a7f02ef12777c02eb42c0910f534d: 1132870
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/60/6d074d0f99978ee665672f45c1b7e62a8bd4a1: 1190865
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/ca/dfdfca80cd4713073b677edb6f4365e73d230d: 1654219
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/0f/fb20b1bbdc1fcdc3d83855e5f3fda6bffa038c: 1764086
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/cd/14d61f85f13398d2f6083cd275e2dede167e4c: 727914
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/b0/8c2c86e1eb446f2c590188d54d13d9a4a3b3bf: 704891
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/0a/81c96e8497aa715c223d0ccd526306e8ebc42a: 1502362
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/d5/b090bc0e61aca181329327ca8eb19e8b35b054: 738196
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnFixtureRepo168392725/001/.git/objects/5c/2923a7910e51b2ee86c480ef72b8e04675f564: 415254
+DEBUG 2026-11-12T12:13:35Z: milliseconds reading files into memory: 15
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: b.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 6 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: b.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 6 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: b.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 6 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: b.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 6 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: b.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: b.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: a.go line 6 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: a.go line 7 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: nanoseconds build extension to language: 180940
+TRACE 2026-11-12T12:13:35Z: milliseconds build language features: 52
+TRACE 2026-11-12T12:13:35Z: nanoseconds read into memory: /tmp/TestCollectReportDataOnNonGitDir3564678908/001/main.go: 1745221
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnNonGitDir3564678908/001/main.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnNonGitDir3564678908/001/main.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:35Z: /tmp/TestCollectReportDataOnNonGitDir3564678908/001/main.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:35Z: nanoseconds process: /tmp/TestCollectReportDataOnNonGitDir3564678908/001/main.go: 34154
+DEBUG 2026-11-12T12:13:35Z: milliseconds reading files into memory: 2
+TRACE 2026-11-12T12:13:35Z: nanoseconds build extension to language: 209661
+TRACE 2026-11-12T12:13:35Z: milliseconds build language features: 34
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestCollectReportDataRestoresFlags665427678/001/main.go: 658311
+TRACE 2026-11-12T12:13:36Z: /tmp/TestCollectReportDataRestoresFlags665427678/001/main.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: /tmp/TestCollectReportDataRestoresFlags665427678/001/main.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: /tmp/TestCollectReportDataRestoresFlags665427678/001/main.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: nanoseconds process: /tmp/TestCollectReportDataRestoresFlags665427678/001/main.go: 154337
+DEBUG 2026-11-12T12:13:36Z: milliseconds reading files into memory: 3
+TRACE 2026-11-12T12:13:36Z: nanoseconds build extension to language: 198961
+TRACE 2026-11-12T12:13:36Z: milliseconds build language features: 36
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestCollectReportDataHonoursReportSkip1819454030/001/main.go: 2398388
+TRACE 2026-11-12T12:13:36Z: /tmp/TestCollectReportDataHonoursReportSkip1819454030/001/main.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: /tmp/TestCollectReportDataHonoursReportSkip1819454030/001/main.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: /tmp/TestCollectReportDataHonoursReportSkip1819454030/001/main.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: nanoseconds process: /tmp/TestCollectReportDataHonoursReportSkip1819454030/001/main.go: 60101
+DEBUG 2026-11-12T12:13:36Z: milliseconds reading files into memory: 3
+TRACE 2026-11-12T12:13:36Z: nanoseconds build extension to language: 283507
+TRACE 2026-11-12T12:13:36Z: milliseconds build language features: 33
+TRACE 2026-11-12T12:13:36Z: nanoseconds build extension to language: 433820
+TRACE 2026-11-12T12:13:36Z: milliseconds build language features: 38
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/a.go: 2629371
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: nanoseconds process: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/a.go: 51163
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/config: 1018277
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/HEAD: 2428538
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/index: 4576673
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/refs/heads/master: 3788830
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/objects/ba/8e69f554c0da7eaeda552492c71654f7f887ab: 2379423
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/objects/25/674077ed3a7f02ef12777c02eb42c0910f534d: 3305121
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/objects/60/6d074d0f99978ee665672f45c1b7e62a8bd4a1: 1958468
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/objects/b0/8c2c86e1eb446f2c590188d54d13d9a4a3b3bf: 3972943
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/objects/87/ff22b753ba5a87a8a592f73db5e7f5356c53e3: 3533633
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportEmbedsShareCardMeta973252571/001/.git/objects/5c/2923a7910e51b2ee86c480ef72b8e04675f564: 3908784
+DEBUG 2026-11-12T12:13:36Z: milliseconds reading files into memory: 19
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 5 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: a.go line 4 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: a.go line 5 ended with state: 1: counted as code
+Report written to /tmp/TestRenderReportEmbedsShareCardMeta973252571/002/report.html
+TRACE 2026-11-12T12:13:36Z: nanoseconds build extension to language: 165783
+TRACE 2026-11-12T12:13:36Z: milliseconds build language features: 42
+TRACE 2026-11-12T12:13:36Z: nanoseconds read into memory: /tmp/TestRenderReportSkipCardDropsImageTags3198665083/001/main.go: 937813
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportSkipCardDropsImageTags3198665083/001/main.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportSkipCardDropsImageTags3198665083/001/main.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:36Z: /tmp/TestRenderReportSkipCardDropsImageTags3198665083/001/main.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:36Z: nanoseconds process: /tmp/TestRenderReportSkipCardDropsImageTags3198665083/001/main.go: 36723
+DEBUG 2026-11-12T12:13:36Z: milliseconds reading files into memory: 1
+Report written to /tmp/TestRenderReportSkipCardDropsImageTags3198665083/002/report.html
+TRACE 2026-11-12T12:13:36Z: nanoseconds build extension to language: 178999
+TRACE 2026-11-12T12:13:36Z: milliseconds build language features: 42
+TRACE 2026-11-12T12:13:37Z: nanoseconds read into memory: /tmp/TestNoCocomoEquivalentToReportSkipCocomo918299093/001/main.go: 580822
+TRACE 2026-11-12T12:13:37Z: /tmp/TestNoCocomoEquivalentToReportSkipCocomo918299093/001/main.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:37Z: /tmp/TestNoCocomoEquivalentToReportSkipCocomo918299093/001/main.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:37Z: /tmp/TestNoCocomoEquivalentToReportSkipCocomo918299093/001/main.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:37Z: nanoseconds process: /tmp/TestNoCocomoEquivalentToReportSkipCocomo918299093/001/main.go: 56631
+DEBUG 2026-11-12T12:13:37Z: milliseconds reading files into memory: 0
+DEBUG 2026-11-12T12:13:37Z: milliseconds reading files into memory: 1794485617080
+TRACE 2026-11-12T12:13:37Z: nanoseconds build extension to language: 340164
+TRACE 2026-11-12T12:13:37Z: milliseconds build language features: 29
+TRACE 2026-11-12T12:13:37Z: nanoseconds read into memory: /tmp/TestReportImplicitlyEnablesULOCAndLineLength2318231269/001/main.go: 823831
+TRACE 2026-11-12T12:13:37Z: /tmp/TestReportImplicitlyEnablesULOCAndLineLength2318231269/001/main.go line 1 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:37Z: /tmp/TestReportImplicitlyEnablesULOCAndLineLength2318231269/001/main.go line 2 ended with state: 1: counted as blank
+TRACE 2026-11-12T12:13:37Z: /tmp/TestReportImplicitlyEnablesULOCAndLineLength2318231269/001/main.go line 3 ended with state: 1: counted as code
+TRACE 2026-11-12T12:13:37Z: nanoseconds process: /tmp/TestReportImplicitlyEnablesULOCAndLineLength2318231269/001/main.go: 66168
+DEBUG 2026-11-12T12:13:37Z: milliseconds reading files into memory: 1
+TRACE 2026-11-12T12:13:37Z: nanoseconds build extension to language: 123502
+TRACE 2026-11-12T12:13:37Z: milliseconds build language features: 37
+TRACE 2026-11-12T12:13:37Z: Testing print trace
+DEBUG 2026-11-12T12:13:37Z: Testing print debug
+WARN 2026-11-12T12:13:37Z: Testing print warn
+ERROR 2026-11-12T12:13:37Z: Testing print error
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z: BOM found for file  indicating it is not ASCII/UTF-8 and may be counted incorrectly or ignored as a binary file
+WARN 2026-11-12T12:13:41Z:  identified as minified/generated with average line byte length of 256 >= 255
+WARN 2026-11-12T12:13:41Z:  identified as minified/generated with average line byte length of 256 >= 255
+WARN 2026-11-12T12:13:41Z:  identified as isGenerated with heading comment
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+WARN 2026-11-12T12:13:42Z: UTF-8 BOM found for file  skipping 3 bytes
+FAIL
+FAIL	github.com/boyter/scc/v4/processor	33.010s
+FAIL
+
+OUTPUT_END rc=1 s=131.8

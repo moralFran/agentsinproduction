@@ -1,0 +1,15 @@
+diff --git a/pkg/oci/remote/write.go b/pkg/oci/remote/write.go
+index 8aa9cee..63dfb10 100644
+--- a/pkg/oci/remote/write.go
++++ b/pkg/oci/remote/write.go
+@@ -362,7 +362,9 @@ func WriteReferrer(d name.Digest, artifactType string, layers []v1.Layer, annota
+ 			Annotations() (map[string]string, error)
+ 		}); ok {
+ 			if ann, err := al.Annotations(); err == nil && len(ann) > 0 {
+-				layerDescriptors[i].Annotations = ann
++				for k, v := range ann {
++					layerDescriptors[i].Annotations[k] = v
++				}
+ 			}
+ 		}
+ 	}

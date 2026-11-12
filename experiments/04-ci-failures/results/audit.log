@@ -1,0 +1,26 @@
+v1-a352a7c0-r2: rc=none
+v1-a352a7c0-r1: rc=none
+v1-e88f0806-r1: rc=none
+v1-a352a7c0-r3: rc=1
+v2-a352a7c0-r1: rc=1
+v1-e88f0806-r3: rc=1
+v1-e88f0806-r2: rc=1
+v2-a352a7c0-r3: rc=1
+v2-a352a7c0-r2: rc=1
+v2-e88f0806-r1: rc=1
+qd-a-broken-plus-only-the-test-change-of-the-original-failing-test: rc=0
+qd-c-broken-plus-bitget-change-plus-maintainer-tests: rc=0
+qd-b-broken-plus-maintainer-tests-no-source-change: rc=1
+qd-e-installed-versions: rc=0
+qd-d-broken-untouched-fees-test-file: rc=1
+broken: rc=1
+v2-d735ebc1-r3: rc=1
+fixed: rc=0
+v1-e88f0806-r1: rc=0
+scc-a-broken-plus-maintainer-tests-no-source-change: rc=0
+v1-e88f0806-r2: rc=0
+v2-e88f0806-r1: rc=1
+v1-e88f0806-r3: rc=1
+v2-e88f0806-r2: rc=1
+v2-e88f0806-r3: rc=1
+AUDIT_DONE 25 jobs

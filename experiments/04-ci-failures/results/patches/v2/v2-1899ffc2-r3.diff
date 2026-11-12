@@ -1,0 +1,22 @@
+diff --git a/ludwig/data/dataset/ray.py b/ludwig/data/dataset/ray.py
+index 19480b9..561f2b6 100644
+--- a/ludwig/data/dataset/ray.py
++++ b/ludwig/data/dataset/ray.py
+@@ -25,6 +25,7 @@ from typing import Any
+ 
+ import numpy as np
+ import pandas as pd
++from fsspec.implementations.local import LocalFileSystem
+ from pyarrow.fs import FSSpecHandler, PyFileSystem
+ from ray.data import Dataset as RayNativeDataset
+ from ray.data import read_parquet
+@@ -77,6 +78,9 @@ def _make_lazy_decode_batch_fn(col: str, decode_fn):
+ 
+ def read_remote_parquet(path: str):
+     fs, path = get_fs_and_path(path)
++    if isinstance(fs, LocalFileSystem):
++        # A relative path combined with an explicit filesystem is not resolved against the CWD by Ray.
++        path = os.path.abspath(path)
+     return read_parquet(path, filesystem=PyFileSystem(FSSpecHandler(fs)))
+ 
+ 

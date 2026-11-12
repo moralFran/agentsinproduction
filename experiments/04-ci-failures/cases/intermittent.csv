@@ -1,0 +1,8 @@
+case_id,repo,verdict,broken_fail,fixed_pass,n
+hashicorp-raft-0f543c05,hashicorp/raft,intermittent,3,1,3
+tailscale-tailcat-5a83b9f9,tailscale/tailcat,intermittent,1,2,3
+openclaw-gogcli-132b3cad,openclaw/gogcli,intermittent,2,1,3
+perkeep-perkeep-eefff7f6,perkeep/perkeep,intermittent,0,2,3
+libp2p-go-libp2p-df7cb35c,libp2p/go-libp2p,intermittent,0,2,3
+dundee-gdu-928f667b,dundee/gdu,intermittent,1,2,3
+nutsdb-nutsdb-a74d70d5,nutsdb/nutsdb,intermittent,2,0,3

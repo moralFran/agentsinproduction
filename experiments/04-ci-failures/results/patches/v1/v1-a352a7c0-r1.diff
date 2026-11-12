@@ -1,0 +1,47 @@
+diff --git a/backend_api_python/app/services/live_trading/close_reconciliation.py b/backend_api_python/app/services/live_trading/close_reconciliation.py
+index 11a1f80..e801ef1 100644
+--- a/backend_api_python/app/services/live_trading/close_reconciliation.py
++++ b/backend_api_python/app/services/live_trading/close_reconciliation.py
+@@ -321,7 +321,7 @@ def maybe_reconcile_strategy_market_close(
+     *,
+     enabled: bool,
+     context: Dict[str, Any],
+-    client_order_id: Callable[[int], str],
++    client_order_id_factory: Callable[..., str],
+     apply_result: Callable[[OrderExecutionResult], None],
+     append_log: Callable[[int, str, str], None],
+ ) -> Optional[Tuple[CloseReconciliationResult, str, str]]:
+@@ -344,7 +344,7 @@ def maybe_reconcile_strategy_market_close(
+     }
+     return reconcile_strategy_market_close(
+         **values,
+-        client_order_id=client_order_id,
++        client_order_id=lambda attempt: client_order_id_factory(phase=f"r{attempt}"),
+         apply_result=apply_result,
+         append_log=append_log,
+     )
+diff --git a/backend_api_python/app/services/pending_order_worker.py b/backend_api_python/app/services/pending_order_worker.py
+index 4694aac..c924a7a 100644
+--- a/backend_api_python/app/services/pending_order_worker.py
++++ b/backend_api_python/app/services/pending_order_worker.py
+@@ -8,6 +8,7 @@ This worker polls `pending_orders` periodically and dispatches orders based on `
+ 
+ from __future__ import annotations
+ 
++import functools
+ import json
+ from app.services.strategy_runtime.cancellations import dispatch_requested_cancel
+ import os
+@@ -2266,8 +2267,10 @@ class PendingOrderWorker(
+             close_outcome = maybe_reconcile_strategy_market_close(
+                 enabled=reduce_only and execution_algo != "limit" and not use_limit_first,
+                 context=locals(),
+-                client_order_id=lambda attempt: make_client_order_id(exchange_id=exchange_id,
+-                    strategy_id=strategy_id, order_id=order_id, phase=f"r{attempt}"),
++                client_order_id_factory=functools.partial(
++                    make_client_order_id,
++                    exchange_id=exchange_id, strategy_id=strategy_id, order_id=order_id,
++                ),
+                 apply_result=lambda result: apply_execution_result(fills, result), append_log=append_strategy_log)
+             if close_outcome:
+                 close_reconciliation, retry_order_id, retry_client_id = close_outcome

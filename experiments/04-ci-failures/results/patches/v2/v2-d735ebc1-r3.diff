@@ -1,0 +1,54 @@
+diff --git a/languages.json b/languages.json
+index 38aae9d..346ed45 100644
+--- a/languages.json
++++ b/languages.json
+@@ -3160,9 +3160,14 @@
+   "Godot Scene": {
+     "complexitychecks": [],
+     "extensions": ["tscn"],
+-    "line_comment": [],
++    "line_comment": [";"],
+     "multi_line": [],
+-    "quotes": []
++    "quotes": [
++      {
++        "end": "\"",
++        "start": "\""
++      }
++    ]
+   },
+   "Gradle": {
+     "complexitychecks": [],
+diff --git a/processor/constants.go b/processor/constants.go
+index 9e04df1..796b925 100644
+--- a/processor/constants.go
++++ b/processor/constants.go
+@@ -5842,14 +5842,24 @@ var languageDatabase = map[string]Language{
+ 		},
+ 	},
+ 	"Godot Scene": {
+-		LineComment:      []string{},
++		LineComment: []string{
++			";",
++		},
+ 		ComplexityChecks: []string{},
+ 		Extensions: []string{
+ 			"tscn",
+ 		},
+-		ExtensionFile:   false,
+-		MultiLine:       [][]string{},
+-		Quotes:          []Quote{},
++		ExtensionFile: false,
++		MultiLine:     [][]string{},
++		Quotes: []Quote{
++			{
++				Start:        "\"",
++				End:          "\"",
++				IgnoreEscape: false,
++				DocString:    false,
++				Delimited:    false,
++			},
++		},
+ 		NestedMultiLine: false,
+ 		LineSplice:      false,
+ 		Escape:          "",

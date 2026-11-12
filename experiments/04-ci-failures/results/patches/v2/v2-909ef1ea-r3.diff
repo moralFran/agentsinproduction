@@ -1,0 +1,20 @@
+diff --git a/src/parser/atom.go b/src/parser/atom.go
+index 777a851..5c5c35e 100644
+--- a/src/parser/atom.go
++++ b/src/parser/atom.go
+@@ -95,8 +95,14 @@ func ParseAtom(r io.Reader) (*Feed, error) {
+ 			srcitem.Links.First(""),
+ 			linkFromID,
+ 		)
++		guid := firstNonEmpty(srcitem.ID, link)
++		if linkFromID != "" {
++			// Some feeds reuse the same link as id for every revision of an
++			// entry; disambiguate by the updated timestamp.
++			guid = linkFromID + "::" + srcitem.Updated
++		}
+ 		dstfeed.Items = append(dstfeed.Items, Item{
+-			GUID:  firstNonEmpty(srcitem.ID, link),
++			GUID:  guid,
+ 			Date:  dateParse(firstNonEmpty(srcitem.Published, srcitem.Updated)),
+ 			URL:   link,
+ 			Title: srcitem.Title.Text(),

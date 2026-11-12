@@ -1,0 +1,39 @@
+== v1 repetition 1 start 09:11:16
+v1-bbbe6833-r1 agent: finished tools 10 calls 10 | gateway $ 0.0897276 | executor: ci_still_red 
+v1-a352a7c0-r1 agent: finished tools 8 calls 8 | gateway $ 0.06831670000000001 | executor: green_fails_hidden 
+v1-d735ebc1-r1 agent: budget_exhausted tools 26 calls 25 | gateway $ 0.17328500000000002 | executor: no_patch 
+v1-1899ffc2-r1 agent: finished tools 7 calls 7 | gateway $ 0.0444724 | executor: green_no_hidden_tests 
+v1-eb82db29-r1 agent: finished tools 12 calls 12 | gateway $ 0.05127199999999999 | executor: green_no_hidden_tests 
+v1-1206f641-r1 agent: finished tools 7 calls 7 | gateway $ 0.0638589 | executor: no_patch 
+v1-69bc3125-r1 agent: finished tools 15 calls 15 | gateway $ 0.1383895 | executor: green_passes_hidden 
+v1-e88f0806-r1 agent: finished tools 10 calls 10 | gateway $ 0.11717149999999998 | executor: green_fails_hidden 
+v1-909ef1ea-r1 agent: finished tools 5 calls 5 | gateway $ 0.029840900000000004 | executor: green_no_hidden_tests 
+v1-56d24d7d-r1 agent: finished tools 5 calls 5 | gateway $ 0.033441500000000006 | executor: ci_still_red 
+v1-c2452a82-r1 agent: finished tools 5 calls 5 | gateway $ 0.028362900000000003 | executor: green_passes_hidden 
+== v1 repetition 1 done 09:36:42
+== v1 repetition 2 start 09:36:42
+v1-a352a7c0-r2 agent: finished tools 10 calls 10 | gateway $ 0.061550900000000006 | executor: green_fails_hidden 
+v1-bbbe6833-r2 agent: finished tools 9 calls 9 | gateway $ 0.0808088 | executor: ci_still_red 
+v1-d735ebc1-r2 agent: budget_exhausted tools 25 calls 24 | gateway $ 0.17983629999999998 | executor: no_patch 
+v1-1899ffc2-r2 agent: finished tools 6 calls 6 | gateway $ 0.0401473 | executor: green_no_hidden_tests 
+v1-eb82db29-r2 agent: finished tools 8 calls 8 | gateway $ 0.0452985 | executor: green_no_hidden_tests 
+v1-1206f641-r2 agent: finished tools 10 calls 10 | gateway $ 0.0787124 | executor: no_patch 
+v1-69bc3125-r2 agent: finished tools 12 calls 12 | gateway $ 0.1226276 | executor: green_passes_hidden 
+v1-e88f0806-r2 agent: finished tools 12 calls 12 | gateway $ 0.1310041 | executor: green_fails_hidden 
+v1-909ef1ea-r2 agent: finished tools 6 calls 6 | gateway $ 0.0314581 | executor: green_no_hidden_tests 
+v1-56d24d7d-r2 agent: finished tools 5 calls 5 | gateway $ 0.0340404 | executor: ci_still_red 
+v1-c2452a82-r2 agent: finished tools 5 calls 5 | gateway $ 0.026254999999999997 | executor: green_passes_hidden 
+== v1 repetition 2 done 09:58:53
+== v1 repetition 3 start 09:58:53
+v1-a352a7c0-r3 agent: finished tools 9 calls 9 | gateway $ 0.0664288 | executor: green_fails_hidden 
+v1-bbbe6833-r3 agent: finished tools 9 calls 9 | gateway $ 0.09581490000000001 | executor: ci_still_red 
+v1-d735ebc1-r3 agent: budget_exhausted tools 25 calls 24 | gateway $ 0.1757068 | executor: no_patch 
+v1-1899ffc2-r3 agent: finished tools 6 calls 6 | gateway $ 0.035880800000000004 | executor: green_no_hidden_tests 
+v1-eb82db29-r3 agent: finished tools 6 calls 6 | gateway $ 0.028449799999999997 | executor: green_no_hidden_tests 
+v1-1206f641-r3 agent: finished tools 8 calls 8 | gateway $ 0.06661819999999999 | executor: ci_still_red 
+v1-69bc3125-r3 agent: finished tools 11 calls 11 | gateway $ 0.10146609999999999 | executor: green_passes_hidden 
+v1-e88f0806-r3 agent: finished tools 9 calls 9 | gateway $ 0.097228 | executor: green_fails_hidden 
+v1-909ef1ea-r3 agent: finished tools 6 calls 6 | gateway $ 0.0305769 | executor: green_no_hidden_tests 
+v1-c2452a82-r3 agent: finished tools 5 calls 5 | gateway $ 0.0250806 | executor: green_passes_hidden 
+v1-56d24d7d-r3 agent: finished tools 8 calls 8 | gateway $ 0.0422142 | executor: ci_still_red 
+== v1 repetition 3 done 10:19:44

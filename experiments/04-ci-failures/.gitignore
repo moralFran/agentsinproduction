@@ -1,0 +1,8 @@
+lab.env
+*.env
+__pycache__/
+.DS_Store
+mining/exclude-owners.local
+mining/*.out
+results/blind/codex-review-2026-11-12/sources/
+cases/locks/

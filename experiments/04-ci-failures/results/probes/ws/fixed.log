@@ -1,0 +1,13 @@
+NOTES patch applied rc=0 
+COMMAND go test -count=1 -v -run TestReview ./wsflate
+OUTPUT_BEGIN
+=== RUN   TestReviewCloseEmptyMessage
+--- PASS: TestReviewCloseEmptyMessage (0.00s)
+=== RUN   TestReviewWriteAfterFlush
+--- PASS: TestReviewWriteAfterFlush (0.00s)
+=== RUN   TestReviewRejectBadEmptyCompressor
+--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)
+PASS
+ok  	github.com/gobwas/ws/wsflate	0.018s
+
+OUTPUT_END rc=0 s=36.8

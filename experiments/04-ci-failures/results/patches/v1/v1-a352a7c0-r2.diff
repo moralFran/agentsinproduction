@@ -1,0 +1,41 @@
+diff --git a/backend_api_python/app/services/pending_order_worker.py b/backend_api_python/app/services/pending_order_worker.py
+index 4694aac..2ced9d5 100644
+--- a/backend_api_python/app/services/pending_order_worker.py
++++ b/backend_api_python/app/services/pending_order_worker.py
+@@ -62,6 +62,7 @@ from app.services.pending_orders.live_order_support import (
+     build_live_order_context,
+     console_print,
+     make_client_order_id,
++    make_retry_client_order_id,
+     signal_to_side_pos_reduce,
+ )
+ from app.services.pending_orders.live_order_phases import (
+@@ -2266,8 +2267,8 @@ class PendingOrderWorker(
+             close_outcome = maybe_reconcile_strategy_market_close(
+                 enabled=reduce_only and execution_algo != "limit" and not use_limit_first,
+                 context=locals(),
+-                client_order_id=lambda attempt: make_client_order_id(exchange_id=exchange_id,
+-                    strategy_id=strategy_id, order_id=order_id, phase=f"r{attempt}"),
++                client_order_id=lambda attempt: make_retry_client_order_id(exchange_id=exchange_id,
++                    strategy_id=strategy_id, order_id=order_id, attempt=attempt),
+                 apply_result=lambda result: apply_execution_result(fills, result), append_log=append_strategy_log)
+             if close_outcome:
+                 close_reconciliation, retry_order_id, retry_client_id = close_outcome
+diff --git a/backend_api_python/app/services/pending_orders/live_order_support.py b/backend_api_python/app/services/pending_orders/live_order_support.py
+index cf5bd5a..051919d 100644
+--- a/backend_api_python/app/services/pending_orders/live_order_support.py
++++ b/backend_api_python/app/services/pending_orders/live_order_support.py
+@@ -205,6 +205,13 @@ def make_client_order_id(*, exchange_id: str, strategy_id: int, order_id: int, p
+     return f"qd_{int(strategy_id)}_{int(order_id)}{('_' + ph) if ph else ''}"
+ 
+ 
++def make_retry_client_order_id(*, exchange_id: str, strategy_id: int, order_id: int, attempt: int) -> str:
++    """Build the client order id for a close-reconciliation retry attempt."""
++    return make_client_order_id(
++        exchange_id=exchange_id, strategy_id=strategy_id, order_id=order_id, phase=f"r{attempt}",
++    )
++
++
+ def signal_to_side_pos_reduce(signal_type: str) -> Tuple[str, str, bool]:
+     st = (signal_type or "").strip().lower()
+     if st in ("open_long", "add_long"):

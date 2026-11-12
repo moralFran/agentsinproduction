@@ -1,0 +1,95 @@
+{
+  "scope": "supplementary local checks; not a rerun of the original experiment",
+  "go": "go version go1.27.3 darwin/arm64",
+  "static": {
+    "packet_count": 43,
+    "hidden": {
+      "fail": 11,
+      "pass": 14,
+      "none": 18
+    },
+    "identical_groups": [
+      [
+        "aaed844e",
+        "c10daf28",
+        "e0265afe"
+      ],
+      [
+        "3f35c72f",
+        "4c09f7f6",
+        "7d5b2856",
+        "956707eb",
+        "bf401631"
+      ],
+      [
+        "291e9406",
+        "48fc2bc8",
+        "571920ab",
+        "97e27892",
+        "c3b9e96f",
+        "e5be6b25"
+      ]
+    ],
+    "yarr_fixture_classified_as_test": false
+  },
+  "writer": {
+    "01f539c0": {
+      "exit_code": 0,
+      "output": "=== RUN   TestReviewCloseEmptyMessage\n--- PASS: TestReviewCloseEmptyMessage (0.00s)\n=== RUN   TestReviewWriteAfterFlush\n--- PASS: TestReviewWriteAfterFlush (0.00s)\n=== RUN   TestReviewRejectBadEmptyCompressor\n--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)\nPASS\nok  \t_<local-tmp>/aip-blind-review-cvz4hzgp/writer/01f539c0/wsflate\t0.228s\n"
+    },
+    "0f490ef3": {
+      "exit_code": 1,
+      "output": "=== RUN   TestReviewCloseEmptyMessage\n--- PASS: TestReviewCloseEmptyMessage (0.00s)\n=== RUN   TestReviewWriteAfterFlush\n    writer_review_test.go:43: wire=4acb2c2a2e0100 decoded=\"first\" error=<nil>; want=\"firstsecond\" without error\n--- FAIL: TestReviewWriteAfterFlush (0.00s)\n=== RUN   TestReviewRejectBadEmptyCompressor\n--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)\nFAIL\nFAIL\t_<local-tmp>/aip-blind-review-cvz4hzgp/writer/0f490ef3/wsflate\t0.202s\nFAIL\n"
+    },
+    "24b3474d": {
+      "exit_code": 1,
+      "output": "=== RUN   TestReviewCloseEmptyMessage\n    writer_review_test.go:32: wsflate: bad compressor: unexpected stream tail: 0x00000000 vs 0x0000ffff\n--- FAIL: TestReviewCloseEmptyMessage (0.00s)\n=== RUN   TestReviewWriteAfterFlush\n    writer_review_test.go:43: wire=4acb2c2a2e0100 decoded=\"first\" error=<nil>; want=\"firstsecond\" without error\n--- FAIL: TestReviewWriteAfterFlush (0.00s)\n=== RUN   TestReviewRejectBadEmptyCompressor\n--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)\nFAIL\nFAIL\t_<local-tmp>/aip-blind-review-cvz4hzgp/writer/24b3474d/wsflate\t0.206s\nFAIL\n"
+    },
+    "b02d988e": {
+      "exit_code": 1,
+      "output": "=== RUN   TestReviewCloseEmptyMessage\n    writer_review_test.go:33: wire= decoded=\"\" error=flate: corrupt input before offset 5; want=\"\" without error\n--- FAIL: TestReviewCloseEmptyMessage (0.00s)\n=== RUN   TestReviewWriteAfterFlush\n    writer_review_test.go:43: wire=4acb2c2a2e0100 decoded=\"first\" error=<nil>; want=\"firstsecond\" without error\n--- FAIL: TestReviewWriteAfterFlush (0.00s)\n=== RUN   TestReviewRejectBadEmptyCompressor\n    writer_review_test.go:54: Close accepted a compressor that never emits a sync-flush marker\n--- FAIL: TestReviewRejectBadEmptyCompressor (0.00s)\nFAIL\nFAIL\t_<local-tmp>/aip-blind-review-cvz4hzgp/writer/b02d988e/wsflate\t0.196s\nFAIL\n"
+    },
+    "d940399d": {
+      "exit_code": 0,
+      "output": "=== RUN   TestReviewCloseEmptyMessage\n--- PASS: TestReviewCloseEmptyMessage (0.00s)\n=== RUN   TestReviewWriteAfterFlush\n--- PASS: TestReviewWriteAfterFlush (0.00s)\n=== RUN   TestReviewRejectBadEmptyCompressor\n--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)\nPASS\nok  \t_<local-tmp>/aip-blind-review-cvz4hzgp/writer/d940399d/wsflate\t0.192s\n"
+    },
+    "d987c7a4": {
+      "exit_code": 1,
+      "output": "=== RUN   TestReviewCloseEmptyMessage\n    writer_review_test.go:33: wire= decoded=\"\" error=flate: corrupt input before offset 5; want=\"\" without error\n--- FAIL: TestReviewCloseEmptyMessage (0.00s)\n=== RUN   TestReviewWriteAfterFlush\n--- PASS: TestReviewWriteAfterFlush (0.00s)\n=== RUN   TestReviewRejectBadEmptyCompressor\n    writer_review_test.go:54: Close accepted a compressor that never emits a sync-flush marker\n--- FAIL: TestReviewRejectBadEmptyCompressor (0.00s)\nFAIL\nFAIL\t_<local-tmp>/aip-blind-review-cvz4hzgp/writer/d987c7a4/wsflate\t0.205s\nFAIL\n"
+    },
+    "maintainer": {
+      "exit_code": 0,
+      "output": "=== RUN   TestReviewCloseEmptyMessage\n--- PASS: TestReviewCloseEmptyMessage (0.00s)\n=== RUN   TestReviewWriteAfterFlush\n--- PASS: TestReviewWriteAfterFlush (0.00s)\n=== RUN   TestReviewRejectBadEmptyCompressor\n--- PASS: TestReviewRejectBadEmptyCompressor (0.00s)\nPASS\nok  \t_<local-tmp>/aip-blind-review-cvz4hzgp/writer/maintainer/wsflate\t0.202s\n"
+    }
+  },
+  "pyinfra": {
+    "4460dfce": {
+      "exception": "KeyError",
+      "message": "'_sudo_user'"
+    },
+    "5b9099b7": {
+      "result": "default",
+      "failed_hosts": false
+    },
+    "aaed844e": {
+      "result": "default",
+      "failed_hosts": false
+    },
+    "bec0ff96": {
+      "exception": "KeyError",
+      "message": "'_sudo_user'"
+    },
+    "c10daf28": {
+      "result": "default",
+      "failed_hosts": false
+    },
+    "e0265afe": {
+      "result": "default",
+      "failed_hosts": false
+    },
+    "maintainer": {
+      "result": "default",
+      "failed_hosts": false
+    }
+  }
+}

@@ -1,0 +1,14 @@
+diff --git a/ludwig/data/dataset/ray.py b/ludwig/data/dataset/ray.py
+index 19480b9..f538df9 100644
+--- a/ludwig/data/dataset/ray.py
++++ b/ludwig/data/dataset/ray.py
+@@ -77,6 +77,9 @@ def _make_lazy_decode_batch_fn(col: str, decode_fn):
+ 
+ def read_remote_parquet(path: str):
+     fs, path = get_fs_and_path(path)
++    # Relative local paths are not resolved by the PyFileSystem wrapper (they would be listed as empty), so let
++    # fsspec normalize the path (this makes local paths absolute and is a no-op for remote filesystems).
++    path = fs._strip_protocol(path)
+     return read_parquet(path, filesystem=PyFileSystem(FSSpecHandler(fs)))
+ 
+ 

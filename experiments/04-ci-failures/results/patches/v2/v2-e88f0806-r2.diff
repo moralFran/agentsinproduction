@@ -1,0 +1,42 @@
+diff --git a/wsflate/writer.go b/wsflate/writer.go
+index 0342ccb..f724d29 100644
+--- a/wsflate/writer.go
++++ b/wsflate/writer.go
+@@ -104,13 +104,28 @@ func (w *Writer) Flush() error {
+ // Close closes Writer and a Compressor instance used under the hood (if it
+ // implements io.Closer interface).
+ func (w *Writer) Close() error {
++	if w.err != nil {
++		return w.err
++	}
++	if w.cbuf.buf != compressionTail {
++		// Not flushed yet: make sure all the data is out and the stream ends
++		// with the sync marker, which is held back by cbuf.
++		if w.err = w.c.Flush(); w.err != nil {
++			return w.err
++		}
++	}
++	w.checkTail()
+ 	if w.err != nil {
+ 		return w.err
+ 	}
+ 	if c, ok := w.c.(io.Closer); ok {
++		// Everything that matters has been written and ended with the sync
++		// marker. Whatever the compressor emits on Close() (the final block,
++		// which differs between implementations and Go versions) must not
++		// become part of the PMCE stream, so it is discarded.
++		w.cbuf.dst = discard{}
+ 		w.err = c.Close()
+ 	}
+-	w.checkTail()
+ 	return w.err
+ }
+ 
+@@ -127,3 +142,7 @@ func (w *Writer) checkTail() {
+ 		)
+ 	}
+ }
++
++type discard struct{}
++
++func (discard) Write(p []byte) (int, error) { return len(p), nil }

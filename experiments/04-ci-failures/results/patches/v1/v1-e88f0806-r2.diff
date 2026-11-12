@@ -1,0 +1,39 @@
+diff --git a/wsflate/writer.go b/wsflate/writer.go
+index 0342ccb..929983d 100644
+--- a/wsflate/writer.go
++++ b/wsflate/writer.go
+@@ -3,6 +3,7 @@ package wsflate
+ import (
+ 	"fmt"
+ 	"io"
++	"io/ioutil"
+ )
+ 
+ var (
+@@ -103,14 +104,25 @@ func (w *Writer) Flush() error {
+ 
+ // Close closes Writer and a Compressor instance used under the hood (if it
+ // implements io.Closer interface).
++//
++// Any pending data is flushed first. Bytes produced by closing the Compressor
++// (such as the final deflate block) are discarded: PMCE messages must end with
++// the sync flush marker, which is stripped by Writer.
+ func (w *Writer) Close() error {
++	if w.err != nil {
++		return w.err
++	}
++	if w.err = w.c.Flush(); w.err != nil {
++		return w.err
++	}
++	w.checkTail()
+ 	if w.err != nil {
+ 		return w.err
+ 	}
+ 	if c, ok := w.c.(io.Closer); ok {
++		w.cbuf.dst = ioutil.Discard
+ 		w.err = c.Close()
+ 	}
+-	w.checkTail()
+ 	return w.err
+ }
+ 

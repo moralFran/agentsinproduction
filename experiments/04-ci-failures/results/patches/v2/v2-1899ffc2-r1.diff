@@ -1,0 +1,23 @@
+diff --git a/ludwig/data/dataset/ray.py b/ludwig/data/dataset/ray.py
+index 19480b9..f8bc16d 100644
+--- a/ludwig/data/dataset/ray.py
++++ b/ludwig/data/dataset/ray.py
+@@ -25,6 +25,7 @@ from typing import Any
+ 
+ import numpy as np
+ import pandas as pd
++from fsspec.implementations.local import LocalFileSystem
+ from pyarrow.fs import FSSpecHandler, PyFileSystem
+ from ray.data import Dataset as RayNativeDataset
+ from ray.data import read_parquet
+@@ -77,6 +78,10 @@ def _make_lazy_decode_batch_fn(col: str, decode_fn):
+ 
+ def read_remote_parquet(path: str):
+     fs, path = get_fs_and_path(path)
++    if isinstance(fs, LocalFileSystem):
++        # Ray lists files through the wrapped filesystem and cannot resolve relative paths against it
++        # (https://github.com/ludwig-ai/ludwig/issues/3440), so always hand it an absolute path.
++        path = os.path.abspath(path)
+     return read_parquet(path, filesystem=PyFileSystem(FSSpecHandler(fs)))
+ 
+ 

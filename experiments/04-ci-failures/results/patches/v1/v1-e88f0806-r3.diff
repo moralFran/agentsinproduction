@@ -1,0 +1,26 @@
+diff --git a/wsflate/writer.go b/wsflate/writer.go
+index 0342ccb..b050906 100644
+--- a/wsflate/writer.go
++++ b/wsflate/writer.go
+@@ -3,6 +3,7 @@ package wsflate
+ import (
+ 	"fmt"
+ 	"io"
++	"io/ioutil"
+ )
+ 
+ var (
+@@ -108,9 +109,12 @@ func (w *Writer) Close() error {
+ 		return w.err
+ 	}
+ 	if c, ok := w.c.(io.Closer); ok {
++		// Closing a compressor emits a final block, which must not be sent:
++		// PMCE messages are terminated by the sync-flush tail written (and
++		// stripped) by Flush(). Discard anything produced by Close().
++		w.cbuf.reset(ioutil.Discard)
+ 		w.err = c.Close()
+ 	}
+-	w.checkTail()
+ 	return w.err
+ }
+ 

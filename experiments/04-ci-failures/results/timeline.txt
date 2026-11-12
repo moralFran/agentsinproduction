@@ -1,0 +1,7 @@
+create start 2026-11-11T16:21:01Z (aip-ci-01, n2-standard-8, 200 GB pd-balanced, us-central1-a)
+k3s v1.37.2+k3s1 + Kata 4.3.1 installed; image aip-ci-box:1 (golang:1.27-bookworm@sha256:4fa7c968…, python 3.11, anthropic 2.8.0, uv 0.9.5) built; gateway v4 deployed (cap US$2 for phase 1); first case preparation denied by the session's permission classifier ([Code from External]) 2026-11-11T16:39:46Z
+phase 1 checkpoint 2026-11-11T18:16:36Z: 20 candidates settled (2 reproduced, 13 not reproduced, 5 preparation failures); 3 workers still running on aip-ci-01; mining done (113 candidates); captures v5-reject and v5-repro recorded; no agent run, no model call
+cases.csv frozen 2026-11-12T03:15Z: 11 cases (Go 7, Python 4), sha256 d0abec78c96b6bf7969fc3408d3e411664da7495b32cc6f78b97d383e032a5b8; retries of 4 infra errors done (all not reproduced); smoke 2 attempts US$0.114; VM still running
+v1 collection 2026-11-12T09:11:16Z..10:21:25Z: 33 attempts, US$2.435; blind packets 21; VM still running
+v2 collection 2026-11-12T10:26:21Z..11:37:35Z: 33 attempts, US$2.559; blind pool 43 packets re-randomized; VM still running (teardown plan in infra/TEARDOWN.md, not run)
+post-collection audit on the VM 2026-11-12T12:02:24Z..13:48:58Z (hidden-test logs, QuantDinger/scc isolation, ws probes, captures); VM stopped again (TERMINATED), not deleted

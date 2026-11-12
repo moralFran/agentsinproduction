@@ -1,0 +1,71 @@
+diff --git a/wsflate/writer.go b/wsflate/writer.go
+index 0342ccb..c564356 100644
+--- a/wsflate/writer.go
++++ b/wsflate/writer.go
+@@ -50,11 +50,12 @@ type Writer struct {
+ 	// 	4. To make Reader and Writer API the same. That is, there is no Reset()
+ 	// 	method for flate.Reader already, so we need to provide it as a wrapper
+ 	// 	(see point #3), or drop the Reader.Reset() method.
+-	dest io.Writer
+-	ctor func(io.Writer) Compressor
+-	c    Compressor
+-	cbuf cbuf
+-	err  error
++	dest  io.Writer
++	ctor  func(io.Writer) Compressor
++	c     Compressor
++	cbuf  cbuf
++	err   error
++	dirty bool // Data written since the last Flush().
+ }
+ 
+ // NewWriter returns a new Writer.
+@@ -74,6 +75,7 @@ func NewWriter(w io.Writer, ctor func(io.Writer) Compressor) *Writer {
+ // Any not flushed data will be lost.
+ func (w *Writer) Reset(dest io.Writer) {
+ 	w.err = nil
++	w.dirty = false
+ 	w.cbuf.reset(dest)
+ 	if x, ok := w.c.(WriteResetter); ok {
+ 		x.Reset(&w.cbuf)
+@@ -88,6 +90,7 @@ func (w *Writer) Write(p []byte) (n int, err error) {
+ 		return 0, w.err
+ 	}
+ 	n, w.err = w.c.Write(p)
++	w.dirty = w.dirty || n > 0
+ 	return n, w.err
+ }
+ 
+@@ -97,20 +100,31 @@ func (w *Writer) Flush() error {
+ 		return w.err
+ 	}
+ 	w.err = w.c.Flush()
++	w.dirty = false
+ 	w.checkTail()
+ 	return w.err
+ }
+ 
+ // Close closes Writer and a Compressor instance used under the hood (if it
+ // implements io.Closer interface).
++//
++// Any data written but not flushed is flushed first. Whatever the Compressor
++// emits while closing (such as final deflate block, which differs between
++// implementations and Go versions) is discarded: according to PMCE specs a
++// message must end with the empty deflate block produced by Flush().
+ func (w *Writer) Close() error {
+ 	if w.err != nil {
+ 		return w.err
+ 	}
++	if w.dirty {
++		if err := w.Flush(); err != nil {
++			return err
++		}
++	}
+ 	if c, ok := w.c.(io.Closer); ok {
++		w.cbuf.dst = io.Discard
+ 		w.err = c.Close()
+ 	}
+-	w.checkTail()
+ 	return w.err
+ }
+ 

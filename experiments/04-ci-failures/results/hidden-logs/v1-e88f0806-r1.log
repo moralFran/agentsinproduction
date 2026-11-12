@@ -1,0 +1,35 @@
+NOTES patch applied rc=0  | maintainer test changes applied rc=0 
+COMMAND go test -count=1 ./wsflate github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate
+OUTPUT_BEGIN
+--- FAIL: TestWriterClose (0.00s)
+    --- FAIL: TestWriterClose/stored_final_block,_flushed (0.00s)
+        writer_test.go:115: unexpected output: "payload\x00\x00\xff\xff"; want "payload"
+    --- FAIL: TestWriterClose/fixed_final_block,_flushed (0.00s)
+        writer_test.go:115: unexpected output: "payload\x00\x00\xff\xff"; want "payload"
+--- FAIL: TestWriterCloseFlate (0.00s)
+    writer_test.go:183: {flush:true close:false}: ca48cdc9c9d75148cb492c49550400 (seen 2 times)
+    writer_test.go:183: {flush:false close:true}: ca48cdc9c9d75148cb492c49550400 (seen 2 times)
+    writer_test.go:183: {flush:true close:true}: ca48cdc9c9d75148cb492c495504000000ffff00 (seen 1 times)
+    writer_test.go:185: Flush()/Close() combinations produced 2 different outputs
+GET / HTTP/1.1
+Host: example.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Version: 13
+Sec-WebSocket-Key: jeMsEE3TEIyeztJOjfX+BA==
+Sec-WebSocket-Extensions: permessage-deflate;server_no_context_takeover;client_no_context_takeover;server_max_window_bits=10;client_max_window_bits=8,permessage-deflate;client_max_window_bits,permessage-deflate
+
+
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: L160fDKkmH1481jHbgmXzUse8hU=
+Sec-WebSocket-Extensions: permessage-deflate;server_no_context_takeover;client_no_context_takeover
+
+
+FAIL
+FAIL	github.com/gobwas/ws/wsflate	0.030s
+ok  	github.com/gobwas/ws/tests	0.020s
+FAIL
+
+OUTPUT_END rc=1 s=42.3

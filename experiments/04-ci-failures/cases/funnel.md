@@ -1,0 +1,47 @@
+# Funil dos casos (gerado por `cases/funnel.py`)
+
+- Repositórios examinados: **1486** (Go 662, Python 824)
+- Repositórios descartados antes de olhar as falhas:
+  - no test-like active workflow: 377
+  - license NOASSERTION: 187
+  - license GPL-3.0: 118
+  - size > 300 MB: 109
+  - license AGPL-3.0: 90
+  - license None: 45
+  - license GPL-2.0: 15
+  - license LGPL-3.0: 11
+  - license CC-BY-SA-4.0: 7
+  - license LGPL-2.1: 4
+  - excluded owner: 4
+  - license CC-BY-4.0: 3
+  - license CC0-1.0: 2
+  - license OFL-1.1: 2
+  - license WTFPL: 1
+  - license EPL-2.0: 1
+  - license Zlib: 1
+  - license Unlicense: 1
+  - license Artistic-2.0: 1
+  - license ODbL-1.0: 1
+- Pares falha → correção examinados e descartados:
+  - next green run is not the immediate child commit: 650
+  - fix touches no non-test source file: 550
+  - fix too large: 294
+  - failed step is not a test step: 247
+  - job log not available: 193
+  - no pytest FAILED line in the job log: 55
+  - no Go test failure in the job log: 51
+  - no failed job listed: 22
+  - fix commit not readable: 1
+- **Candidatos:** 113 (Go 72, Python 41)
+- Destino de cada candidato:
+  - not_reproduced_fix_fails: 52
+  - not_reproduced_broken_passes: 34
+  - reproduced: 11
+  - preparation failed: 8
+  - intermittent: 7
+  - excluded: fix touches only test files (snapshot/golden, recheck): 1
+- Falhas de preparação por motivo:
+  - project could not be installed: 5
+  - failing packages outside every module: 2
+  - failing test files not found in the tree: 1
+- **Reproduzidos (3/3 quebrado falha, 3/3 correção passa):** 11 (Go 7, Python 4)

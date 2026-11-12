@@ -1,0 +1,36 @@
+diff --git a/backend_api_python/app/services/pending_order_worker.py b/backend_api_python/app/services/pending_order_worker.py
+index 4694aac..44ac7df 100644
+--- a/backend_api_python/app/services/pending_order_worker.py
++++ b/backend_api_python/app/services/pending_order_worker.py
+@@ -1761,6 +1761,11 @@ class PendingOrderWorker(
+                 auto_stop_live_strategy(int(strategy_id), str(e), source="pending_order_client")
+             return
+ 
++        # Stock brokers (IBKR/Alpaca) share one non-venue-specific client order id.
++        broker_client_oid = make_client_order_id(
++            exchange_id="broker", strategy_id=strategy_id, order_id=order_id,
++        )
++
+         # Check if this is an IBKR client (US stocks)
+         global IBKRClient
+         if IBKRClient is None:
+@@ -1771,9 +1776,6 @@ class PendingOrderWorker(
+                 pass
+ 
+         if IBKRClient is not None and isinstance(client, IBKRClient):
+-            broker_client_oid = make_client_order_id(
+-                exchange_id="ibkr", strategy_id=strategy_id, order_id=order_id,
+-            )
+             # Execute IBKR order (separate flow for stocks)
+             self._execute_ibkr_order(
+                 order_id=order_id,
+@@ -1801,9 +1803,6 @@ class PendingOrderWorker(
+                 pass
+ 
+         if AlpacaClient is not None and isinstance(client, AlpacaClient):
+-            broker_client_oid = make_client_order_id(
+-                exchange_id="alpaca", strategy_id=strategy_id, order_id=order_id,
+-            )
+             self._execute_alpaca_order(
+                 order_id=order_id,
+                 order_row=order_row,

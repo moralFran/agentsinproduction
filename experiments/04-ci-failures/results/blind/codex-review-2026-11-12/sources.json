@@ -1,0 +1,35 @@
+[
+  {
+    "file": "sources/writer.go",
+    "url": "https://github.com/gobwas/ws/blob/a567dfd636adf28fdf608402ba9ed7a80bfd0a33/wsflate/writer.go"
+  },
+  {
+    "file": "sources/cbuf.go",
+    "url": "https://github.com/gobwas/ws/blob/a567dfd636adf28fdf608402ba9ed7a80bfd0a33/wsflate/cbuf.go"
+  },
+  {
+    "file": "sources/fs_utils.py",
+    "url": "https://github.com/ludwig-ai/ludwig/blob/6a122a8e6d7b963a06edd2a852998916dd8ca088/ludwig/utils/fs_utils.py"
+  },
+  {
+    "file": "sources/facts.py",
+    "url": "https://github.com/pyinfra-dev/pyinfra/blob/e7e42b68d31c4b9200445066d4c614bb3879b667/src/pyinfra/api/facts.py"
+  },
+  {
+    "file": "sources/atom.go",
+    "url": "https://github.com/nkanaev/yarr/blob/957e81dd7102e7429d3427f6a8fc4ac6b54a81ae/src/parser/atom.go"
+  },
+  {
+    "file": "sources/link-in-id.xml",
+    "url": "https://github.com/nkanaev/yarr/blob/957e81dd7102e7429d3427f6a8fc4ac6b54a81ae/src/parser/fixtures/atom/link-in-id.xml"
+  },
+  {
+    "file": "sources/test_api_facts_preconditions.py",
+    "url": "https://github.com/pyinfra-dev/pyinfra/blob/e7e42b68d31c4b9200445066d4c614bb3879b667/tests/test_api/test_api_facts_preconditions.py"
+  },
+  {
+    "file": "sources/fsspec-local-reference.py",
+    "url": "https://github.com/fsspec/filesystem_spec/blob/master/fsspec/implementations/local.py",
+    "scope": "Reference fetched 2026-11-12; not proof of the dependency version installed in the experiment"
+  }
+]

@@ -1,0 +1,41 @@
+# Namespaces of experiment 04. ci-exec (executor) has no network at all; ci-agent may reach only the gateway's model port.
+apiVersion: v1
+kind: Namespace
+metadata: {name: ci-agent}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: ci-exec}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: ci-gateway}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: deny-all, namespace: ci-exec}
+spec: {podSelector: {}, policyTypes: [Ingress, Egress]}
+---
+# The agent may open connections to the gateway pod on 8080 (model requests) and nothing else: not the admin port 8081,
+# not DNS, not the internet, not the Kubernetes API, not the metadata server.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: agent-egress-gateway-only, namespace: ci-agent}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  egress:
+  - to:
+    - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: ci-gateway}}
+      podSelector: {matchLabels: {app: gateway}}
+    ports: [{protocol: TCP, port: 8080}]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: runner, namespace: ci-agent}
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: runner, namespace: ci-exec}
+automountServiceAccountToken: false

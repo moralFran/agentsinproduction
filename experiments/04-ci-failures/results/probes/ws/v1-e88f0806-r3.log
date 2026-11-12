@@ -1,0 +1,17 @@
+NOTES patch applied rc=0 
+COMMAND go test -count=1 -v -run TestReview ./wsflate
+OUTPUT_BEGIN
+=== RUN   TestReviewCloseEmptyMessage
+    writer_review_test.go:33: wire= decoded="" error=flate: corrupt input before offset 5; want="" without error
+--- FAIL: TestReviewCloseEmptyMessage (0.00s)
+=== RUN   TestReviewWriteAfterFlush
+    writer_review_test.go:43: wire=4acb2c2a2e0100 decoded="first" error=<nil>; want="firstsecond" without error
+--- FAIL: TestReviewWriteAfterFlush (0.00s)
+=== RUN   TestReviewRejectBadEmptyCompressor
+    writer_review_test.go:54: Close accepted a compressor that never emits a sync-flush marker
+--- FAIL: TestReviewRejectBadEmptyCompressor (0.00s)
+FAIL
+FAIL	github.com/gobwas/ws/wsflate	0.027s
+FAIL
+
+OUTPUT_END rc=1 s=76.7

@@ -1,0 +1,39 @@
+diff --git a/wsflate/writer.go b/wsflate/writer.go
+index 0342ccb..c7006cb 100644
+--- a/wsflate/writer.go
++++ b/wsflate/writer.go
+@@ -3,6 +3,7 @@ package wsflate
+ import (
+ 	"fmt"
+ 	"io"
++	"io/ioutil"
+ )
+ 
+ var (
+@@ -104,13 +105,25 @@ func (w *Writer) Flush() error {
+ // Close closes Writer and a Compressor instance used under the hood (if it
+ // implements io.Closer interface).
+ func (w *Writer) Close() error {
++	if w.err != nil {
++		return w.err
++	}
++	// Make sure everything is flushed and the stream ends with the sync
++	// marker, as required by PMCE. Flush is a no-op for the data if it has
++	// been already flushed.
++	if w.err = w.c.Flush(); w.err == nil {
++		w.checkTail()
++	}
+ 	if w.err != nil {
+ 		return w.err
+ 	}
+ 	if c, ok := w.c.(io.Closer); ok {
++		// Closing a compressor emits a final block (whose exact bytes depend
++		// on the implementation), which must not be a part of the message.
++		// Thus discard anything it writes.
++		w.cbuf.dst = ioutil.Discard
+ 		w.err = c.Close()
+ 	}
+-	w.checkTail()
+ 	return w.err
+ }
+ 

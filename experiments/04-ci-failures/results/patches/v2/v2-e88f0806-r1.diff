@@ -1,0 +1,29 @@
+diff --git a/wsflate/writer.go b/wsflate/writer.go
+index 0342ccb..69f1eb6 100644
+--- a/wsflate/writer.go
++++ b/wsflate/writer.go
+@@ -104,13 +104,23 @@ func (w *Writer) Flush() error {
+ // Close closes Writer and a Compressor instance used under the hood (if it
+ // implements io.Closer interface).
+ func (w *Writer) Close() error {
++	if w.err != nil {
++		return w.err
++	}
++	// The stream must end with the tail of the last Flush() (which cbuf holds
++	// back and strips, as PMCE specs require). Whatever the compressor emits
++	// on its own Close() (e.g. a final empty block) is not a part of the
++	// message and must not reach the destination: it would push the held
++	// tail out and corrupt the stream. So check the tail first, and then
++	// close the compressor with its output discarded.
++	w.checkTail()
+ 	if w.err != nil {
+ 		return w.err
+ 	}
+ 	if c, ok := w.c.(io.Closer); ok {
++		w.cbuf.dst = io.Discard
+ 		w.err = c.Close()
+ 	}
+-	w.checkTail()
+ 	return w.err
+ }
+ 

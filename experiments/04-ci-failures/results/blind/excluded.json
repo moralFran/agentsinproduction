@@ -1,0 +1,5 @@
+{
+  "nkanaev/yarr": "fora da análise principal (emenda 24): o mantenedor só alterou um fixture de teste",
+  "boyter/scc": "fora da análise principal (emenda 24): fora do teste, o mantenedor só alterou um comentário",
+  "OpenByteInc/QuantDinger": "fora da análise principal (emenda 27): o mantenedor consertou o teste; o teste oculto que falha não mede o conserto"
+}
