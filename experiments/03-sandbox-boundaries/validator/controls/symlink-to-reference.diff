@@ -1,0 +1,11 @@
+diff --git a/boltons/fileutils.py b/boltons/fileutils_before.py
+similarity index 100%
+rename from boltons/fileutils.py
+rename to boltons/fileutils_before.py
+diff --git a/boltons/fileutils.py b/boltons/fileutils.py
+new file mode 120000
+--- /dev/null
++++ b/boltons/fileutils.py
+@@ -0,0 +1 @@
++/task/fixed/boltons/fileutils.py
+\ No newline at end of file

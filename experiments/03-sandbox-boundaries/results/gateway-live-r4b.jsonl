@@ -1,0 +1,6 @@
+{"check": "Content-Length that is not a number", "expected": "400", "got": "HTTP/1.1 400 Bad Request", "seconds": 0.0, "ok": true}
+{"check": "model that is a list", "expected": "400", "got": "HTTP/1.1 400 Bad Request", "seconds": 0.0, "ok": true}
+{"check": "body that never completes (10 of 1,000 bytes)", "expected": "408 at the gateway's read deadline (15 s unless configured)", "got": "HTTP/1.1 408 Request Timeout", "seconds": 15.0, "ok": true}
+{"check": "headers that never complete", "expected": "cut at the read deadline: closed, or 400 for the headers that did arrive", "got": "HTTP/1.1 400 Bad Request", "seconds": 15.0, "ok": true}
+{"check": "a 9th connection while 8 from this pod are open and idle", "expected": "503 at once (the limit per source address is 8)", "got": "HTTP/1.1 503 Service Unavailable", "seconds": 0.0, "ok": true}
+{"check": "a valid call that sends anthropic-version 1999-01-01 and its own key", "expected": "200: the gateway sends its own version and key (the provider refuses an unknown version)", "got": "HTTP/1.1 200 OK", "seconds": 0.7, "ok": true}

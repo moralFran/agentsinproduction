@@ -1,0 +1,1 @@
+{"ts": 1794495860.041, "event": "start", "models": ["claude-haiku-5-5", "claude-sonnet-5-5"], "budget_usd": 5.0, "spent_usd": 0.050259, "halted": null, "code": "0612b78d1226", "anthropic_version": "2023-06-01"}

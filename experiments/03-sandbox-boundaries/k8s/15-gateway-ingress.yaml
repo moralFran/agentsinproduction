@@ -1,0 +1,15 @@
+# Who may call the gateway: pods labelled app=agent in namespace lab-agent, on port 8080, and no other pod in the
+# cluster. Without this, any pod on the pod network could call the gateway and spend the one shared budget.
+# Traffic from the node itself (the kubelet's readiness probe) is not subject to NetworkPolicy; infra/setup-lab.sh
+# checks the gateway is still Ready after applying this. The run id a caller sends stays self-declared.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: gateway-ingress-agent-only, namespace: lab-gateway}
+spec:
+  podSelector: {matchLabels: {app: gateway}}
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: lab-agent}}
+      podSelector: {matchLabels: {app: agent}}
+    ports: [{protocol: TCP, port: 8080}]

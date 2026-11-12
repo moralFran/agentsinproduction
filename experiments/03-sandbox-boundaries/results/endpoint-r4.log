@@ -1,0 +1,7 @@
+{"ts": 1794493428.085905, "from": "127.0.0.1", "method": "GET", "path": "/self-test", "bytes": 0}
+{"ts": 1794493890.0406563, "from": "10.128.0.5", "method": "GET", "path": "/probe/control/kata-qemu/1", "bytes": 0}
+{"ts": 1794493891.6320992, "from": "10.128.0.5", "method": "GET", "path": "/probe/control/kata-qemu/2", "bytes": 0}
+{"ts": 1794493892.9349813, "from": "10.128.0.5", "method": "GET", "path": "/probe/control/kata-qemu/3", "bytes": 0}
+{"ts": 1794493945.2376595, "from": "10.128.0.5", "method": "GET", "path": "/probe/control/runc/1", "bytes": 0}
+{"ts": 1794493946.1037173, "from": "10.128.0.5", "method": "GET", "path": "/probe/control/runc/2", "bytes": 0}
+{"ts": 1794493946.910667, "from": "10.128.0.5", "method": "GET", "path": "/probe/control/runc/3", "bytes": 0}

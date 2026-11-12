@@ -1,0 +1,10 @@
+r4 re-run of experiment 03 on fresh VMs (fourth review), 2026-11-12
+create start 2026-11-12T14:22:04Z (infra/create.sh; both VMs RUNNING by 14:22:53Z, disks labelled by create.sh)
+k3s, Helm, Kata installed 14:26:11Z (pinned installers, checksums matched)
+lab prepared 14:28:37Z (infra/setup-lab.sh, key piped from the Mac's keychain to the remote stdin)
+setup-lab.sh run twice more, rollout followed the code 14:31:11Z
+diagnostics (net, runtime, self-check, gateway ingress, gateway live) done 14:37:40Z
+validator re-validation (controls + 14 stored patches) 14:38Z-14:48:58Z; controls again after fixing two control diffs 14:50Z-14:54:45Z
+agent attempts r4 (1 + 1) 14:57:57Z; final configuration; limits and the budget trap 15:04:27Z
+VMs deleted 15:05:16Z-15:08:48Z (infra/destroy.sh, results/cleanup-r4.txt); verified 15:09:04Z: no instance, disk or address labelled experiment=aip-v04-kata, no aip-kata-01 / aip-endpoint-01 left
+VM time: about 0.78 h (14:22Z-15:08Z)

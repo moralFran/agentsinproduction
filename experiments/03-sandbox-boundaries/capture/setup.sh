@@ -17,9 +17,9 @@ a)
   kubectl apply -f k8s/30-agent-netpol.yaml >/dev/null
   kubectl -n lab-agent delete pod diag inspect rt-runc rt-kata --ignore-not-found --wait=true >/dev/null
   sed "s/RUNTIME/kata-qemu/" k8s/40-diag-pod.yaml | kubectl apply -f - >/dev/null
-  run() { kubectl -n lab-agent run "$1" --image="$PY" --restart=Never --labels=app=agent --overrides="$2" -- sleep "$3" >/dev/null; }
-  run rt-runc '{"spec":{"automountServiceAccountToken":false}}' 41001
-  run rt-kata '{"spec":{"automountServiceAccountToken":false,"runtimeClassName":"kata-qemu"}}' 42002
+  run() { sed -e "s/POD_NAME/$1/g" -e "s/RUNTIME_LINE/$2/" -e "s/SLEEP_SECONDS/$3/" k8s/45-runtime-pod.yaml | kubectl apply -f - >/dev/null; }
+  run rt-runc "" 41001                                # lab-agent enforces "restricted": the pods come from the template
+  run rt-kata "runtimeClassName: kata-qemu" 42002
   kubectl create namespace lab-rbac --dry-run=client -o yaml | kubectl apply -f - >/dev/null
   kubectl apply -f k8s/50-rbac-lab.yaml >/dev/null
   kubectl -n lab-agent wait --for=condition=Ready pod/diag pod/rt-runc pod/rt-kata --timeout=240s >/dev/null
@@ -32,13 +32,14 @@ b)
   kubectl delete namespace lab-rbac --ignore-not-found --wait=true >/dev/null
   kubectl apply -f k8s/30-agent-netpol.yaml >/dev/null
   kubectl -n lab-agent delete pod diag inspect --ignore-not-found --wait=true >/dev/null
-  sed -e "s/NAME/inspect/" -e "s/RUNTIME_LINE/runtimeClassName: kata-qemu/" -e 's/"RUN_ID"/"inspect"/' k8s/60-agent-pod.yaml \
+  sed -e "s/NAME/inspect/" -e "s/RUNTIME_LINE/runtimeClassName: kata-qemu/" -e 's/"RUN_ID"/"inspect"/' -e 's/RESULT_NONCE_VALUE/none/' k8s/60-agent-pod.yaml \
     | sed -E 's/^(    image: aip-agent:[0-9]+)$/\1\n    command: ["sleep", "3600"]/' | kubectl apply -f - >/dev/null
   [ "$(kubectl -n lab-agent get pod inspect -o jsonpath='{.spec.containers[0].command[0]}')" = sleep ] || { echo "inspect would run the agent; aborting"; kubectl -n lab-agent delete pod inspect --wait=false; exit 1; }
   kubectl -n lab-agent wait --for=condition=Ready pod/inspect --timeout=240s >/dev/null
   show ;;
 bench)   # the benchmark's workload, live: same image and limits as perf.py, a Python process that idles; needs phase a's diag pod gone
   kubectl -n lab-agent delete pod diag inspect rt-runc rt-kata --ignore-not-found --wait=true >/dev/null
+  kubectl create namespace lab-perf --dry-run=client -o yaml | kubectl apply -f - >/dev/null    # perf.py creates it too; do not depend on it having run
   kubectl -n lab-perf delete pod bench-runc bench-kata --ignore-not-found --wait=true >/dev/null
   for rt in runc kata; do
     [ "$rt" = runc ] && rc="" || rc="runtimeClassName: kata-qemu"
@@ -47,7 +48,7 @@ bench)   # the benchmark's workload, live: same image and limits as perf.py, a P
   kubectl -n lab-perf wait --for=condition=Ready pod/bench-runc pod/bench-kata --timeout=240s >/dev/null
   sleep 15; show ;;
 down)
-  kubectl -n lab-perf delete pod bench-runc bench-kata --ignore-not-found --wait=false >/dev/null
+  kubectl -n lab-perf delete pod bench-runc bench-kata --ignore-not-found --wait=false >/dev/null 2>&1 || true
   kubectl -n lab-agent delete pod diag inspect rt-runc rt-kata --ignore-not-found --wait=false >/dev/null
   kubectl delete namespace lab-rbac --ignore-not-found --wait=true >/dev/null
   kubectl apply -f k8s/30-agent-netpol.yaml >/dev/null

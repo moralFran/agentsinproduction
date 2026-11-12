@@ -1,0 +1,4 @@
+file: /opt/kata/share/defaults/kata-containers/configuration-qemu.toml
+88:seccompsandbox = ""
+627:disable_guest_seccomp = true
+configuration-clh-azure.toml configuration-clh.toml configuration-fc.toml configuration-qemu-coco-dev.toml configuration-qemu-nvidia-cpu.toml configuration-qemu-nvidia-gpu-snp.toml configuration-qemu-nvidia-gpu-tdx.toml configuration-qemu-nvidia-gpu.toml configuration-qemu-se.toml configuration-qemu-snp.toml configuration-qemu-tdx.toml configuration-qemu.toml configuration-remote.toml configuration-stratovirt.toml configuration.toml runtime-rs runtimes 

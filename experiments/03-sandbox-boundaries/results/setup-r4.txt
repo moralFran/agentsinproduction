@@ -1,0 +1,65 @@
+namespace/lab-agent created
+namespace/lab-gateway created
+namespace/lab-internal created
+namespace/lab-rbac created
+serviceaccount/agent created
+configmap/gateway-code created
+configmap/internal-api-code created
+secret/gateway-key created
+deployment.apps/billing-internal created
+service/billing-internal created
+persistentvolumeclaim/gateway-state created
+deployment.apps/gateway created
+service/gateway created
+namespace/lab-validate created
+networkpolicy.networking.k8s.io/deny-all created
+deployment.apps/billing-internal patched
+deployment.apps/gateway patched
+Waiting for deployment "billing-internal" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "billing-internal" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "billing-internal" rollout to finish: 1 old replicas are pending termination...
+deployment "billing-internal" successfully rolled out
+Waiting for deployment "gateway" rollout to finish: 0 of 1 updated replicas are available...
+deployment "gateway" successfully rolled out
+gateway code here:    0612b78d1226592d57419ba4f4ff9ca8ac60a87fc602581cbbe2935e124224ba
+gateway code running: 0612b78d1226592d57419ba4f4ff9ca8ac60a87fc602581cbbe2935e124224ba
+networkpolicy.networking.k8s.io/gateway-ingress-agent-only created
+Image is up to date for sha256:78976a69c067520ef8be34cde307ef9f6fea6dcefa50edb57039773d241ca0db
+Image is up to date for sha256:7551dbeefe0d9a88a7134dd903f97727315e9fd150b4aefa6da5dcf3a4757f2a
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+dpkg-preconfigure: unable to re-open stdin: 
+debconf: unable to initialize frontend: Dialog
+debconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)
+debconf: falling back to frontend: Readline
+debconf: unable to initialize frontend: Readline
+debconf: (This frontend requires a controlling tty.)
+debconf: falling back to frontend: Teletype
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+sha256:38c5ec39229f73c783be91876cbdec8f2b61638fc3764ffee27e1f636edbc230
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+sha256:e370d43d39765ff78df1830ce3d4a4a0b89c74d1e6414daf3ad83cb9fcaea87b
+application/vnd.oci.image.manifest.v1+json sha256:e370d43d39765ff78df1830ce3d4a4a0b89c74d1e6414daf3ad83cb9fcaea87b
+Importing	elapsed: 8.6 s	total:   0.0 B	(0.0 B/s)	
+[aip-agent:4] sha256:38c5ec39229f73c783be91876cbdec8f2b61638fc3764ffee27e1f636edbc230
+[aip-validator:4] sha256:e370d43d39765ff78df1830ce3d4a4a0b89c74d1e6414daf3ad83cb9fcaea87b

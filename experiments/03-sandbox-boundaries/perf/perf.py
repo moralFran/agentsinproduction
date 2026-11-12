@@ -14,7 +14,9 @@ import glob, json, os, subprocess, sys, threading, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 20
-OUT = sys.argv[2] if len(sys.argv) > 2 else "results/perf.jsonl"
+if len(sys.argv) < 3 or os.path.exists(sys.argv[2]):      # results/perf.jsonl is the collection of 2026-11-11
+    sys.exit("usage: perf.py <N> <new output file, e.g. results/perf-r4.jsonl>   (an existing file is never overwritten)")
+OUT = sys.argv[2]
 IDLE_S, NS, PORT, IMAGE = 15, "lab-perf", 9099, "python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b"
 HOST = os.environ["NODE_IP"]            # from lab.env
 # The image name is written exactly as in the other manifests ("python:...", no registry prefix). With imagePullPolicy
@@ -72,7 +74,7 @@ spec:
     resources: {{limits: {{cpu: '1', memory: 512Mi}}}}
 """
 sh("kubectl", "create", "namespace", NS, check=False)
-with open(OUT, "w") as out:
+with open(OUT, "x") as out:
     for i in range(1, N + 1):
         for rt in (("runc", "kata-qemu") if i % 2 else ("kata-qemu", "runc")):   # alternate which runtime goes first
             name = f"p-{rt.split('-')[0]}-{i:02d}"

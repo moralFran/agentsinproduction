@@ -1,7 +1,10 @@
 # Four namespaces: the agent's sandbox, the gateway (outside the sandbox), a fake internal system, and the RBAC lab.
+# lab-agent enforces the "restricted" Pod Security level: a pod there must be non-root, drop every capability, forbid
+# privilege escalation and set a seccomp profile, or the API refuses it. Every pod this experiment creates in it
+# (60 agent, 40 diag, 45 runtime comparison) is written to that level; k8s/check_restricted.py checks them offline.
 apiVersion: v1
 kind: Namespace
-metadata: {name: lab-agent}
+metadata: {name: lab-agent, labels: {pod-security.kubernetes.io/enforce: restricted}}
 ---
 apiVersion: v1
 kind: Namespace

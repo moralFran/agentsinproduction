@@ -1,0 +1,14 @@
+k3s: k3s version v1.37.2+k3s1 (f6973cb8)
+containerd:   Version:  v2.3.7-k3s1
+kata: kata-runtime  : 4.3.1
+qemu: QEMU emulator version 11.0.1 (kata-static)
+helm: v3.22.1+gd6c1a0e
+host kernel: 7.0.0-1017-gcp
+os: Ubuntu 24.04.5 LTS
+cpu: Intel(R) Xeon(R) CPU @ 2.80GHz x4
+python on the node: Python 3.12.3
+images:
+docker.io/library/aip-agent                  4                       735f9e8c29d47       94.3MB
+docker.io/curlimages/curl                    <none>                  7551dbeefe0d9       9.56MB
+docker.io/library/python                     <none>                  78976a69c0675       43.3MB
+docker.io/library/aip-validator              4                       cd51ed2f9c622       86MB

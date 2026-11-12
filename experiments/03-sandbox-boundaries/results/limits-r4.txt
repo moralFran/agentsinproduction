@@ -1,0 +1,12 @@
+1. pod with a 20 s deadline running 'sleep 3600': phase=Failed reason=DeadlineExceeded after 23 s
+2. valid call through the gateway: HTTP 200
+   booked before restart: {"spent_usd": 0.050254799999999974, "requests": 34, "in_tok": 17076, "out_tok": 1798, "reserved": {}, "halted": null}
+   booked after restart:  {"spent_usd": 0.050254799999999974, "requests": 34, "in_tok": 17076, "out_tok": 1798, "reserved": {}, "halted": null}
+3. same call with the budget set to $0.000001: HTTP 429 {"error": "gateway budget: this call reserves $0.0002, $0.0000 left"}
+   booked after the refused call: {"spent_usd": 0.050254799999999974, "requests": 34, "in_tok": 17076, "out_tok": 1798, "reserved": {}, "halted": null}
+   budget put back to: 5
+4. message with an image by URL: HTTP 403 {"error": "content block not allowed: image"}
+   booked before: {"spent_usd": 0.050254799999999974, "requests": 34, "in_tok": 17076, "out_tok": 1798, "reserved": {}, "halted": null}
+   booked after:  {"spent_usd": 0.050254799999999974, "requests": 34, "in_tok": 17076, "out_tok": 1798, "reserved": {}, "halted": null}
+{"ts": 1794495734.274, "event": "start", "models": ["claude-haiku-5-5", "claude-sonnet-5-5"], "budget_usd": 5.0, "spent_usd": 0.050255, "halted": null, "code": "0612b78d1226", "anthropic_version": "2023-06-01"}
+{"ts": 1794495735.099, "src": "127.0.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "content block not allowed: image", "status": 403, "run": "limits-check"}

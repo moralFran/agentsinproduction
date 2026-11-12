@@ -1,0 +1,19 @@
+== before: running pod pod/gateway-57bddc8b97-57xs6, code 0612b78d1226592d57419ba4f4ff9ca8ac60a87fc602581cbbe2935e124224ba
+== run 2: gateway.py changed (one comment line), no key on stdin
+configmap/gateway-code configured
+deployment "billing-internal" successfully rolled out
+deployment "gateway" successfully rolled out
+gateway code here:    a2255d44adcdddf598799ce4c2d0abd1897c6b306f0c3a0b8d604a16f2eba5cb
+gateway code running: a2255d44adcdddf598799ce4c2d0abd1897c6b306f0c3a0b8d604a16f2eba5cb
+setup exit 0
+pod now: pod/gateway-c45f598d7-cth6v
+start line: {"ts": 1794493794.202, "event": "start", "models": ["claude-haiku-5-5", "claude-sonnet-5-5"], "budget_usd": 5.0, "spent_usd": 0.0, "halted": null, "code": "a2255d44adcd", "anthropic_version": "2023-06-01"}
+== run 3: original gateway.py back
+configmap/gateway-code configured
+deployment "billing-internal" successfully rolled out
+deployment "gateway" successfully rolled out
+gateway code here:    0612b78d1226592d57419ba4f4ff9ca8ac60a87fc602581cbbe2935e124224ba
+gateway code running: 0612b78d1226592d57419ba4f4ff9ca8ac60a87fc602581cbbe2935e124224ba
+setup exit 0
+pod now: pod/gateway-57bddc8b97-92gcc
+start line: {"ts": 1794493846.314, "event": "start", "models": ["claude-haiku-5-5", "claude-sonnet-5-5"], "budget_usd": 5.0, "spent_usd": 0.0, "halted": null, "code": "0612b78d1226", "anthropic_version": "2023-06-01"}

@@ -1,0 +1,4 @@
+1. pod with a 20 s deadline running 'sleep 3600': phase=Failed reason=DeadlineExceeded after 23 s
+2. valid call through the gateway: HTTP 200
+   booked before restart: {"spent_usd": 0.05025859999999997, "requests": 35, "in_tok": 17094, "out_tok": 1802, "reserved": {}, "halted": null}
+   booked after restart:  {"spent_usd": 0.05025859999999997, "requests": 35, "in_tok": 17094, "out_tok": 1802, "reserved": {}, "halted": null}

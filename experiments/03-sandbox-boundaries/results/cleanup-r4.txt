@@ -1,0 +1,9 @@
+selected: aip-endpoint-01 aip-kata-01 
+deleted: aip-endpoint-01 (and its disks)
+deleted: aip-kata-01 (and its disks)
+left (instances): 
+left (disks):     
+destroy exit 0
+2026-11-12T15:08:48Z
+instances: none
+disks: none

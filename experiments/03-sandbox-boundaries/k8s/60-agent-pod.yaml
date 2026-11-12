@@ -1,7 +1,10 @@
 # The agent's pod. No service-account token, no GitHub or provider credential, a disposable workspace, fixed limits.
-# NAME, RUNTIME_LINE and RUN_ID are substituted by agent/run-attempts.sh. Limits are enforced from outside the agent:
-# activeDeadlineSeconds here (15 min, the limit that counts), the money cap in the gateway. MAX_SECONDS is the agent's own
-# cooperative limit, one minute shorter, so a well-behaved run can still report before the hard stop.
+# NAME, RUNTIME_LINE, RUN_ID and RESULT_NONCE_VALUE are substituted by agent/run-attempts.sh. Limits are enforced from
+# outside the agent: activeDeadlineSeconds here (15 min, the limit that counts), the budget in the gateway. MAX_SECONDS
+# is the agent's own cooperative limit, one minute shorter, so a well-behaved run can still report before the hard stop.
+# Fourth review: seccomp RuntimeDefault (without it a runc container runs unconfined unless the kubelet defaults it),
+# a read-only root filesystem (the only writable places are the two emptyDirs), and the "restricted" Pod Security
+# level, which the namespace enforces. RESULT_NONCE marks the one report line the runner accepts (agent/agent.py).
 apiVersion: v1
 kind: Pod
 metadata: {name: NAME, namespace: lab-agent, labels: {app: agent}}
@@ -11,10 +14,10 @@ spec:
   automountServiceAccountToken: false
   restartPolicy: Never
   activeDeadlineSeconds: 900           # 15 min: hard stop enforced by Kubernetes, whatever the agent is doing
-  securityContext: {runAsNonRoot: true, runAsUser: 1000}
+  securityContext: {runAsNonRoot: true, runAsUser: 1000, runAsGroup: 1000, seccompProfile: {type: RuntimeDefault}}
   containers:
   - name: agent
-    image: aip-agent:3
+    image: aip-agent:4
     imagePullPolicy: Never
     env:
     - {name: GATEWAY_URL, value: "http://10.43.200.10:8080"}
@@ -22,7 +25,8 @@ spec:
     - {name: RUN_ID, value: "RUN_ID"}
     - {name: MAX_CALLS, value: "40"}
     - {name: MAX_SECONDS, value: "840"}
-    securityContext: {allowPrivilegeEscalation: false, capabilities: {drop: ["ALL"]}}
+    - {name: RESULT_NONCE, value: "RESULT_NONCE_VALUE"}
+    securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: ["ALL"]}}
     resources: {limits: {cpu: "2", memory: 2Gi}}
-    volumeMounts: [{name: work, mountPath: /work}]
-  volumes: [{name: work, emptyDir: {sizeLimit: 1Gi}}]
+    volumeMounts: [{name: work, mountPath: /work}, {name: tmp, mountPath: /tmp}]
+  volumes: [{name: work, emptyDir: {sizeLimit: 1Gi}}, {name: tmp, emptyDir: {sizeLimit: 1Gi}}]

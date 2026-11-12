@@ -309,7 +309,7 @@
      "cmd": "kubectl get ns | grep lab-"
     },
     {
-     "cmd": "kubectl exec -i inspect -- python3 - < diag/reach.py"
+     "cmd": "diag/reach.sh"
     }
    ],
    "scene": "14 · final configuration: RBAC lab gone; from the agent's own image, every target refused, the model call works"

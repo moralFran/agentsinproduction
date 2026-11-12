@@ -1,0 +1,41 @@
+== offline check on the node
+namespaces enforcing 'restricted': lab-agent, lab-validate
+would  10-gateway.yaml                    lab-gateway   container gateway: allowPrivilegeEscalation is not false; container gateway: capabilities.drop does not include ALL; container gateway: runAsNonRoot is not true; container gateway: no seccompProfile RuntimeDefault/Localhost
+would  20-internal-api.yaml               lab-internal  container api: allowPrivilegeEscalation is not false; container api: capabilities.drop does not include ALL; container api: runAsNonRoot is not true; container api: no seccompProfile RuntimeDefault/Localhost
+ok     40-diag-pod.yaml (runc)            lab-agent     meets restricted
+ok     40-diag-pod.yaml (kata)            lab-agent     meets restricted
+ok     45-runtime-pod.yaml (runc)         lab-agent     meets restricted
+ok     45-runtime-pod.yaml (kata)         lab-agent     meets restricted
+would  50-rbac-lab.yaml                   lab-rbac      container c: allowPrivilegeEscalation is not false; container c: capabilities.drop does not include ALL; container c: runAsNonRoot is not true; container c: no seccompProfile RuntimeDefault/Localhost
+would  50-rbac-lab.yaml                   lab-rbac      container c: allowPrivilegeEscalation is not false; container c: capabilities.drop does not include ALL; container c: runAsNonRoot is not true; container c: no seccompProfile RuntimeDefault/Localhost
+ok     60-agent-pod.yaml (runc)           lab-agent     meets restricted
+ok     60-agent-pod.yaml (kata)           lab-agent     meets restricted
+ok     71-validator-pod.yaml              lab-validate  meets restricted
+exit 0
+== server-side dry run of every rendered pod template
+-- 40-diag-pod.yaml-kata.yaml
+pod/diag created (server dry run)
+-- 40-diag-pod.yaml-runc.yaml
+pod/diag created (server dry run)
+-- 45-runtime-pod.yaml-kata.yaml
+pod/check created (server dry run)
+-- 45-runtime-pod.yaml-runc.yaml
+pod/check created (server dry run)
+-- 50-rbac-lab.yaml.yaml
+secret/dummy-credentials created (server dry run)
+serviceaccount/reader created (server dry run)
+serviceaccount/noaccess created (server dry run)
+role.rbac.authorization.k8s.io/read-dummy created (server dry run)
+rolebinding.rbac.authorization.k8s.io/reader-reads-dummy created (server dry run)
+Error from server (Forbidden): error when creating "/tmp/rendered-r4/50-rbac-lab.yaml.yaml": pods "id-reader" is forbidden: error looking up service account lab-rbac/reader: serviceaccount "reader" not found
+Error from server (Forbidden): error when creating "/tmp/rendered-r4/50-rbac-lab.yaml.yaml": pods "id-noaccess" is forbidden: error looking up service account lab-rbac/noaccess: serviceaccount "noaccess" not found
+-- 60-agent-pod.yaml-kata.yaml
+pod/check created (server dry run)
+-- 60-agent-pod.yaml-runc.yaml
+pod/check created (server dry run)
+-- 71-validator-pod.yaml.yaml
+pod/check created (server dry run)
+== control: a plain pod in lab-agent
+Error from server (Forbidden): pods "psa-control" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "psa-control" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "psa-control" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "psa-control" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "psa-control" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+== control: a plain pod in lab-validate
+Error from server (Forbidden): pods "psa-control" is forbidden: violates PodSecurity "restricted:latest": allowPrivilegeEscalation != false (container "psa-control" must set securityContext.allowPrivilegeEscalation=false), unrestricted capabilities (container "psa-control" must set securityContext.capabilities.drop=["ALL"]), runAsNonRoot != true (pod or container "psa-control" must set securityContext.runAsNonRoot=true), seccompProfile (pod or container "psa-control" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")

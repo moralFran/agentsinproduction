@@ -1,0 +1,40 @@
+# One validator pod per check. validator/validate.sh substitutes POD_NAME, VALIDATOR_ARGS and NONCE_VALUE.
+# Kata, no network (the namespace denies all), no token, non-root, no capabilities, read-only root filesystem,
+# limits, a hard deadline. It meets the "restricted" Pod Security level its namespace enforces.
+# The maintainer's fix is in the image at /task/fixed. The init container copies it into an emptyDir, and the
+# validator's container mounts that emptyDir OVER /task/fixed: it sees a copy it can delete, and the image's own copy
+# is hidden under the mount. validate.py deletes the copy before any patch code runs, and stops if it cannot.
+apiVersion: v1
+kind: Pod
+metadata: {name: POD_NAME, namespace: lab-validate, labels: {app: validator}}
+spec:
+  runtimeClassName: kata-qemu
+  automountServiceAccountToken: false
+  restartPolicy: Never
+  activeDeadlineSeconds: 900
+  securityContext: {runAsNonRoot: true, runAsUser: 1000, runAsGroup: 1000, seccompProfile: {type: RuntimeDefault}}
+  initContainers:
+  - name: reference
+    image: aip-validator:4
+    imagePullPolicy: Never
+    command: ["cp", "-r", "/task/fixed/.", "/reference/"]
+    securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: ["ALL"]}}
+    resources: {limits: {cpu: "1", memory: 256Mi}}
+    volumeMounts: [{name: reference, mountPath: /reference}]
+  containers:
+  - name: v
+    image: aip-validator:4
+    imagePullPolicy: Never
+    command: VALIDATOR_ARGS
+    env:
+    - {name: VALIDATION_NONCE, value: "NONCE_VALUE"}
+    securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: ["ALL"]}}
+    resources: {limits: {cpu: "2", memory: 2Gi}}
+    volumeMounts:
+    - {name: reference, mountPath: /task/fixed}
+    - {name: tmp, mountPath: /tmp}
+    - {name: in, mountPath: /in, readOnly: true}
+  volumes:
+  - {name: reference, emptyDir: {sizeLimit: 16Mi}}
+  - {name: tmp, emptyDir: {sizeLimit: 1Gi}}
+  - {name: in, configMap: {name: POD_NAME}}
