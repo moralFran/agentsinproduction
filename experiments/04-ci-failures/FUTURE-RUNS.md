@@ -197,6 +197,22 @@ Re-running `run-round.sh` skips attempts already in the JSONL journal, including
 zero and without accessing the prepared tree, opening a gateway run or rewriting a patch. Malformed journals and
 failures of pending attempts still stop the round. This resumes completed journal entries; it does not automatically
 reconcile a gateway run opened before a crash that produced no attempt record.
+
+**An infrastructure failure of the model path is not an attempt.** Three attempts run at a time, so when the gateway
+halts (a close it could not write, a call above its reservation) or the provider fails, the attempts in flight get
+errors that are not theirs. Before, the agent treated only its own cap (429) specially: a 503 became `error`, whatever
+was half-edited in the working copy was validated, the result entered the journal, and the resume then skipped it. Now
+the agent harness classifies a failed model call by its HTTP status: 429 naming this run's budget is
+`budget_exhausted`, an outcome of the attempt; a 5xx or 529, a 403 from the gateway, any other 429 (total budget,
+provider rate limit) or a lost connection is `gateway_unavailable`, and the harness returns no patch. `attempt.sh`
+validates nothing for such a try and does not write it to the journal: it goes to `results/infra-<round>.jsonl` with
+the reason, what the agent reported and what the gateway booked, and the script fails, which stops the round after the
+repetition in progress. On resume the case/repetition is redone under a new run id (`-t2`, `-t3`), because the gateway
+refuses a reused id; the same now applies to a run that opened without a usable token. After three such tries for the
+same case and repetition the script refuses to continue until someone looks. A 400 from the provider (for example a
+conversation that grew too long) stays an `error` of the attempt. Two things to keep in mind: the classification is
+reported by the agent's pod, like the rest of its result; and what those tries cost is in the infra file and in the
+gateway's totals, not in the tally, whose total is already labelled a lower bound.
 The tally handles apply failures, validator rejections, flaky tests, missing output and infrastructure failures without
 requiring a blind key. A no-patch timeout/tool-limit/error is no longer called a voluntary give-up. Unknown cost remains
 unknown and the total is labelled as a lower bound.
@@ -260,12 +276,13 @@ All checks below passed locally on the follow-up implementation:
 | Check | Result |
 |---|---|
 | `python3 -B executor/test_executor.py` | 31/31 |
-| `python3 -B infra/test_security.py` | 38 tests, OK |
+| `python3 -B infra/test_security.py` | 40 tests, OK |
 | `python3 -B infra/test_workflow.py` | 9 tests, OK |
 | `python3 -B gateway/test_budget.py --short` | 22 checks, 0 failed |
 
 New regressions exercise token-bound parallel budgets, restart/revocation and closure between lookup and reservation;
 a close that cannot be written (revoked in memory, forwarding halted, durable once written, and the restart limit);
+model-path failures classified by status and returned without a patch, kept out of the journal and redone under a new run id;
 Git metadata tampering without executing fsmonitor; retained pre-test file inventories; suites that only query Git;
 an ignore file planted in `HOME`; a new self-ignoring directory; the token absent from the tool's environment;
 a run closed when its token cannot be read; an unknown reproduction tree; Go compilation, mandatory on the fixed tree and recorded on the broken one;

@@ -19,17 +19,42 @@ else
   grep -q "^$cid," cases/cases.csv 2>/dev/null || { echo "case $cid is not in the frozen cases.csv"; exit 1; }
   base=results
 fi
-run="$round-$(echo "$cid" | md5sum | cut -c1-8)-r$rep"; out="$base/attempts-$round.jsonl"; pd="$base/patches/$round"
+run0="$round-$(echo "$cid" | md5sum | cut -c1-8)-r$rep"; out="$base/attempts-$round.jsonl"; pd="$base/patches/$round"
+# Tries that never became an attempt (the model path was unavailable, or the run opened without a usable token) are
+# kept here, not in the journal: they are redone on resume. The gateway refuses a reused run id, so a redo gets a new
+# one (-t2, -t3). After MAX_INFRA_TRIES such tries the script stops and asks for a person.
+infra="$base/infra-$round.jsonl"
 # A recorded attempt is complete for round scheduling, including a recorded failure. Never spend or overwrite it.
 # Parse the journal rather than depending on JSON whitespace; malformed records still stop the runner.
-recorded=$(python3 - "$out" "$run" <<'PY'
+recorded=$(python3 - "$out" "$run0" <<'PY'
 import json, pathlib, sys
 p = pathlib.Path(sys.argv[1])
 rows = [json.loads(line) for line in p.read_text().splitlines() if line.strip()] if p.exists() else []
-print("yes" if any(row.get("run") == sys.argv[2] for row in rows) else "no")
+print("yes" if any(row.get("run") == sys.argv[2] or str(row.get("run", "")).startswith(sys.argv[2] + "-t") for row in rows) else "no")
 PY
 )
-[ "$recorded" = yes ] && { echo "run $run already recorded; skipping"; exit 0; }
+[ "$recorded" = yes ] && { echo "run $run0 already recorded; skipping"; exit 0; }
+tries=$(python3 - "$infra" "$run0" <<'PY'
+import json, pathlib, sys
+p = pathlib.Path(sys.argv[1])
+rows = [json.loads(line) for line in p.read_text().splitlines() if line.strip()] if p.exists() else []
+print(sum(1 for row in rows if row.get("run") == sys.argv[2] or str(row.get("run", "")).startswith(sys.argv[2] + "-t")))
+PY
+)
+[ "$tries" -ge "${MAX_INFRA_TRIES:-3}" ] && { echo "run $run0 already failed $tries times for infrastructure reasons ($infra): look at it before trying again" >&2; exit 1; }
+if [ "$tries" = 0 ]; then run="$run0"; else run="$run0-t$((tries + 1))"; fi
+not_an_attempt() {   # $1 = reason, $2 = file with the agent's output or "", $3 = file with the gateway's close reply or ""
+  python3 - "$round" "$cid" "$rep" "$run" "$1" "${2:-}" "${3:-}" >> "$infra" <<'PY'
+import json, os, sys, time
+rnd, cid, rep, run, reason, fa, fg = sys.argv[1:]
+grab = lambda f, tag: next((json.loads(l[len(tag):]) for l in reversed(open(f).readlines()) if l.startswith(tag)), {}) if f and os.path.exists(f) else {}
+agent = grab(fa, "RESULT "); agent.pop("patch", None)
+try: gw = json.loads(open(fg).read() or "{}") if fg and os.path.exists(fg) else {}
+except ValueError: gw = {}
+print(json.dumps({"round": rnd, "case": cid, "rep": int(rep), "run": run, "reason": reason, "at": round(time.time()), "agent": agent,
+                  "agent_pod": grab(fa, "POD "), "gateway": {"spent_usd": gw.get("spent_usd"), "calls": gw.get("calls"), "cap_usd": gw.get("cap_usd")}}))
+PY
+}
 [ -s "/srv/ci/cases/$cid/failure.txt" ] || { echo "case $cid has no failure.txt (written at the freeze, or by smoke-failure.py)"; exit 1; }
 mkdir -p "$pd"
 ADMIN_KEY_FILE="${ADMIN_KEY_FILE:-/srv/ci/admin-key}"
@@ -40,6 +65,7 @@ opened=$(admin -X POST "$ADMIN/runs" -d "{\"run\": \"$run\", \"cap_usd\": $CAP}"
 # instead of leaving an open run behind.
 run_token=$(printf '%s' "$opened" | python3 -c 'import json,sys; token=json.load(sys.stdin)["token"]; assert isinstance(token,str) and len(token)>=32; print(token)') || {
   admin -X POST "$ADMIN/runs/$run/close" -d '{}' >/dev/null || echo "could not close run $run either" >&2
+  not_an_attempt "the gateway opened the run but returned no usable token"
   echo "gateway opened run $run but returned no usable token; the run was closed"; exit 1; }
 unset opened
 t0=$(date +%s)
@@ -55,11 +81,21 @@ for _ in 1 2 3; do
   sleep "${CLOSE_RETRY_S:-2}"
 done
 [ "$close_ok" = 1 ] || echo '{}' > "/tmp/$run.gw"
-python3 - "/tmp/$run.agent" "$pd/$run.diff" <<'PY'
+agent_outcome=$(python3 - "/tmp/$run.agent" "$pd/$run.diff" <<'PY'
 import json, sys
 res = next((json.loads(l[7:]) for l in reversed(open(sys.argv[1]).readlines()) if l.startswith("RESULT ")), {"outcome": "no_result", "patch": ""})
 open(sys.argv[2], "w").write(res.get("patch", ""))
+print(res.get("outcome"))
 PY
+)
+if [ "$agent_outcome" = gateway_unavailable ]; then
+  # The agent did not get its model calls (gateway halted, run closed, provider error): infrastructure, not a result.
+  # Nothing is validated and nothing enters the journal, so the resume redoes this case/repetition under a new run id.
+  not_an_attempt "the model path was unavailable to the agent" "/tmp/$run.agent" "/tmp/$run.gw"
+  rm -f "$pd/$run.diff" "/tmp/$run".*
+  echo "run $run: the model path was unavailable (see $infra); not recorded as an attempt, the resume redoes it" >&2
+  exit 1
+fi
 python3 cases/validate.py "$cid" "$pd/$run.diff" "va-$run" > "/tmp/$run.exec" 2>&1 || true
 python3 - "$round" "$cid" "$rep" "$run" "$t0" "/tmp/$run.agent" "/tmp/$run.gw" "/tmp/$run.exec" >> "$out" <<'PY'
 import json, sys, time

@@ -20,7 +20,8 @@ def final(a, key, verd):
     if ex == "no_patch":
         return {"budget_exhausted": "parou por orçamento", "timeout": "parou por tempo",
                 "max_tool_calls": "parou por limite de ferramentas", "error": "erro do agente",
-                "no_result": "erro de infraestrutura", "finished": "desistiu"}.get(ag, "resultado desconhecido")
+                "no_result": "erro de infraestrutura", "gateway_unavailable": "erro de infraestrutura",
+                "finished": "desistiu"}.get(ag, "resultado desconhecido")
     if ex == "green_fails_hidden": return "pior"
     if ex not in ("green_passes_hidden", "green_no_hidden_tests"): return "resultado desconhecido"
     packet = key.get(a["run"]); v = verd.get(packet, {})

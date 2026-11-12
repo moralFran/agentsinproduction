@@ -39,6 +39,22 @@ def bash(cmd, limit):
     if len(out) > 10000: out = out[:5000] + "\n[... truncated ...]\n" + out[-5000:]
     return rc, out, time.monotonic() - t
 
+def model_call_failure(e):
+    """Why a model call failed, when the reason is not the agent's work. Read from the HTTP status the SDK attaches to
+    the exception (status_code), so it does not depend on the SDK's class names.
+      budget_exhausted     429 from the gateway for THIS run's cap ("run budget"): an outcome of the attempt.
+      gateway_unavailable  the model path failed: the gateway halted or its state could not be written (503), the run
+                           was closed or the request refused (403), the total budget or the provider's rate limit
+                           (any other 429), a provider error (5xx, 529), or no connection. Infrastructure, not a
+                           result: the harness returns no patch and cases/attempt.sh does not record an attempt.
+    None for anything else (a 400 for an oversized conversation, a bug here): the caller's generic handling applies."""
+    status = getattr(e, "status_code", None)
+    if status == 429:
+        return "budget_exhausted" if "run budget" in f"{e} {getattr(e, 'body', '')}" else "gateway_unavailable"
+    if status == 403 or (isinstance(status, int) and status >= 500): return "gateway_unavailable"
+    if isinstance(e, getattr(anthropic, "APIConnectionError", ())): return "gateway_unavailable"
+    return None
+
 def with_cache_mark(messages):
     """Copy of the history with cache_control on the last block of the last message (and on nothing else)."""
     msgs = json.loads(json.dumps(messages))
@@ -72,8 +88,10 @@ def main():
             t = time.monotonic()
             try:
                 resp = client.messages.create(model=MODEL, max_tokens=4096, system=SYSTEM, tools=TOOLS, messages=with_cache_mark(messages), timeout=min(300, left))
-            except anthropic.RateLimitError as e:            # 429 from the gateway: the run's budget is spent
-                r["outcome"] = "budget_exhausted"; r["error"] = str(e)[:300]; break
+            except Exception as e:
+                why = model_call_failure(e)
+                if why is None: raise
+                r["outcome"] = why; r["error"] = f"{type(e).__name__}: {str(e)[:300]}"; break
             r["model_s"] += time.monotonic() - t; r["model_calls"] += 1
             u = resp.usage
             r["in_tok"] += u.input_tokens; r["out_tok"] += u.output_tokens
@@ -96,8 +114,11 @@ def main():
             messages.append({"role": "user", "content": results})
     except Exception as e:
         r["outcome"] = "error"; r["error"] = f"{type(e).__name__}: {str(e)[:300]}"
-    subprocess.run("git add -A", shell=True, **g)
-    r["patch"] = subprocess.run("git diff --cached --binary --no-ext-diff --no-textconv", shell=True, **g).stdout
+    if r["outcome"] == "gateway_unavailable":
+        r["patch"] = ""      # whatever is in the working copy is not a result: the attempt did not get its model calls
+    else:
+        subprocess.run("git add -A", shell=True, **g)
+        r["patch"] = subprocess.run("git diff --cached --binary --no-ext-diff --no-textconv", shell=True, **g).stdout
     r["total_s"] = round(time.monotonic() - t_start, 2); r["model_s"] = round(r["model_s"], 2); r["tool_s"] = round(r["tool_s"], 2)
     print("RESULT " + json.dumps(r), flush=True)
 

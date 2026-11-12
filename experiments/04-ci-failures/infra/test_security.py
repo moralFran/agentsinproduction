@@ -72,7 +72,7 @@ class Contracts(unittest.TestCase):
     def test_no_blind_key_needed_for_non_green_outcomes(self):
         for outcome in ('ci_still_red','did_not_apply','rejected_by_validator','test_changed_tree','ci_flaky_after_patch','hidden_tests_did_not_apply','hidden_tests_flaky','infra_error','timeout',None):
             self.assertIsInstance(tally.final({'executor':{'outcome':outcome},'agent':{}},{},{}),str)
-        expected={'finished':'desistiu','timeout':'parou por tempo','max_tool_calls':'parou por limite de ferramentas','error':'erro do agente','budget_exhausted':'parou por orçamento'}
+        expected={'finished':'desistiu','timeout':'parou por tempo','max_tool_calls':'parou por limite de ferramentas','error':'erro do agente','budget_exhausted':'parou por orçamento','gateway_unavailable':'erro de infraestrutura'}
         for outcome,label in expected.items():
             self.assertEqual(tally.final({'executor':{'outcome':'no_patch'},'agent':{'outcome':outcome}},{},{}),label)
         self.assertIsNone(tally.spent({'gateway':{'spent_usd':None}}))
@@ -337,6 +337,80 @@ class RuntimeControls(unittest.TestCase):
         self.assertEqual(captured[0]['default_headers'],{'x-run-token':'random-bearer-fixture'})
         self.assertEqual(val.last_record(out.getvalue(),'RESULT ')['run'],'public-run')
         self.assertNotIn('random-bearer-fixture',out.getvalue())
+    def test_agent_reports_model_path_failures_as_infrastructure_without_a_patch(self):
+        case=self.root/'ci/cases/fixture';case.mkdir(parents=True);shutil.copytree(self.repo,case/'snapshot');(case/'repo').mkdir()
+        (case/'meta.json').write_text(json.dumps({'id':'fixture','language':'Python','test_cmd':'true'}));(case/'failure.txt').write_text('failed')
+        code=self.root/'code';code.mkdir();(code/'prompt-v1.txt').write_text('synthetic {language} case')
+        script=self.root/'agent.py';script.write_text((R/'agent/agent.py').read_text().replace('/srv/ci',str(self.root/'ci')).replace('/code/',str(code)+'/'))
+        class Status(Exception):
+            def __init__(self,code,text):super().__init__(f'Error code: {code} - {text}');self.status_code=code;self.body={'error':text}
+        class Connection(Exception):pass
+        halted='gateway halted: a run close could not be written to the state file'
+        for name,error,outcome,keeps_patch in [
+                ('gateway-halted',Status(503,halted),'gateway_unavailable',False),
+                ('run-closed',Status(403,'unknown or closed run token'),'gateway_unavailable',False),
+                ('provider-overloaded',Status(529,'overloaded_error'),'gateway_unavailable',False),
+                ('provider-5xx',Status(500,'api_error'),'gateway_unavailable',False),
+                ('gateway-502',Status(502,'upstream error: TimeoutError'),'gateway_unavailable',False),
+                ('total-budget',Status(429,'gateway budget: this call reserves $0.0100, $0.0000 left'),'gateway_unavailable',False),
+                ('provider-rate-limit',Status(429,'rate_limit_error'),'gateway_unavailable',False),
+                ('no-connection',Connection('connection refused'),'gateway_unavailable',False),
+                ('own-cap',Status(429,'run budget: this call reserves $0.0100, $0.0000 left in run public-run'),'budget_exhausted',True),
+                ('bad-request',Status(400,'prompt is too long'),'error',True),
+                ('harness-bug',RuntimeError('unexpected'),'error',True)]:
+            with self.subTest(failure=name):
+                holder={}
+                def create(error=error,**kwargs):
+                    with open(os.path.join(holder['agent'].REPO,'core.py'),'w') as f:f.write('value = 9\n')  # work left half done
+                    raise error
+                stub=types.SimpleNamespace(Anthropic=lambda **kwargs:types.SimpleNamespace(messages=types.SimpleNamespace(create=create)),
+                                           RateLimitError=type('UnusedRateLimit',(Exception,),{}),APIConnectionError=Connection)
+                env={'CASE_ID':'fixture','RUN_ID':'public-run','RUN_TOKEN':'random-bearer-fixture','GATEWAY_URL':'http://example.invalid'}
+                out=io.StringIO()
+                with warnings.catch_warnings(),patch.dict(sys.modules,{'anthropic':stub}),patch.dict(os.environ,env),contextlib.redirect_stdout(out):
+                    warnings.simplefilter('ignore',ResourceWarning)
+                    holder['agent']=module('security_failure_agent_'+name.replace('-','_'),script);holder['agent'].main()
+                result=val.last_record(out.getvalue(),'RESULT ')
+                self.assertEqual(result['outcome'],outcome,result);self.assertEqual(bool(result['patch']),keeps_patch,result)
+                self.assertEqual(result['model_calls'],0)
+    def test_attempt_with_unavailable_model_path_is_not_recorded_and_is_redone(self):
+        cases=self.root/'cases';cases.mkdir();bin_dir=self.root/'bin';bin_dir.mkdir()
+        ci=self.root/'ci';(ci/'cases/a').mkdir(parents=True);(ci/'cases/a/failure.txt').write_text('failed');(ci/'admin-key').write_text('synthetic-key')
+        (cases/'cases.csv').write_text('case_id,repo\na,example/a\n')
+        target=cases/'attempt.sh';target.write_text((R/'cases/attempt.sh').read_text().replace('/srv/ci',str(ci)));target.chmod(0o755)
+        # The pod reports what the "gateway" allows: unavailable while the marker file exists, a finished attempt after.
+        (cases/'pod.py').write_text('import json,os\n'
+            'outcome="gateway_unavailable" if os.path.exists("halted") else "finished"\n'
+            'print("RESULT "+json.dumps({"outcome":outcome,"patch":"" if outcome!="finished" else "synthetic patch","error":"InternalServerError: Error code: 503"}))\n')
+        (cases/'validate.py').write_text('open("validated","a").write("x")\nprint(\'EXECUTOR {"outcome":"ci_still_red"}\')\n')
+        md5=bin_dir/'md5sum';md5.write_text('#!'+sys.executable+'\nimport hashlib,sys\nprint(hashlib.md5(sys.stdin.buffer.read()).hexdigest()+"  -")\n');md5.chmod(0o755)
+        curl=bin_dir/'curl';curl.write_text('#!'+sys.executable+'\nimport json,sys\n'
+            'sys.stdin.read()\nwith open("gateway-calls.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
+            'print(json.dumps({"spent_usd":0.0,"calls":0,"cap_usd":0.33,"token":"synthetic-run-token-0123456789abcdef"}))\n');curl.chmod(0o755)
+        env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'ADMIN_KEY_FILE':str(ci/'admin-key'),'CLOSE_RETRY_S':'0'}
+        attempt=lambda:subprocess.run(['bash','cases/attempt.sh','v1','a','1'],cwd=self.root,env=env,capture_output=True,text=True)
+        journal=self.root/'results/attempts-v1.jsonl';infra=self.root/'results/infra-v1.jsonl';(self.root/'halted').write_text('x')
+        opened=lambda:[json.loads(a[a.index('-d')+1])['run'] for a in map(json.loads,(self.root/'gateway-calls.jsonl').read_text().splitlines()) if a[-3].endswith('/runs')]
+        first=attempt();self.assertNotEqual(first.returncode,0);self.assertIn('not recorded as an attempt',first.stderr)
+        self.assertFalse(journal.exists());self.assertFalse((self.root/'validated').exists())
+        self.assertFalse(list((self.root/'results/patches/v1').glob('*.diff')))
+        second=attempt();self.assertNotEqual(second.returncode,0)
+        tries=[json.loads(line) for line in infra.read_text().splitlines()]
+        base=tries[0]['run'];self.assertEqual([t['run'] for t in tries],[base,base+'-t2']);self.assertEqual(opened(),[base,base+'-t2'])  # never a reused id
+        self.assertTrue(all(t['agent']['outcome']=='gateway_unavailable' and 'unavailable' in t['reason'] for t in tries))
+        (self.root/'halted').unlink()
+        third=attempt();self.assertEqual(third.returncode,0,third.stdout+third.stderr)
+        rows=[json.loads(line) for line in journal.read_text().splitlines()]
+        self.assertEqual([(r['run'],r['rep'],r['agent']['outcome'],r['executor']['outcome']) for r in rows],[(base+'-t3',1,'finished','ci_still_red')])
+        again=attempt();self.assertEqual(again.returncode,0);self.assertIn('already recorded; skipping',again.stdout)
+        self.assertEqual(len(opened()),3);self.assertEqual(len(infra.read_text().splitlines()),2)
+        # A case that keeps failing for infrastructure reasons stops asking the gateway and asks for a person.
+        (self.root/'halted').write_text('x')
+        for rep in (1,2,3):
+            last=subprocess.run(['bash','cases/attempt.sh','v1','a','2'],cwd=self.root,env=env,capture_output=True,text=True);self.assertNotEqual(last.returncode,0)
+        calls_before=len(opened())
+        refused=subprocess.run(['bash','cases/attempt.sh','v1','a','2'],cwd=self.root,env=env,capture_output=True,text=True)
+        self.assertNotEqual(refused.returncode,0);self.assertIn('already failed 3 times for infrastructure reasons',refused.stderr);self.assertEqual(len(opened()),calls_before)
     def test_run_round_propagates_attempt_failure(self):
         (self.root/'cases').mkdir();(self.root/'cases/cases.csv').write_text('case_id\nfixture\n')
         shutil.copyfile(R/'cases/run-round.sh',self.root/'cases/run-round.sh')
@@ -422,6 +496,8 @@ class RuntimeControls(unittest.TestCase):
                 self.assertEqual(len(calls),2,calls)
                 self.assertTrue(any(a.endswith('/runs') for a in calls[0]));self.assertTrue(any(a.endswith('/close') for a in calls[1]))
                 self.assertFalse((self.root/'pod-ran').exists());self.assertFalse((self.root/'results/attempts-v1.jsonl').exists())
+        tries=[json.loads(line) for line in (self.root/'results/infra-v1.jsonl').read_text().splitlines()]
+        self.assertEqual([t['run'][-3:] for t in tries[1:]],['-t2','-t3']);self.assertTrue(all('no usable token' in t['reason'] for t in tries))
     def test_attempt_stops_the_round_when_the_close_is_never_confirmed(self):
         # The gateway halts when it cannot write a close. The attempt is still recorded (cost unknown) and the script fails.
         cases=self.root/'cases';cases.mkdir();bin_dir=self.root/'bin';bin_dir.mkdir()
