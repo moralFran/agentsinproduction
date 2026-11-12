@@ -12,7 +12,7 @@ if os.path.exists(f"results/attempts-{rnd}.jsonl"):
 pods = subprocess.run(["kubectl", "get", "pods", "-A", "--no-headers", "-o", "custom-columns=N:.metadata.name"], capture_output=True, text=True,
                       env={**os.environ, "KUBECONFIG": os.path.expanduser("~/.kube/config")}).stdout.split()
 short = {"green_passes_hidden": "green +hidden", "green_no_hidden_tests": "green", "green_fails_hidden": "green, hidden FAIL",
-         "ci_still_red": "still red", "ci_flaky_after_patch": "flaky", "rejected_by_validator": "rejected", "did_not_apply": "no apply", "no_patch": "no patch"}
+         "ci_still_red": "still red", "ci_flaky_after_patch": "flaky", "rejected_by_validator": "rejected", "test_changed_tree": "test changed tree", "did_not_apply": "no apply", "no_patch": "no patch"}
 print(f"{'case':30} {'rep 1':>14} {'rep 2':>14} {'rep 3':>14}")
 for cid in cases:
     cells = []

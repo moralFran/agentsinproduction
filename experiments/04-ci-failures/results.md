@@ -224,6 +224,18 @@ itself leaves output or coverage files, the case is recorded as `incompatible_te
 `freeze.py` requires a clean maintainer integrity control; earlier reproduction records need that control rerun.
 These checks apply to future collections only; no archived case was excluded or reclassified by this rule.
 
+A further follow-up gives each run an unpredictable gateway credential, rechecks closure while reserving budget,
+and protects the integrity check from altered Git metadata. Tree mutation now has its own `test_changed_tree` outcome;
+both validation phases use the broken-tree Go cache. The tally derives its round sizes from the actual records.
+Preparation requires the selected Go packages to compile on the maintainer's fixed tree and records the result on the
+broken one; all reproduction samples restore the checkout; reproduction also runs the maintainer's fix with the agent's
+dependency cache, where passing means exit code 0 and an unchanged tree. A non-discriminating hidden control, a broken tree that did not compile and a fix that fails with
+that cache each require a reasoned eligibility decision before freezing. The integrity check refreshes the Git index
+before its baseline (a suite that only queries Git is not a tree change) and ignores a home-level ignore file. Setup
+restarts the gateway and waits for rollout completion. These changes have local regressions; the 56 non-empty archived patches
+have **not** been rerun under this harness. Preserved files and totals do not establish that new runtime outcomes would
+be identical. See [the addendum](FUTURE-RUNS.md) for the planned integration and remaining shared-state limitations.
+
 **Historical checks:** all 66 attempt records and patches, frozen cases, blind packets/verdicts and audit logs remain
 unchanged. Recomputing `results/final.json`, `results/final-summary.md` and `cases/funnel.md` in a temporary copy produced
 identical bytes. Each archived version passes the new completeness check with 33 distinct attempts. No archived agent
@@ -231,7 +243,7 @@ patch contains `/in/secret`, `/srv/ci`, `fix.diff` or `hidden.diff`. The two min
 `go.mod`/`go.sum` (centrifugo and templ) were not in the frozen case set. These checks found no recorded evidence of the
 identified answer-file/cache exposure being used; they do not prove the absence of all possible interference.
 
-**Verification limits:** 22 security regression tests, 31 executor checks, 8 workflow tests and 17 gateway checks passed
+**Verification limits:** 35 security regression tests, 31 executor checks, 9 workflow tests and 20 gateway checks passed
 locally on synthetic inputs/a fake upstream. No VM was started and no third-party suite or Kubernetes/Kata integration
 was rerun. A deliberate production-code `os._exit(0)` negative control still bypasses an assertion without changing the
 tree; semantic review of green patches remains required. See the addendum for the exact boundary.

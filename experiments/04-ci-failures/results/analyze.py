@@ -4,7 +4,7 @@ says which packet came from which run. Run only after every packet has a verdict
 (amendments 24–27).   usage: analyze.py   (from the experiment folder; writes results/final-summary.md and final.json)"""
 import collections, csv, json, pathlib
 # Post-collection: every executor/agent stop is counted without looking for a nonexistent blind packet.
-EXTRA = ["patch não aplica", "rejeitado pelo validador", "CI intermitente", "testes ocultos não aplicam",
+EXTRA = ["patch não aplica", "rejeitado pelo validador", "suíte alterou a árvore", "CI intermitente", "testes ocultos não aplicam",
          "testes ocultos intermitentes", "erro de infraestrutura", "parou por tempo", "parou por limite de ferramentas",
          "erro do agente", "resultado desconhecido"]
 
@@ -13,7 +13,7 @@ def final(a, key, verd):
     ex = (a.get("executor") or {}).get("outcome")
     ag = (a.get("agent") or {}).get("outcome")
     labels = {"ci_still_red": "ainda vermelho", "did_not_apply": "patch não aplica",
-              "rejected_by_validator": "rejeitado pelo validador", "ci_flaky_after_patch": "CI intermitente",
+              "rejected_by_validator": "rejeitado pelo validador", "test_changed_tree": "suíte alterou a árvore", "ci_flaky_after_patch": "CI intermitente",
               "hidden_tests_did_not_apply": "testes ocultos não aplicam", "hidden_tests_flaky": "testes ocultos intermitentes",
               "infra_error": "erro de infraestrutura", "timeout": "parou por tempo", None: "erro de infraestrutura"}
     if ex in labels: return labels[ex]
@@ -42,6 +42,9 @@ def main():
     repo = lambda cid: cases[cid]["repo"]
     excluded = lambda cid: any(repo(cid).startswith(k) for k in EXCL)
     attempts = [json.loads(l) for v in ("v1", "v2") for l in open(R / f"attempts-{v}.jsonl")]
+    counts = collections.Counter(a["round"] for a in attempts)
+    count_label = (f"todas as {counts['v1']} tentativas por versão" if counts['v1'] == counts['v2']
+                   else f"todas as tentativas: v1 {counts['v1']}, v2 {counts['v2']}")
     key = {r["run"]: r["packet"] for r in map(json.loads, open(R / "blind/key.jsonl"))}
     verd = {r["packet"]: r for r in csv.DictReader(open(R / "blind/verdicts.csv"))}
 
@@ -75,7 +78,7 @@ def main():
           f"- Correções (equivalente + válida): v1 {fix(tab['v1'])} de {sum(tab['v1'].values())}, v2 {fix(tab['v2'])} de {sum(tab['v2'].values())}.",
           f"- Verdes que não são correção (pior + inconclusiva): v1 {tab['v1']['pior'] + tab['v1']['inconclusiva']} de {green(tab['v1'])}, v2 {tab['v2']['pior'] + tab['v2']['inconclusiva']} de {green(tab['v2'])}.",
           f"- 'Pior' por tipo: v1 {dict(pior_kind['v1'])}; v2 {dict(pior_kind['v2'])}.",
-          f"- Custo de API (todas as 33 tentativas por versão): v1 US$ {cost['v1']:.3f}, v2 US$ {cost['v2']:.3f}; só os casos da análise principal: v1 US$ {cost_main['v1']:.3f}, v2 US$ {cost_main['v2']:.3f}.",
+          f"- Custo de API ({count_label}): v1 US$ {cost['v1']:.3f}, v2 US$ {cost['v2']:.3f}; só os casos da análise principal: v1 US$ {cost_main['v1']:.3f}, v2 US$ {cost_main['v2']:.3f}.",
           f"- US$ por correção (análise principal, tentativas falhas incluídas): v1 {cost_main['v1'] / max(1, fix(tab['v1'])):.3f}, v2 {cost_main['v2'] / max(1, fix(tab['v2'])):.3f}.",
           f"- Origem dos vereditos dos pacotes da análise principal: {dict(src)}.", "",
           "## Por caso (r1 / r2 / r3)", "", "| Caso | v1 | v2 |", "|---|---|---|"]

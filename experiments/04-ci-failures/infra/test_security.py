@@ -2,7 +2,7 @@
 """Post-collection security/regression controls. Synthetic repositories and temporary files only; no provider or cluster.
 Manifest checks establish mount contracts, not proof of isolation on a live Kata node. Run: python3 -B infra/test_security.py
 """
-import contextlib, csv, email.message, importlib.util, io, json, os, pathlib, shlex, shutil, subprocess, sys, tempfile, types, unittest, warnings
+import contextlib, csv, email.message, hashlib, importlib.util, io, json, os, pathlib, shlex, shutil, subprocess, sys, tempfile, types, unittest, warnings
 from unittest.mock import patch
 R=pathlib.Path(__file__).resolve().parents[1]
 def module(name,path):
@@ -14,14 +14,18 @@ tally=module('security_tally','results/analyze.py');judge=module('security_judge
 class Contracts(unittest.TestCase):
     def test_validation_and_agent_mounts_have_no_reference_fix(self):
         for language in ('Go','Python'):
-            for role,action in [('agent',[]),('exec',['validate','suite']),('exec',['validate','hidden']),('exec',['repro','fixed','3'])]:
+            for role,action in [('agent',[]),('exec',['validate','suite']),('exec',['validate','hidden']),('exec',['repro','fixed','3']),
+                                ('exec',['repro','fixed-agent-cache','3'])]:
                 with self.subTest(language=language,role=role,action=action):
                     cmd=['python3','/code/agent.py'] if role=='agent' else ['python3','-u','/code/executor.py',*action]
                     spec=pods.build_spec(role,'fixture','pod',900,cmd,{'language':language},secret_meta={'hidden_cmd':'hidden-test','fix_sha':'DO_NOT_EXPOSE'})
                     mounts=spec['spec']['containers'][0]['volumeMounts']; paths={m['mountPath'] for m in mounts}
+                    self.assertEqual(any(v['name']=='fixed-gomod' for v in spec['spec']['volumes']),
+                                     language=='Go' and action[:2]==['repro','fixed'])
                     self.assertNotIn('/in/secret',paths);self.assertNotIn('DO_NOT_EXPOSE',json.dumps(spec))
-                    self.assertEqual('/in/fix.diff' in paths,action[:2]==['repro','fixed'])
-                    self.assertEqual('/in/hidden.diff' in paths,action[:2]==['repro','fixed'])
+                    fix_control=action[:2] in (['repro','fixed'],['repro','fixed-agent-cache'])
+                    self.assertEqual('/in/fix.diff' in paths,fix_control)
+                    self.assertEqual('/in/hidden.diff' in paths,fix_control)
                     if action[:1]==['validate']:
                         self.assertFalse(any(p.startswith('/in/') for p in paths))
                         init=spec['spec']['initContainers'][0]
@@ -66,7 +70,7 @@ class Contracts(unittest.TestCase):
     def test_last_result_wins(self):
         self.assertEqual(val.last_record('RESULT {"value": 1}\nRESULT {"value": 2}\n','RESULT '),{'value':2})
     def test_no_blind_key_needed_for_non_green_outcomes(self):
-        for outcome in ('ci_still_red','did_not_apply','rejected_by_validator','ci_flaky_after_patch','hidden_tests_did_not_apply','hidden_tests_flaky','infra_error','timeout',None):
+        for outcome in ('ci_still_red','did_not_apply','rejected_by_validator','test_changed_tree','ci_flaky_after_patch','hidden_tests_did_not_apply','hidden_tests_flaky','infra_error','timeout',None):
             self.assertIsInstance(tally.final({'executor':{'outcome':outcome},'agent':{}},{},{}),str)
         expected={'finished':'desistiu','timeout':'parou por tempo','max_tool_calls':'parou por limite de ferramentas','error':'erro do agente','budget_exhausted':'parou por orçamento'}
         for outcome,label in expected.items():
@@ -88,7 +92,65 @@ class RuntimeControls(unittest.TestCase):
         (self.repo/'core.py').write_text('value = 1\n')
         command=f'{sys.executable} -B -c '+__import__('shlex').quote("open('core.py','w').write('value = 2\\n')")
         result=ex.checked_run(command,str(self.repo),str(self.repo))
-        self.assertEqual(result['outcome'],'rejected_by_validator');self.assertIn('core.py',result['why'])
+        self.assertEqual(result['outcome'],'test_changed_tree');self.assertIn('core.py',result['why'])
+    def test_git_metadata_changes_are_detected_without_running_modified_git_config(self):
+        marker=self.root/'monitor-ran';hook=self.root/'monitor.sh'
+        hook.write_text('#!/bin/sh\ntouch '+shlex.quote(str(marker))+'\n');hook.chmod(0o755)
+        mutations={
+            '.git/config':f"with open('.git/config','a') as f: f.write({('[core]'+chr(10)+'fsmonitor = '+str(hook)+chr(10))!r})",
+            '.git/info/exclude':"with open('.git/info/exclude','a') as f: f.write('hidden.txt\\n')\nPath('hidden.txt').write_text('hidden output')",
+            '.git/index':"Path('.git/index').write_bytes(b'invalid index')\nPath('core.py').write_text('value = 2\\n')",
+            '.git/HEAD':"Path('.git/HEAD').write_text('invalid head\\n')",
+            '.git':"import shutil\nshutil.rmtree('.git')\nPath('.git').write_text('gitdir: nowhere\\n')"}
+        for i,(name,body) in enumerate(mutations.items()):
+            with self.subTest(metadata=name):
+                repo=self.root/f'tamper-{i}';shutil.copytree(self.repo,repo)
+                script=self.root/f'tamper-{i}.py';script.write_text('from pathlib import Path\n'+body+'\n')
+                result=ex.checked_run(shlex.join([sys.executable,'-B',str(script)]),str(repo),str(repo))
+                self.assertEqual(result['outcome'],'test_changed_tree',result);self.assertIn(name,result['why'])
+                self.assertFalse(marker.exists())
+                if name=='.git/index':self.assertIn('core.py',result['why'])
+    def test_integrity_retains_before_file_list_when_ignore_rules_change(self):
+        report=self.repo/'report.txt';report.write_text('original')
+        before=ex.tree_state(str(self.repo))
+        (self.repo/'.gitignore').write_text('report.txt\n');report.write_text('changed')
+        after=ex.tree_state(str(self.repo),baseline=before)
+        self.assertIn('report.txt',after[1]);self.assertNotEqual(before[1]['report.txt'],after[1]['report.txt'])
+    def test_checker_disables_fsmonitor_inherited_config_and_index_refresh(self):
+        marker=self.root/'monitor-ran';hook=self.root/'monitor.sh'
+        hook.write_text('#!/bin/sh\ntouch '+shlex.quote(str(marker))+'\n');hook.chmod(0o755)
+        config='[core]\nfsmonitor = '+str(hook)+'\n'
+        with (self.repo/'.git/config').open('a') as f:f.write(config)
+        external=self.root/'gitconfig';external.write_text(config)
+        index=(self.repo/'.git/index').read_bytes()
+        inherited={'GIT_CONFIG_SYSTEM':str(external),'GIT_CONFIG_GLOBAL':str(external),
+                   'GIT_CONFIG_COUNT':'1','GIT_CONFIG_KEY_0':'core.fsmonitor','GIT_CONFIG_VALUE_0':str(hook)}
+        with patch.dict(os.environ,inherited):result=ex.checked_run('true',str(self.repo),str(self.repo))
+        self.assertEqual(result['outcome'],'sampled',result);self.assertFalse(marker.exists())
+        self.assertEqual((self.repo/'.git/index').read_bytes(),index)
+    def test_suite_that_only_queries_git_is_not_reported_as_a_tree_change(self):
+        # A copied checkout carries stale stat data in its index, so a plain Git query by the suite rewrites .git/index.
+        # The checker refreshes the index before its baseline; without that, these read-only queries look like tampering.
+        for i,query in enumerate(('git status','git describe --dirty --always','git diff --quiet')):
+            with self.subTest(query=query):
+                repo=self.root/f'query-{i}'
+                subprocess.run(['rsync','-rl','--no-perms','--chmod=u+rwX','--omit-dir-times',str(self.repo)+'/',str(repo)+'/'],check=True)
+                result=ex.checked_run(query+' >/dev/null',str(repo),str(repo))
+                self.assertEqual(result['outcome'],'sampled',result)
+                command=f'{sys.executable} -B -c '+shlex.quote("open('core.py','w').write('value = 2\\n')")
+                result=ex.checked_run('git status >/dev/null && '+command,str(repo),str(repo))
+                self.assertEqual(result['outcome'],'test_changed_tree',result);self.assertIn('core.py',result['why'])
+    def test_ignore_file_in_home_cannot_hide_new_files(self):
+        # Pods run with a writable HOME; Git reads $HOME/.config/git/ignore even when the global config is disabled.
+        home=self.root/'home';home.mkdir()
+        script=self.root/'hide.py';script.write_text('import os\nfrom pathlib import Path\n'
+            "ignore=Path(os.environ['HOME'])/'.config/git/ignore';ignore.parent.mkdir(parents=True)\n"
+            "ignore.write_text('*\\n');Path('leak.txt').write_text('new output')\n")
+        env={k:v for k,v in os.environ.items() if k!='XDG_CONFIG_HOME'};env['HOME']=str(home)
+        with patch.dict(os.environ,env,clear=True):
+            result=ex.checked_run(shlex.join([sys.executable,'-B',str(script)]),str(self.repo),str(self.repo))
+        self.assertTrue((home/'.config/git/ignore').exists())
+        self.assertEqual(result['outcome'],'test_changed_tree',result);self.assertIn('leak.txt',result['why'])
     def test_negative_control_early_exit_is_still_a_semantic_review_requirement(self):
         # Deliberately demonstrate the limit: no path rule proves that the test assertion actually ran.
         (self.repo/'core.py').write_text('import os\nos._exit(0)\n')
@@ -156,6 +218,7 @@ class RuntimeControls(unittest.TestCase):
             locked=output/'readonly';locked.mkdir();(locked/'module.go').write_text('cached data');locked.chmod(0o555)
             count=subprocess.run(['git','rev-list','--count','HEAD'],cwd=source,capture_output=True,text=True,check=True).stdout.strip()
             self.assertEqual(count,'1')
+            return 'PREP_COMPILE {"ok": true}\nrepository output\nPREP_COMPILE '+json.dumps({'phase':phase,'ok':phase!='broken'})+'\nPREP_WORKER_DONE\n'
         candidate={'repo':'example/fixture','language':'Go','broken_sha':broken,'fix_sha':fixed,'workflow':'tests','failed_job':'go','go_pkgs':['example.test/fixture'],'fix_files':['go.mod']}
         ci=self.root/'ci'
         with patch.object(prep,'ROOT',ci),patch.object(prep,'command',side_effect=command),patch.object(prep,'run_worker',side_effect=worker):
@@ -166,16 +229,91 @@ class RuntimeControls(unittest.TestCase):
         self.assertEqual({p.name for p in control_cache.iterdir()},{'broken','fixed'})
         self.assertFalse((ci/'cases'/result['id']/'fix.diff').exists())
         self.assertFalse((ci/'work'/result['id']).exists())
+        self.assertIs(result['broken_compiles'],False)  # the last PREP_COMPILE line of the broken worker
+        self.assertIs(json.loads((ci/'cases'/result['id']/'meta.json').read_text())['broken_compiles'],False)
+        self.assertIsNone(prep.compile_result('no record'));self.assertIsNone(prep.compile_result(None))
+        env=lambda phase:{e['name']:e['value'] for e in prep.worker_spec('fixture','w','/s','/o',{'language':'Go'},phase)['spec']['containers'][0]['env']}
+        self.assertEqual(env('broken')['PREP_PHASE'],'broken');self.assertNotIn('PREP_PHASE',env(None))
+    def test_preparation_requires_selected_go_packages_to_compile(self):
+        for fail_compile in (False,True):
+            with self.subTest(fail_compile=fail_compile):
+                root=self.root/str(fail_compile);root.mkdir();source=root/'input';source.mkdir();(source/'main.go').write_text('package main\n')
+                case=root/'ci/cases/fixture';case.mkdir(parents=True);bin_dir=root/'bin';bin_dir.mkdir()
+                go=bin_dir/'go';go.write_text('#!'+sys.executable+'\nimport sys\n'
+                    'sys.exit(7 if sys.argv[1:3]==["mod","download"] or ('+repr(fail_compile)+' and sys.argv[1]=="test") else 0)\n');go.chmod(0o755)
+                worker=root/'worker.py';worker.write_text((R/'cases/prep_worker.py').read_text().replace('/srv/ci',str(root/'ci')).replace('/input',str(source)))
+                result=subprocess.run([sys.executable,'-B',str(worker)],env={**os.environ,'CASE_ID':'fixture',
+                    'TASK':json.dumps({'language':'Go','workdir':'.','targets':['./...']}),'PATH':str(bin_dir)+':'+os.environ['PATH']},capture_output=True,text=True)
+                self.assertIn('PREP_OPTIONAL_FAILED',result.stdout)
+                self.assertEqual(result.returncode!=0,fail_compile,result.stderr)
+                self.assertEqual('PREP_WORKER_DONE' in result.stdout,not fail_compile)
+                # The broken tree may be red because it does not compile: recorded, not fatal.
+                shutil.rmtree(case);case.mkdir()
+                broken=subprocess.run([sys.executable,'-B',str(worker)],env={**os.environ,'CASE_ID':'fixture','PREP_PHASE':'broken',
+                    'TASK':json.dumps({'language':'Go','workdir':'.','targets':['./...']}),'PATH':str(bin_dir)+':'+os.environ['PATH']},capture_output=True,text=True)
+                self.assertEqual(broken.returncode,0,broken.stderr);self.assertIn('PREP_WORKER_DONE',broken.stdout)
+                self.assertEqual(prep.compile_result(broken.stdout),not fail_compile)
+                self.assertIs(prep.compile_result(result.stdout),None if fail_compile else True)  # fatal there: no record
+    def test_broken_reproduction_restores_checkout_for_every_sample(self):
+        case=self.root/'ci/cases/fixture';case.mkdir(parents=True);shutil.copytree(self.repo,case/'snapshot');(case/'repo').mkdir()
+        (case/'snapshot/check.py').write_text('from pathlib import Path\nassert not Path("seen").exists()\nPath("seen").write_text("state")\nraise SystemExit(7)\n')
+        (case/'meta.json').write_text(json.dumps({'id':'fixture','test_cmd':shlex.join([sys.executable,'-B','check.py'])}))
+        inputs=self.root/'in';inputs.mkdir();(inputs/'hidden.diff').write_text('diff --git a/hidden.py b/hidden.py\nnew file mode 100644\n--- /dev/null\n+++ b/hidden.py\n@@ -0,0 +1 @@\n+# hidden test\n')
+        script=self.root/'executor.py';script.write_text((R/'executor/executor.py').read_text().replace('/srv/ci',str(self.root/'ci')).replace('/in/',str(inputs)+'/').replace('/tmp/run-output.txt',str(self.root/'run-output.txt')))
+        for phase in ('broken','hidden-broken'):
+            result=subprocess.run([sys.executable,'-B',str(script),'repro',phase,'3'],capture_output=True,text=True,
+                env={**os.environ,'CASE_ID':'fixture','HIDDEN_COMMAND':shlex.join([sys.executable,'-B','check.py'])})
+            self.assertEqual(result.returncode,0,result.stderr)
+            record=val.last_record(result.stdout,'EXECUTOR ')
+            self.assertEqual([s['rc'] for s in record['runs']],[7,7,7],record)
+    def test_setup_restarts_gateway_and_waits_before_continuing(self):
+        root=self.root/'setup';infra=root/'infra';infra.mkdir(parents=True);bin_dir=root/'bin';bin_dir.mkdir()
+        ci=root/'ci';ci.mkdir();(ci/'admin-key').write_text('synthetic-admin')
+        script=infra/'setup-lab.sh';script.write_text((R/'infra/setup-lab.sh').read_text().replace('/srv/ci',str(ci)))
+        code=infra/'code-configmap.sh';code.write_text('#!/bin/sh\nexit 0\n');code.chmod(0o755)
+        sudo=bin_dir/'sudo';sudo.write_text('#!/bin/sh\nexit 0\n');sudo.chmod(0o755)
+        kubectl=bin_dir/'kubectl';kubectl.write_text('#!'+sys.executable+'\nimport json,os,sys\n'
+            'with open("commands.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
+            'if "-f" in sys.argv and sys.argv[-1]=="-": sys.stdin.read()\n'
+            'sys.exit(7 if "restart" in sys.argv and os.environ.get("FAIL_RESTART")=="1" else 0)\n');kubectl.chmod(0o755)
+        for fail in ('0','1'):
+            log=root/'commands.jsonl';log.write_text('')
+            result=subprocess.run(['bash','infra/setup-lab.sh'],cwd=root,input='',capture_output=True,text=True,
+                env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'FAIL_RESTART':fail})
+            commands=[json.loads(line) for line in log.read_text().splitlines()]
+            restart=['-n','ci-gateway','rollout','restart','deploy/gateway']
+            status=['-n','ci-gateway','rollout','status','deploy/gateway','--timeout=180s']
+            self.assertIn(restart,commands)
+            if fail=='1':self.assertNotEqual(result.returncode,0);self.assertNotIn(status,commands)
+            else:self.assertEqual(result.returncode,0,result.stderr);self.assertLess(commands.index(restart),commands.index(status))
     def test_agent_shell_reports_pipeline_failure(self):
         case=self.root/'ci/cases/fixture';case.mkdir(parents=True);(case/'repo').mkdir()
         (case/'meta.json').write_text(json.dumps({'language':'Python'}));(case/'failure.txt').write_text('test failed')
         code=self.root/'code';code.mkdir();(code/'prompt-v1.txt').write_text('synthetic {language} case')
         script=self.root/'agent.py';script.write_text((R/'agent/agent.py').read_text().replace('/srv/ci',str(self.root/'ci')).replace('/code/',str(code)+'/'))
-        with warnings.catch_warnings(),patch.dict(sys.modules,{'anthropic':types.ModuleType('anthropic')}),patch.dict(os.environ,{'CASE_ID':'fixture','RUN_ID':'fixture'}):
+        with warnings.catch_warnings(),patch.dict(sys.modules,{'anthropic':types.ModuleType('anthropic')}),patch.dict(os.environ,{'CASE_ID':'fixture','RUN_ID':'fixture','RUN_TOKEN':'synthetic-token'}):
             warnings.simplefilter('ignore',ResourceWarning)
             agent=module('security_agent',script)
         rc,_,_=agent.bash('false | tail -1',5)
         self.assertNotEqual(rc,0)
+    def test_agent_uses_token_for_model_auth_and_public_id_for_result(self):
+        case=self.root/'ci/cases/fixture';case.mkdir(parents=True);shutil.copytree(self.repo,case/'snapshot');(case/'repo').mkdir()
+        (case/'meta.json').write_text(json.dumps({'id':'fixture','language':'Python','test_cmd':'true'}));(case/'failure.txt').write_text('failed')
+        code=self.root/'code';code.mkdir();(code/'prompt-v1.txt').write_text('synthetic {language} case')
+        script=self.root/'agent.py';script.write_text((R/'agent/agent.py').read_text().replace('/srv/ci',str(self.root/'ci')).replace('/code/',str(code)+'/'))
+        class StopRequest(Exception):pass
+        def stop(**kwargs):raise StopRequest('offline test ends before any provider call')
+        captured=[]
+        def client(**kwargs):captured.append(kwargs);return types.SimpleNamespace(messages=types.SimpleNamespace(create=stop))
+        stub=types.SimpleNamespace(Anthropic=client,RateLimitError=type('UnusedRateLimit',(Exception,),{}))
+        env={'CASE_ID':'fixture','RUN_ID':'public-run','RUN_TOKEN':'random-bearer-fixture','GATEWAY_URL':'http://example.invalid'}
+        out=io.StringIO()
+        with warnings.catch_warnings(),patch.dict(sys.modules,{'anthropic':stub}),patch.dict(os.environ,env),contextlib.redirect_stdout(out):
+            warnings.simplefilter('ignore',ResourceWarning)
+            agent=module('security_token_agent',script);agent.main()
+        self.assertEqual(captured[0]['default_headers'],{'x-run-token':'random-bearer-fixture'})
+        self.assertEqual(val.last_record(out.getvalue(),'RESULT ')['run'],'public-run')
+        self.assertNotIn('random-bearer-fixture',out.getvalue())
     def test_run_round_propagates_attempt_failure(self):
         (self.root/'cases').mkdir();(self.root/'cases/cases.csv').write_text('case_id\nfixture\n')
         shutil.copyfile(R/'cases/run-round.sh',self.root/'cases/run-round.sh')
@@ -191,7 +329,8 @@ class RuntimeControls(unittest.TestCase):
                                      ([1,1,1],[1,1,1],'not_reproduced_hidden_fix_fails'),([0,0,0],[0,0,0],'reproduced')]:
             with self.subTest(fixed=fixed,broken=broken):
                 records={'broken':{'fail':3},'fixed':{'pass':3,'runs':runs([0,0,0]),'hidden_runs':runs(fixed)},
-                         'hidden-broken':{'runs':runs(broken)} if broken is not None else {}}
+                         'hidden-broken':{'runs':runs(broken)} if broken is not None else {},
+                         'fixed-agent-cache':{'not_applicable':True}}
                 (self.root/'fixture.json').write_text(json.dumps(records))
                 process=subprocess.run(['bash','cases/repro.sh','fixture'],cwd=self.root,capture_output=True,text=True)
                 self.assertEqual(process.returncode,0,process.stderr)
@@ -206,11 +345,11 @@ class RuntimeControls(unittest.TestCase):
         for name in ('attempt.sh','run-round.sh','check-round.py'):
             target=cases/name;target.write_text((R/'cases'/name).read_text().replace('/srv/ci',str(ci)));target.chmod(0o755)
         # Exercise the real shell runner/attempt journal. Only the external gateway and pod boundaries are fake.
-        (cases/'pod.py').write_text('print(\'RESULT {"outcome":"finished","patch":"synthetic patch"}\')\n')
+        (cases/'pod.py').write_text('import os,sys\nassert os.environ["RUN_TOKEN"] == "synthetic-run-token-0123456789abcdef"\nassert os.environ["RUN_TOKEN"] not in " ".join(sys.argv)\nprint(\'RESULT {"outcome":"finished","patch":"synthetic patch"}\')\n')
         (cases/'validate.py').write_text('print(\'EXECUTOR {"outcome":"ci_still_red"}\')\n')
         curl=bin_dir/'curl';curl.write_text('#!'+sys.executable+'\nimport json,sys\n'
             'sys.stdin.read()\nwith open("gateway-calls.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
-            'print(json.dumps({"spent_usd":0.01,"calls":1,"cap_usd":0.33}))\n');curl.chmod(0o755)
+            'print(json.dumps({"spent_usd":0.01,"calls":1,"cap_usd":0.33,"token":"synthetic-run-token-0123456789abcdef"}))\n');curl.chmod(0o755)
         md5=bin_dir/'md5sum';md5.write_text('#!'+sys.executable+'\nimport hashlib,sys\nprint(hashlib.md5(sys.stdin.buffer.read()).hexdigest()+"  -")\n');md5.chmod(0o755)
         env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'ADMIN_KEY_FILE':str(ci/'admin-key')}
         command=['bash','cases/run-round.sh','v1','1']
@@ -230,6 +369,7 @@ class RuntimeControls(unittest.TestCase):
         rows=[json.loads(line) for line in journal.read_text().splitlines()]
         self.assertEqual({(r['case'],r['rep']) for r in rows},{(c,i) for c in ('a','b') for i in (1,2,3)})
         self.assertEqual(len(rows),6)
+        self.assertNotIn('synthetic-run-token-',journal.read_text())
         requests=self.root/'gateway-calls.jsonl';calls=[json.loads(line) for line in requests.read_text().splitlines()]
         opened=[args for args in calls if any(a.endswith('/runs') for a in args)]
         self.assertEqual(len(opened),6)
@@ -307,6 +447,180 @@ class RuntimeControls(unittest.TestCase):
         missing=subprocess.run([sys.executable,'-B','cases/freeze.py'],cwd=root,capture_output=True,text=True)
         self.assertNotEqual(missing.returncode,0);self.assertIn('maintainer integrity control',missing.stderr)
         self.assertFalse((cases/'cases.csv').exists())
+        records[0]['integrity_control']=clean['integrity_control']
+        records[0]['hidden_control']['discriminates']=False
+        (cases/'repro.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
+        def freeze():return subprocess.run([sys.executable,'-B','cases/freeze.py'],cwd=root,capture_output=True,text=True)
+        required=freeze();self.assertNotEqual(required.returncode,0);self.assertIn('needs an eligibility decision',required.stderr)
+        digest=hashlib.sha256(json.dumps(records[0],sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        decision={'decision':'include','reason':'Reviewed the cause and retained the supplemental hidden check.',
+                  'reviewer':'synthetic reviewer','repro_sha256':digest}
+        dpath=cases/'eligibility-decisions.json'
+        for invalid in ({**decision,'reason':' '},{**decision,'repro_sha256':'stale'}):
+            dpath.write_text(json.dumps({records[0]['id']:invalid}));self.assertNotEqual(freeze().returncode,0)
+        dpath.write_text(json.dumps({records[0]['id']:decision}));included=freeze()
+        self.assertEqual(included.returncode,0,included.stderr)
+        self.assertEqual(json.loads((cases/'eligibility-at-freeze.json').read_text())[records[0]['id']],decision)
+        (cases/'cases.csv').unlink()
+        records[-1]={**clean,'id':records[-1]['id']};(cases/'repro.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
+        decision['decision']='exclude';dpath.write_text(json.dumps({records[0]['id']:decision}));excluded_run=freeze()
+        self.assertEqual(excluded_run.returncode,0,excluded_run.stderr)
+        with (cases/'cases.csv').open() as f:self.assertNotIn(records[0]['id'],[r['case_id'] for r in csv.DictReader(f)])
+        (cases/'excluded-recheck.txt').write_text('');(root/'mining/candidates-go.log').write_text('')
+        (root/'mining/candidates-python.log').write_text(''.join(json.dumps({'repo':c['repo'],'item':'pair','verdict':'candidate'})+'\n' for c in candidates))
+        shutil.copyfile(R/'cases/funnel.py',cases/'funnel.py')
+        funnel=subprocess.run([sys.executable,'-B','cases/funnel.py'],cwd=root,capture_output=True,text=True)
+        self.assertEqual(funnel.returncode,0,funnel.stderr);self.assertIn('excluded: eligibility review: 1',funnel.stdout)
+    def test_reproduction_runs_maintainer_fix_with_agent_cache(self):
+        # The fourth control runs only for a reproduced pair; a failing control keeps the verdict and is left to freeze.py.
+        cases=self.root/'cases';cases.mkdir();shutil.copyfile(R/'cases/repro.sh',cases/'repro.sh')
+        (cases/'pod.py').write_text('import json,sys\nopen("calls.txt","a").write(sys.argv[-2]+"\\n")\n'
+            'records=json.load(open("fixture.json"))\nprint("EXECUTOR "+json.dumps(records[sys.argv[-2]]))\n')
+        runs=lambda codes:[{'rc':code,'integrity':{'outcome':'sampled'}} for code in codes]
+        ok=runs([0,0,0])
+        dirty=[{'rc':0,'integrity':{'outcome':'test_changed_tree','why':'test command changed the working tree: go.sum'}} for _ in range(3)]
+        unchecked=[{'rc':0} for _ in range(3)]
+        for name,broken_fail,control,verdict,applicable,passes,called in [
+                ('passes',3,{'runs':ok,'hidden_runs':ok},'reproduced',True,True,True),
+                ('suite-changes-tree',3,{'runs':dirty,'hidden_runs':ok},'reproduced',True,False,True),
+                ('hidden-changes-tree',3,{'runs':ok,'hidden_runs':dirty},'reproduced',True,False,True),
+                ('integrity-not-checked',3,{'runs':unchecked,'hidden_runs':ok},'infra_error',True,False,True),
+                ('suite-fails',3,{'runs':runs([1,1,1]),'hidden_runs':ok},'reproduced',True,False,True),
+                ('hidden-fails',3,{'runs':ok,'hidden_runs':runs([2,2,2])},'reproduced',True,False,True),
+                ('not-go',3,{'not_applicable':True},'reproduced',False,None,True),
+                ('missing',3,{},'infra_error',True,False,True),
+                ('incomplete',3,{'runs':ok,'hidden_runs':runs([0,0])},'infra_error',True,False,True),
+                ('timeout',3,{'runs':runs([0,124,0]),'hidden_runs':ok},'infra_error',True,False,True),
+                ('fix-does-not-apply',3,{'error':'maintainer fix does not apply'},'infra_error',True,False,True),
+                ('broken-passes',0,{'runs':ok,'hidden_runs':ok},'not_reproduced_broken_passes',None,None,False)]:
+            with self.subTest(name=name):
+                records={'broken':{'fail':broken_fail,'prep_compiles':False},'fixed':{'pass':3,'runs':ok,'hidden_runs':ok},
+                         'hidden-broken':{'runs':runs([1,1,1])},'fixed-agent-cache':control}
+                (self.root/'fixture.json').write_text(json.dumps(records));(self.root/'calls.txt').write_text('')
+                process=subprocess.run(['bash','cases/repro.sh','fixture'],cwd=self.root,capture_output=True,text=True)
+                self.assertEqual(process.returncode,0,process.stderr)
+                record=json.loads((cases/'repro.jsonl').read_text().splitlines()[-1])
+                self.assertEqual(record['verdict'],verdict,record)
+                self.assertEqual(record['cache_control']['applicable'],applicable,record)
+                self.assertEqual(record['cache_control'].get('passes'),passes,record)
+                self.assertEqual('fixed-agent-cache' in (self.root/'calls.txt').read_text().split(),called)
+                self.assertIs(record['prep_control']['broken_compiles'],False)
+                if applicable:
+                    expected='changed' if 'changes-tree' in name else 'error' if verdict=='infra_error' else 'clean'
+                    self.assertEqual(record['cache_control']['integrity'],expected,record)
+                    self.assertEqual('go.sum' in record['cache_control'].get('why',''),'changes-tree' in name)
+    def test_executor_agent_cache_control_and_compile_record(self):
+        hidden='diff --git a/added_test.py b/added_test.py\nnew file mode 100644\n--- /dev/null\n+++ b/added_test.py\n@@ -0,0 +1 @@\n+# hidden regression test\n'
+        for language,compiles in (('Go',False),('Python',None)):
+            with self.subTest(language=language):
+                root=self.root/language;case=root/'ci/cases/fixture';case.mkdir(parents=True);shutil.copytree(self.repo,case/'snapshot');(case/'repo').mkdir()
+                snapshot=case/'snapshot';(snapshot/'check.py').write_text('import core\nassert core.value == 1\n')
+                for args in [('add','.'),('-c','user.name=test','-c','user.email=test@example.invalid','commit','-qm','check')]:
+                    subprocess.run(['git',*args],cwd=snapshot,check=True,capture_output=True)
+                (snapshot/'core.py').write_text('value = 1\n')
+                fix=subprocess.run(['git','diff','--binary'],cwd=snapshot,check=True,capture_output=True,text=True).stdout
+                (snapshot/'core.py').write_text('value = 0\n')
+                inputs=root/'in';inputs.mkdir();(inputs/'fix.diff').write_text(fix+hidden);(inputs/'hidden.diff').write_text(hidden)
+                command=shlex.join([sys.executable,'-B','check.py'])
+                meta={'id':'fixture','language':language,'test_cmd':command}
+                if compiles is not None:meta['broken_compiles']=compiles
+                (case/'meta.json').write_text(json.dumps(meta))
+                script=root/'executor.py';script.write_text((R/'executor/executor.py').read_text().replace('/srv/ci',str(root/'ci')).replace('/in/',str(inputs)+'/').replace('/tmp/run-output.txt',str(root/'run-output.txt')))
+                def repro(tree):
+                    result=subprocess.run([sys.executable,'-B',str(script),'repro',tree,'3'],capture_output=True,text=True,
+                        env={**os.environ,'CASE_ID':'fixture','HIDDEN_COMMAND':command})
+                    self.assertEqual(result.returncode,0,result.stderr);return val.last_record(result.stdout,'EXECUTOR ')
+                control=repro('fixed-agent-cache')
+                if language=='Go':
+                    self.assertEqual([s['rc'] for s in control['runs']],[0,0,0],control)
+                    self.assertEqual([s['rc'] for s in control['hidden_runs']],[0,0,0],control)
+                else:
+                    self.assertTrue(control['not_applicable']);self.assertNotIn('runs',control)
+                broken=repro('broken')
+                self.assertEqual(broken['fail'],3,broken);self.assertIs(broken['prep_compiles'],compiles)
+    def test_agent_cache_control_tree_change_blocks_automatic_freeze(self):
+        # Real executor -> repro.sh -> freeze.py. With the agent's cache the suite ends 0 and writes go.sum: not a pass.
+        root=self.root/'cache-e2e';cases=root/'cases';cases.mkdir(parents=True)
+        case=root/'ci/cases/fixture';case.mkdir(parents=True);shutil.copytree(self.repo,case/'snapshot');(case/'repo').mkdir()
+        snapshot=case/'snapshot'
+        (snapshot/'check.py').write_text('import core,os\nfrom pathlib import Path\nassert core.value == 1\n'
+            'if os.environ.get("AGENT_CACHE"):Path("go.sum").write_text("example.test/module v1.0.0 h1:synthetic\\n")\n')
+        for args in [('add','.'),('-c','user.name=test','-c','user.email=test@example.invalid','commit','-qm','check')]:
+            subprocess.run(['git',*args],cwd=snapshot,check=True,capture_output=True)
+        (snapshot/'core.py').write_text('value = 1\n')
+        fix=subprocess.run(['git','diff','--binary'],cwd=snapshot,check=True,capture_output=True,text=True).stdout
+        (snapshot/'core.py').write_text('value = 0\n')
+        inputs=root/'in';inputs.mkdir();(inputs/'fix.diff').write_text(fix);(inputs/'hidden.diff').write_text('')
+        (case/'meta.json').write_text(json.dumps({'id':'fixture','language':'Go','broken_compiles':True,'test_cmd':shlex.join([sys.executable,'-B','check.py'])}))
+        (root/'executor.py').write_text((R/'executor/executor.py').read_text().replace('/srv/ci',str(root/'ci')).replace('/in/',str(inputs)+'/').replace('/tmp/run-output.txt',str(root/'run-output.txt')))
+        shutil.copyfile(R/'cases/repro.sh',cases/'repro.sh')
+        (cases/'pod.py').write_text('import os,subprocess,sys\n'
+            'action=sys.argv[sys.argv.index("/code/executor.py")+1:]\n'
+            'env={**os.environ,"CASE_ID":sys.argv[2]}\n'
+            'if action[1]=="fixed-agent-cache":env["AGENT_CACHE"]="1"\n'
+            'sys.exit(subprocess.run([sys.executable,"-B","executor.py",*action],env=env).returncode)\n')
+        process=subprocess.run(['bash','cases/repro.sh','fixture'],cwd=root,env={**os.environ,'HIDDEN_COMMAND':''},capture_output=True,text=True)
+        self.assertEqual(process.returncode,0,process.stderr)
+        record=json.loads((cases/'repro.jsonl').read_text())
+        self.assertEqual(record['verdict'],'reproduced',record);self.assertEqual(record['integrity_control']['outcome'],'clean',record)
+        control=record['cache_control']
+        self.assertEqual([s['rc'] for s in control['suite']],[0,0,0],control)
+        self.assertEqual([s['integrity']['outcome'] for s in control['suite']],['test_changed_tree']*3,control)
+        self.assertIs(control['passes'],False);self.assertEqual(control['integrity'],'changed');self.assertIn('go.sum',control['why'])
+        (root/'mining').mkdir();(cases/'prep-out').mkdir();(cases/'prep-out/prep.jsonl').write_text('');candidates=[];records=[]
+        for i in range(8):
+            sha=f'{i:040x}';cid=f'example-go{i}-{sha[:8]}'
+            candidates.append({'repo':f'example/go{i}','broken_sha':sha,'fix_sha':'f'*40,'language':'Go','workflow':'tests','failed_job':'tests','failed_run':1})
+            records.append({**record,'id':cid});(root/'ci/secret'/cid).mkdir(parents=True);(root/'ci/cases'/cid).mkdir(parents=True)
+            (root/'ci/secret'/cid/'meta.json').write_text(json.dumps({'test_cmd':'synthetic command'}))
+        (root/'mining/candidates-go.jsonl').write_text(''.join(json.dumps(c)+'\n' for c in candidates));(root/'mining/candidates-python.jsonl').write_text('')
+        (cases/'repro.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in records))
+        (cases/'freeze.py').write_text((R/'cases/freeze.py').read_text().replace('/srv/ci',str(root/'ci')))
+        frozen=subprocess.run([sys.executable,'-B','cases/freeze.py'],cwd=root,capture_output=True,text=True)
+        self.assertNotEqual(frozen.returncode,0);self.assertFalse((cases/'cases.csv').exists())
+        self.assertIn('needs an eligibility decision',frozen.stderr);self.assertIn('test_changed_tree for every patch',frozen.stderr);self.assertIn('go.sum',frozen.stderr)
+    def test_freeze_requires_decisions_for_go_compile_and_cache_controls(self):
+        root=self.root/'freeze-go';cases=root/'cases';cases.mkdir(parents=True);(root/'mining').mkdir();(cases/'prep-out').mkdir()
+        (cases/'prep-out/prep.jsonl').write_text('');candidates=[];records=[]
+        for i in range(8):
+            sha=f'{i:040x}';cid=f'example-go{i}-{sha[:8]}'
+            candidates.append({'repo':f'example/go{i}','broken_sha':sha,'fix_sha':'f'*40,'language':'Go','workflow':'tests','failed_job':'tests','failed_run':1})
+            records.append({'id':cid,'verdict':'reproduced','broken_fail':3,'fixed_pass':3,'n':3,'broken':{'output_head':'FAIL'},
+                            'integrity_control':{'outcome':'clean'},'hidden_control':{'applicable':False,'discriminates':False},
+                            'cache_control':{'applicable':True,'passes':True,'integrity':'clean'},'prep_control':{'broken_compiles':True}})
+            (root/'ci/secret'/cid).mkdir(parents=True);(root/'ci/cases'/cid).mkdir(parents=True)
+            (root/'ci/secret'/cid/'meta.json').write_text(json.dumps({'test_cmd':'synthetic command'}))
+        (root/'mining/candidates-go.jsonl').write_text(''.join(json.dumps(c)+'\n' for c in candidates));(root/'mining/candidates-python.jsonl').write_text('')
+        (cases/'freeze.py').write_text((R/'cases/freeze.py').read_text().replace('/srv/ci',str(root/'ci')))
+        dpath=cases/'eligibility-decisions.json'
+        def freeze(first,decision=None):
+            (cases/'cases.csv').unlink(missing_ok=True)
+            rows=[first]+records[1:];(cases/'repro.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+            if decision:
+                digest=hashlib.sha256(json.dumps(first,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+                dpath.write_text(json.dumps({first['id']:{'decision':decision,'reason':'Read failure.txt: the commit itself does not compile.','reviewer':'synthetic reviewer','repro_sha256':digest}}))
+            else:dpath.write_text('{}')
+            return subprocess.run([sys.executable,'-B','cases/freeze.py'],cwd=root,capture_output=True,text=True)
+        def frozen_ids():
+            with (cases/'cases.csv').open() as f:return [r['case_id'] for r in csv.DictReader(f)]
+        clean=freeze(records[0]);self.assertEqual(clean.returncode,0,clean.stderr);self.assertEqual(len(frozen_ids()),8)
+        for missing,message in (('prep_control','broken-tree compile result'),('cache_control','agent-cache control')):
+            stale={k:v for k,v in records[0].items() if k!=missing};refused=freeze(stale)
+            self.assertNotEqual(refused.returncode,0);self.assertIn(message,refused.stderr);self.assertFalse((cases/'cases.csv').exists())
+        tree={'applicable':True,'integrity':'changed','why':'test command changed the working tree: go.sum'}
+        for change,message in (({'prep_control':{'broken_compiles':False}},'did not compile'),
+                               ({'cache_control':{'applicable':True,'passes':False,'integrity':'clean'}},"does not pass with the agent's dependency cache"),
+                               ({'cache_control':{'applicable':True,'passes':True}},"does not pass with the agent's dependency cache"),
+                               ({'cache_control':{**tree,'passes':False}},'test_changed_tree for every patch: test command changed the working tree: go.sum'),
+                               ({'cache_control':{**tree,'passes':True}},'test_changed_tree for every patch')):
+            with self.subTest(change=change):
+                flagged={**records[0],**change};required=freeze(flagged)
+                self.assertNotEqual(required.returncode,0);self.assertIn('needs an eligibility decision',required.stderr);self.assertIn(message,required.stderr)
+                included=freeze(flagged,'include');self.assertEqual(included.returncode,0,included.stderr);self.assertIn(flagged['id'],frozen_ids())
+        # Go cases whose control is not applicable (no second cache in use) need no decision; below the floor nothing freezes.
+        relaxed=freeze({**records[0],'cache_control':{'applicable':False}});self.assertEqual(relaxed.returncode,0,relaxed.stderr)
+        excluded=freeze({**records[0],'prep_control':{'broken_compiles':False}},'exclude')
+        self.assertNotEqual(excluded.returncode,0);self.assertIn('floor 8',excluded.stderr)
     def test_empty_candidate_queue_exits_without_waiting(self):
         (self.root/'cases').mkdir();(self.root/'mining').mkdir();(self.root/'bin').mkdir()
         for name in ('pipeline.sh','claim.py'):shutil.copyfile(R/'cases'/name,self.root/'cases'/name)

@@ -4,9 +4,11 @@ bytes / 1. In the smoke test the bytes/1 reservation passed the US$0.33 per-atte
 95 KB, while the real cost per call was about US$0.01, so long attempts would have been stopped by the estimate, not by
 spending. The check that halts the gateway when a call costs more than its reservation stays.
 Changes from v3 (experiment 03):
-  - PER-RUN BUDGETS. Every call must carry the x-run-id of a run opened by the runner on the ADMIN port (8081), which
-    the agent's NetworkPolicy does not allow it to reach. A run has its own cap (US$0.33 in this experiment); a call that
-    would pass it is refused (429) before it is forwarded. Unknown or closed run ids are refused (403). The total cap
+  - PER-RUN BUDGETS. Every call must carry x-run-token, a random credential returned when the runner opens a run on
+    the ADMIN port (8081), which the agent's NetworkPolicy does not allow it to reach. Public run ids are labels only.
+    Token authentication replaced x-run-id after collection on 2026-11-12; only token hashes are persisted.
+    A run has its own cap (US$0.33 in this experiment); a call that would pass it is refused (429) before forwarding.
+    Unknown or closed run tokens are refused (403). The total cap
     (BUDGET_USD) still applies on top. Reservations carry their run id, so a crash books them to that run.
   - PROMPT CACHING, priced. cache_control {"type": "ephemeral"} (5-minute TTL only) is allowed on text and
     tool_result blocks. Booking prices cache writes at 1.25x and cache reads at the model's read multiplier (0.05x
@@ -42,7 +44,7 @@ that call has already happened; the gateway can only refuse the next ones.
   as spent at their reserved amount. A state file that exists but cannot be read, or a state that cannot be written,
   stops the gateway instead of starting from zero. If a response costs more than its reservation, the gateway halts
   (503 from then on) and says so in the log."""
-import hmac, json, math, os, sys, threading, time, urllib.request, urllib.error, uuid
+import hashlib, hmac, json, math, os, secrets, sys, threading, time, urllib.request, urllib.error, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 UPSTREAM = os.environ.get("UPSTREAM", "https://api.anthropic.com/v1/messages")
@@ -98,6 +100,9 @@ class TimedHandler(BaseHTTPRequestHandler):
 
 lock = threading.Lock()
 state = {"spent_usd": 0.0, "requests": 0, "in_tok": 0, "out_tok": 0, "reserved": {}, "halted": None, "runs": {}}
+token_runs = {}  # SHA-256 of an unpredictable bearer token -> public run id; never store the bearer itself
+
+def public_run(run): return {k: v for k, v in run.items() if k != "token_hash"}
 
 def log(**kw): print(json.dumps({"ts": round(time.time(), 3), **kw}), flush=True)
 
@@ -122,6 +127,8 @@ def load():
                 r = state["runs"].get(v["run"])
                 if r: r["spent_usd"] += v["usd"]
             state["spent_usd"] += lost; state["requests"] += len(state["reserved"]); state["reserved"] = {}
+    token_runs.clear()
+    token_runs.update((r["token_hash"], run) for run, r in state["runs"].items() if r.get("open") and r.get("token_hash"))
     save()                                                   # the state must be writable before the first call
 
 def usd(model, prompt_tok, tout, cache_write=0, cache_read=0):
@@ -174,7 +181,7 @@ class H(TimedHandler):
     protocol_version = "HTTP/1.1"
     def refuse(self, code, why):
         log(src=self.client_address[0], method=self.command, path=self.path[:200], verdict="refused", why=why, status=code,
-            run=self.headers.get("x-run-id", ""))
+            run=getattr(self, "run", None))
         out = json.dumps({"error": why}).encode()
         self.send_response(code); self.send_header("content-type", "application/json")
         self.send_header("content-length", str(len(out))); self.send_header("connection", "close"); self.end_headers(); self.wfile.write(out)
@@ -185,6 +192,7 @@ class H(TimedHandler):
     def do_CONNECT(self): self.refuse(403, "not a proxy")
     do_PUT = do_DELETE = do_PATCH = do_HEAD = do_OPTIONS = lambda self: self.refuse(403, "only POST /v1/messages is allowed")
     def do_POST(self):
+        self.run = None
         if self.path != "/v1/messages":            # also catches absolute URLs sent by clients that treat us as a proxy
             return self.refuse(403, "only POST /v1/messages is allowed")
         try: n = int(self.headers.get("content-length") or 0)
@@ -197,9 +205,12 @@ class H(TimedHandler):
         if why: return self.refuse(403, why)
         model = body.get("model")
         if model not in PRICES: return self.refuse(403, "model not allowed")
-        run = self.headers.get("x-run-id", "")
-        with lock: r = state["runs"].get(run)
-        if not r or not r.get("open"): return self.refuse(403, "unknown or closed run id")
+        token_hash = hashlib.sha256(self.headers.get("x-run-token", "").encode()).hexdigest()
+        with lock:
+            run = token_runs.get(token_hash)
+            r = state["runs"].get(run)
+        if not r or not r.get("open"): return self.refuse(403, "unknown or closed run token")
+        self.run = run
         try: body["max_tokens"] = max(1, min(int(body.get("max_tokens") or 1024), MAX_TOKENS_PER_CALL))
         except (TypeError, ValueError, OverflowError): return self.refuse(400, "max_tokens is not a number")
         payload = json.dumps(body).encode()
@@ -207,7 +218,8 @@ class H(TimedHandler):
         bound = usd(model, bound_in, body["max_tokens"], cache_write=bound_in)   # estimate: every input token a cache write
         rid, no = uuid.uuid4().hex[:12], None
         with lock:
-            if state["halted"]: no = (503, "gateway halted: " + state["halted"])
+            if not r.get("open"): no = (403, "run was closed before reservation")
+            elif state["halted"]: no = (503, "gateway halted: " + state["halted"])
             elif state["spent_usd"] + reserved_total() + bound > BUDGET_USD:
                 left = BUDGET_USD - state["spent_usd"] - reserved_total()
                 no = (429, f"gateway budget: this call reserves ${bound:.4f}, ${max(left, 0):.4f} left")
@@ -245,7 +257,7 @@ class H(TimedHandler):
             try: save()
             except OSError as e: log(event="state_write_failed", why=type(e).__name__)    # the file still holds the reservation
             spent = state["spent_usd"]
-        if over: log(event="bound_exceeded", run=self.headers.get("x-run-id", ""), usd=round(real, 6), bound_usd=round(bound, 6), in_tok=tin, bound_in_tok=bound_in)
+        if over: log(event="bound_exceeded", run=run, usd=round(real, 6), bound_usd=round(bound, 6), in_tok=tin, bound_in_tok=bound_in)
         if err: return self.refuse(502, f"upstream error: {err}")
         log(src=self.client_address[0], method="POST", path="/v1/messages", verdict="forwarded", status=status, model=model,
             run=run, in_tok=tin, cache_write=cw, cache_read=cr, bound_in_tok=bound_in, out_tok=tout, usd=round(real, 6), bound_usd=round(bound, 6),
@@ -256,7 +268,8 @@ class H(TimedHandler):
 
 class Admin(TimedHandler):
     """Runner-only port (the agent's NetworkPolicy allows 8080 only). POST /runs {"run": id, "cap_usd": x} opens a run;
-    POST /runs/<id>/close closes it; GET /runs/<id> reports it; GET /state reports the totals."""
+    Only opening returns the random model token. POST /runs/<id>/close revokes it; GET /runs/<id> reports the run
+    without its credential; GET /state reports the totals."""
     protocol_version = "HTTP/1.1"
     def reply(self, code, obj):
         out = json.dumps(obj).encode(); self.send_response(code); self.send_header("content-type", "application/json")
@@ -271,7 +284,7 @@ class Admin(TimedHandler):
         with lock:
             if self.path == "/state": return self.reply(200, {k: state[k] for k in ("spent_usd", "requests", "in_tok", "out_tok", "halted")} | {"reserved_usd": reserved_total(), "budget_usd": BUDGET_USD})
             r = state["runs"].get(self.path.rsplit("/", 1)[-1])
-        return self.reply(200, r) if r else self.reply(404, {"error": "no such run"})
+        return self.reply(200, public_run(r)) if r else self.reply(404, {"error": "no such run"})
     def do_POST(self):
         if not self.authenticated(): return
         try:
@@ -280,6 +293,7 @@ class Admin(TimedHandler):
             body = json.loads(self.rfile.read(n))
             if not isinstance(body, dict): return self.reply(400, {"error": "body must be an object"})
         except (ValueError, UnicodeError): return self.reply(400, {"error": "invalid JSON body"})
+        token = None
         with lock:
             if self.path == "/runs":
                 run = str(body.get("run", ""))
@@ -288,17 +302,23 @@ class Admin(TimedHandler):
                 if not math.isfinite(cap) or not 0 < cap <= MAX_RUN_USD:
                     return self.reply(400, {"error": "run cap must be finite, positive and within MAX_RUN_USD"})
                 if not run or run in state["runs"]: return self.reply(409, {"error": "missing or reused run id"})
-                state["runs"][run] = {"cap_usd": cap, "spent_usd": 0.0, "calls": 0, "open": True, "opened": time.time()}
+                token = secrets.token_urlsafe(32)
+                token_hash = hashlib.sha256(token.encode()).hexdigest()
+                state["runs"][run] = {"cap_usd": cap, "spent_usd": 0.0, "calls": 0, "open": True, "opened": time.time(), "token_hash": token_hash}
             elif self.path.startswith("/runs/") and self.path.endswith("/close"):
                 run = self.path.split("/")[2]
                 if run not in state["runs"]: return self.reply(404, {"error": "no such run"})
                 state["runs"][run]["open"] = False; state["runs"][run]["closed"] = time.time()
+                token_runs.pop(state["runs"][run].get("token_hash"), None)
             else: return self.reply(404, {"error": "no such endpoint"})
             try: save()
-            except OSError as e: return self.reply(503, {"error": f"cannot persist ({type(e).__name__})"})
-            out = state["runs"][run]
+            except OSError as e:
+                if token is not None: del state["runs"][run]
+                return self.reply(503, {"error": f"cannot persist ({type(e).__name__})"})
+            if token is not None: token_runs[token_hash] = run
+            out = public_run(state["runs"][run])
         log(event="run_" + ("opened" if self.path == "/runs" else "closed"), run=run, cap_usd=out["cap_usd"], spent_usd=round(out["spent_usd"], 6), calls=out.get("calls", 0))
-        return self.reply(200, out)
+        return self.reply(200, out | ({"token": token} if token is not None else {}))
     def log_message(self, *a): pass
 
 if __name__ == "__main__":

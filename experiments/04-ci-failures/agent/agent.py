@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """The coding agent of experiment 04 (same loop as experiment 03: one model, one bash tool). Runs inside a Kata pod in
-ci-agent: no credentials, network only to the gateway's model port. It gets a fresh copy of the case snapshot (no
+ci-agent: no provider/admin credentials; a limited per-run token authenticates to the gateway's model port, its only
+network destination. It gets a fresh copy of the case snapshot (no
 history after the broken commit, no remotes), the test command and the failure output from our reproduction; never the
 maintainer's fix. Limits enforced from outside: the pod's activeDeadlineSeconds (25 min) and the gateway's per-run budget
 (US$0.33); the tool-call limit (60) is counted here. max_tokens 4,096 per call (amendment of 12/11). Ends with one line RESULT <json> holding the patch.
@@ -11,6 +12,7 @@ import anthropic
 
 MODEL = os.environ.get("MODEL", "claude-sonnet-5-5")
 RUN_ID = os.environ["RUN_ID"]
+RUN_TOKEN = os.environ["RUN_TOKEN"]  # only this attempt's model capability; never use the public id as authorization
 MAX_TOOL_CALLS = int(os.environ.get("MAX_TOOL_CALLS", "60"))
 MAX_SECONDS = int(os.environ.get("MAX_SECONDS", "1440"))       # cooperative; the pod's hard deadline is 1500 s
 CASE = f"/srv/ci/cases/{os.environ['CASE_ID']}"; REPO = f"{CASE}/repo"
@@ -55,7 +57,7 @@ def main():
     overlay()
     g = dict(cwd=REPO, capture_output=True, text=True)
     client = anthropic.Anthropic(base_url=os.environ["GATEWAY_URL"], api_key="held-by-the-gateway",
-                                 default_headers={"x-run-id": RUN_ID}, max_retries=0)
+                                 default_headers={"x-run-token": RUN_TOKEN}, max_retries=0)
     messages = [{"role": "user", "content": f"Test command (run from {WD}):\n{META['test_cmd']}\n\nIts output on this commit, from our CI reproduction:\n{FAILURE}"}]
     r = {"run": RUN_ID, "case": META["id"], "model": MODEL, "outcome": "max_tool_calls", "model_calls": 0, "tool_calls": 0,
          "in_tok": 0, "cache_write": 0, "cache_read": 0, "out_tok": 0, "model_s": 0.0, "tool_s": 0.0, "commands": [], "final_text": ""}

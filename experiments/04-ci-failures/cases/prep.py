@@ -78,12 +78,13 @@ def case_meta(c, cid, repo, hidden):
         hidden_cmd = 'python -m pytest -q -p no:cacheprovider ' + shlex.join(sorted(set(rel) | set(hp))) if hidden else ''
     return meta, hidden_cmd
 
-def worker_spec(cid, name, source, output, meta):
+def worker_spec(cid, name, source, output, meta, phase=None):
     """The only writable host directory is this worker's output. No parent of /srv/ci is mounted."""
     case = f'/srv/ci/cases/{cid}'
     env = {'HOME':'/tmp', 'CASE_ID':cid, 'TASK':json.dumps(meta), 'UV_PYTHON_INSTALL_DIR':'/srv/ci/uv/python',
            'UV_CACHE_DIR':'/tmp/uvcache', 'UV_LINK_MODE':'copy', 'GOMODCACHE':case+'/gomod', 'GOCACHE':'/tmp/gocache',
            'GOPATH':'/tmp/gopath', 'GOTOOLCHAIN':'auto', 'GOFLAGS':'-mod=mod', 'GOTELEMETRY':'off'}
+    if phase: env['PREP_PHASE'] = phase   # "broken": a failed compile is recorded, not fatal (prep_worker.py)
     return {'apiVersion':'v1', 'kind':'Pod', 'metadata':{'name':name,'namespace':'ci-prep'}, 'spec':{
         'runtimeClassName':'kata-qemu','automountServiceAccountToken':False,'enableServiceLinks':False,
         'restartPolicy':'Never','activeDeadlineSeconds':2400,
@@ -107,7 +108,7 @@ def run_worker(cid, phase, source, output, meta, seed=None):
         shutil.copytree(seed, output/'gomod', symlinks=True)
         writable_directories(output/'gomod')
     name = f'prep-{cid[:44]}-{phase}'
-    spec = worker_spec(cid,name,source,output,meta)
+    spec = worker_spec(cid,name,source,output,meta,phase)
     command(['kubectl','-n','ci-prep','delete','pod',name,'--ignore-not-found','--wait=true'])
     subprocess.run(['kubectl','apply','-f','-'],input=json.dumps(spec),text=True,check=True,capture_output=True)
     try:
@@ -120,6 +121,14 @@ def run_worker(cid, phase, source, output, meta, seed=None):
         if phase_status != 'Succeeded': raise ValueError(f'{phase} preparation failed: {log[-300:]}')
         return log
     finally: command(['kubectl','-n','ci-prep','delete','pod',name,'--ignore-not-found','--wait=true'])
+
+def compile_result(log):
+    """The worker's last PREP_COMPILE line: True/False, or None when it printed none (not a Go case, or an old worker)."""
+    for line in reversed((log or '').splitlines()):
+        if line.startswith('PREP_COMPILE '):
+            try: return json.loads(line[len('PREP_COMPILE '):]).get('ok') is True
+            except (ValueError, AttributeError): return None
+    return None
 
 def publish(output, name, destination):
     source = output/name
@@ -148,8 +157,10 @@ def prepare(c):
     snap = case/'snapshot'; snapshot(clone,snap)
     meta, hidden_cmd = case_meta(c,cid,snap,hidden)
     broken_output = work/'broken-output'
-    run_worker(cid,'broken',snap,broken_output,meta)
+    broken_log = run_worker(cid,'broken',snap,broken_output,meta)
     if c['language'] == 'Go':
+        # Says only whether the BROKEN tree's selected packages compiled; the agent can find that out by itself.
+        meta['broken_compiles'] = compile_result(broken_log)
         git(clone,'checkout','-q',c['fix_sha']); fixed_source = work/'fixed-source'; snapshot(clone,fixed_source)
         fixed_output = work/'fixed-output'
         run_worker(cid,'fixed',fixed_source,fixed_output,meta,seed=broken_output/'gomod')
@@ -161,7 +172,8 @@ def prepare(c):
     # Keep worker directories for diagnosis on failures; successful preparation no longer needs the full-history clone.
     writable_directories(work)
     shutil.rmtree(work)
-    return {'id':cid,'prep':'ok','test_cmd':meta['test_cmd'],'hidden_cmd':hidden_cmd}
+    return {'id':cid,'prep':'ok','test_cmd':meta['test_cmd'],'hidden_cmd':hidden_cmd,
+            **({'broken_compiles':meta['broken_compiles']} if 'broken_compiles' in meta else {})}
 
 def main():
     if pathlib.Path('ARCHIVE').exists() and os.environ.get('ALLOW_ARCHIVE_WRITE') != '1': sys.exit('historical record: start a fresh run')

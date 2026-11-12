@@ -3,7 +3,7 @@
 reason at each step. Reads the miner's logs (mining/candidates-*.log, the corrected runs; the first run with the log
 download bug is in mining/run1-log-download-bug/ and is not counted), the recheck, the preparation and reproduction
 records. Writes cases/funnel.md and prints it."""
-import collections, json, re
+import collections, json, pathlib, re
 lines = [json.loads(l) for f in ("mining/candidates-go.log", "mining/candidates-python.log") for l in open(f)]
 lang_of = {}
 for f, lg in (("mining/candidates-go.log", "Go"), ("mining/candidates-python.log", "Python")):
@@ -19,10 +19,14 @@ for l in open("cases/prep-out/prep.jsonl"):
     m = re.search(r'"id": "([^"]+)"', l) or re.search(r"PREP_FAIL ([^:]+):", l)
     if m: prep[m.group(1)] = l
 rep = {json.loads(l)["id"]: json.loads(l) for l in open("cases/repro.jsonl")}
+review_path = pathlib.Path('cases/eligibility-at-freeze.json')
+eligibility = json.loads(review_path.read_text()) if review_path.exists() else {}
 step = collections.Counter(); per_lang = collections.Counter(); why_prep = collections.Counter()
 for c in cands:
     i = cid(c)
     if i in rechk: step["excluded: fix touches only test files (snapshot/golden, recheck)"] += 1; continue
+    if eligibility.get(i, {}).get('decision') == 'exclude':
+        step['excluded: eligibility review'] += 1; continue
     if i in rep:
         v = rep[i]["verdict"]; step[v] += 1
         if v == "reproduced": per_lang[c["language"]] += 1

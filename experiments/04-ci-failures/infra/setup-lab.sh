@@ -13,6 +13,8 @@ kubectl -n ci-gateway get secret gateway-key >/dev/null 2>&1 || kubectl -n ci-ga
 chmod 600 /srv/ci/admin-key
 kubectl -n ci-gateway create secret generic gateway-admin-key --from-file=key=/srv/ci/admin-key -o yaml --dry-run=client | kubectl apply -f -
 kubectl apply -f k8s/10-gateway.yaml
+# ConfigMap updates do not reload an already-running Python process. Wait for a new gateway pod before continuing.
+kubectl -n ci-gateway rollout restart deploy/gateway
 kubectl -n ci-gateway rollout status deploy/gateway --timeout=180s
 infra/code-configmap.sh
 for img in docker.io/library/python:3.12-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b; do sudo k3s crictl pull "$img" >/dev/null; done

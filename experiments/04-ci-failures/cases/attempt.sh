@@ -35,11 +35,12 @@ mkdir -p "$pd"
 ADMIN_KEY_FILE="${ADMIN_KEY_FILE:-/srv/ci/admin-key}"
 [ -s "$ADMIN_KEY_FILE" ] || { echo "missing gateway admin key: run infra/setup-lab.sh" >&2; exit 1; }
 admin() { printf 'header = "Authorization: Bearer %s"\n' "$(cat "$ADMIN_KEY_FILE")" | curl -sf --config - "$@"; }
-admin -X POST "$ADMIN/runs" -d "{\"run\": \"$run\", \"cap_usd\": $CAP}" >/dev/null || { echo "gateway refused to open run $run"; exit 1; }
+run_token=$(admin -X POST "$ADMIN/runs" -d "{\"run\": \"$run\", \"cap_usd\": $CAP}" | python3 -c 'import json,sys; token=json.load(sys.stdin)["token"]; assert isinstance(token,str) and len(token)>=32; print(token)') || { echo "gateway refused to open run $run"; exit 1; }
 t0=$(date +%s)
 case "$round" in v2*) pv=v2;; *) pv=v1;; esac        # agent version: the system prompt template (agent/prompt-<pv>.txt)
-python3 cases/pod.py agent "$cid" "ag-$run" 1500 --env PROMPT_FILE="/code/prompt-$pv.txt" --env RUN_ID="$run" --env GATEWAY_URL=http://10.43.210.10:8080 \
+RUN_TOKEN="$run_token" python3 cases/pod.py agent "$cid" "ag-$run" 1500 --env PROMPT_FILE="/code/prompt-$pv.txt" --env RUN_ID="$run" --env GATEWAY_URL=http://10.43.210.10:8080 \
   --env MAX_TOOL_CALLS=60 --env MAX_SECONDS=1440 -- /opt/agent-venv/bin/python -u /code/agent.py > "/tmp/$run.agent" 2>&1 || true
+unset run_token
 admin -X POST "$ADMIN/runs/$run/close" -d '{}' > "/tmp/$run.gw" || echo '{}' > "/tmp/$run.gw"
 python3 - "/tmp/$run.agent" "$pd/$run.diff" <<'PY'
 import json, sys

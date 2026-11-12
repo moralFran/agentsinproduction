@@ -19,9 +19,10 @@ The budget works on ESTIMATED reservations (see gateway.py); these checks show t
 import json, os, signal, subprocess, sys, tempfile, threading, time, urllib.request, urllib.error
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-HERE = os.path.dirname(os.path.abspath(__file__)); calls = []; redirects = []
+HERE = os.path.dirname(os.path.abspath(__file__)); calls = []; redirects = []; forwarded_headers = []; TOKENS = {}
 class Fake(BaseHTTPRequestHandler):
     def do_POST(self):
+        forwarded_headers.append(dict(self.headers))
         body = json.loads(self.rfile.read(int(self.headers["content-length"])))
         if body.get("system") == "redirect":
             calls.append(body)
@@ -45,7 +46,8 @@ open(f"{tmp}/admin-key", "w").write("fake-admin")
 def start(budget, wait=True):
     env = dict(os.environ, UPSTREAM="http://127.0.0.1:18081/v1/messages", KEY_FILE=f"{tmp}/key", ADMIN_KEY_FILE=f"{tmp}/admin-key", STATE_FILE=SF, OVERHEAD_TOK="0", MAX_RUN_USD="1000000000000000", HTTP_READ_TIMEOUT_S="2",
                PRICES='{"m": [1000000, 1000000], "t": [1000000, 1000000, 100, 5000000, 5000000]}', BUDGET_USD=str(budget), PORT="18080", ADMIN_PORT="18082")      # $1 per token: money == tokens
-    p = subprocess.Popen([sys.executable, f"{HERE}/gateway.py"], env=env, stdout=subprocess.DEVNULL)
+    with open(f"{tmp}/gateway.log", "a") as log_file:
+        p = subprocess.Popen([sys.executable, f"{HERE}/gateway.py"], env=env, stdout=log_file)
     for _ in range(50):
         if not wait or p.poll() is not None: break
         try: urllib.request.urlopen("http://127.0.0.1:18080/healthz", timeout=1); break
@@ -55,16 +57,21 @@ def start(budget, wait=True):
 RUN = "t"
 def admin(path, body=None, token="fake-admin"):
     req = urllib.request.Request("http://127.0.0.1:18082" + path, data=json.dumps(body).encode() if body is not None else None, headers={"Authorization": "Bearer " + token} if token else {})
-    try: return json.loads(urllib.request.urlopen(req, timeout=10).read())
+    try:
+        result = json.loads(urllib.request.urlopen(req, timeout=10).read())
+        if path == "/runs" and body is not None and "token" in result: TOKENS[body["run"]] = result["token"]
+        return result
     except urllib.error.HTTPError as e: return {"status": e.code}
 def stop(p): p.terminate(); p.wait()
-def post(body, run=None):
-    try: return urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:18080/v1/messages", data=json.dumps(body).encode(), headers={"x-run-id": run or RUN}), timeout=10).status
+def post(body, run=None, token=None, headers=None):
+    auth = TOKENS.get(run or RUN, run or RUN) if token is None else token
+    try: return urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:18080/v1/messages", data=json.dumps(body).encode(), headers={"x-run-token": auth, **(headers or {})}), timeout=10).status
     except urllib.error.HTTPError as e: return e.code
     except Exception as e: return type(e).__name__
 def call(max_tokens, **kw): return post({"model": "m", "max_tokens": max_tokens, "messages": [], **kw})
 def reset():
     calls.clear()
+    TOKENS.clear(); forwarded_headers.clear()
     if os.path.exists(SF): os.remove(SF)
 spent = lambda: json.load(open(SF))["spent_usd"]
 ok = True
@@ -181,5 +188,68 @@ with socket.create_connection(("127.0.0.1", 18080), timeout=5) as conn:
     conn.settimeout(5)
     closed = conn.recv(1) == b""
 check("14 incomplete request bodies time out", closed, "slow client disconnected")
+stop(p); reset()
+
+# Public ids are labels, not credentials. A parallel run cannot borrow another open run's budget by naming it.
+p = start(budget=10 ** 9)
+ra = admin("/runs", {"run":"v1-public-a-r1", "cap_usd":one + 17})
+rb = admin("/runs", {"run":"v1-public-b-r1", "cap_usd":10 * one})
+body = {"model":"m", "max_tokens":8, "messages":[]}
+first = post(body, "v1-public-a-r1", headers={"x-run-id":"v1-public-b-r1"})
+responses = {}
+def attempt(name, **kw): responses[name] = post(body, **kw)
+threads = [threading.Thread(target=attempt, args=(name,), kwargs=kw) for name,kw in [
+    ("exhausted-a", {"run":"v1-public-a-r1", "headers":{"x-run-id":"v1-public-b-r1"}}),
+    ("valid-b", {"run":"v1-public-b-r1"}),
+    ("public-id", {"token":"v1-public-b-r1"}),
+    ("legacy-id", {"token":"", "headers":{"x-run-id":"v1-public-b-r1"}}),
+    ("unknown-token", {"token":"not-issued-" * 5})]]
+[t.start() for t in threads]; [t.join() for t in threads]
+a = admin("/runs/v1-public-a-r1"); b = admin("/runs/v1-public-b-r1")
+check("15 parallel runs require distinct tokens and charge only the authenticated run",
+      first == 200 and responses == {"exhausted-a":429,"valid-b":200,"public-id":403,"legacy-id":403,"unknown-token":403}
+      and ra["token"] != rb["token"] and min(len(ra["token"]),len(rb["token"])) >= 32
+      and a["spent_usd"] == b["spent_usd"] == 18 and a["calls"] == b["calls"] == 1 and len(calls) == 2,
+      f"first={first}, parallel={responses}, calls={len(calls)}, charges A={a['spent_usd']}, B={b['spent_usd']}")
+stop(p); p = start(budget=10 ** 9)
+restarted = post(body, "v1-public-b-r1")
+closed = admin("/runs/v1-public-b-r1/close", {})
+revoked = post(body, "v1-public-b-r1")
 stop(p)
+artifacts = open(SF).read() + open(f"{tmp}/gateway.log").read() + json.dumps(forwarded_headers) + json.dumps([a,b,closed])
+check("16 token mapping survives restart, closing revokes it, and bearer tokens are not recorded or forwarded",
+      restarted == 200 and revoked == 403 and all(token not in artifacts for token in TOKENS.values())
+      and all("token" not in result and "token_hash" not in result for result in (a,b,closed)),
+      f"restart={restarted}, closed-token={revoked}, no bearer in artifacts")
+
+# Force the close between the initial lookup and the reservation lock, without adding test hooks to the gateway.
+import email.message, hashlib, importlib.util, io
+from unittest.mock import patch
+spec = importlib.util.spec_from_file_location('gateway_race_fixture', f'{HERE}/gateway.py')
+gw = importlib.util.module_from_spec(spec)
+with patch.dict(os.environ, {'KEY_FILE':f'{tmp}/key','ADMIN_KEY_FILE':f'{tmp}/admin-key',
+                            'STATE_FILE':f'{tmp}/race-state.json','PRICES':'{"m":[1,1]}'}):
+    spec.loader.exec_module(gw)
+digest = hashlib.sha256(b'race-token').hexdigest()
+gw.state['runs']['race'] = {'cap_usd':1,'spent_usd':0,'calls':0,'open':True,'token_hash':digest}
+gw.token_runs[digest] = 'race'
+entered, release = threading.Event(), threading.Event()
+def paused_price(*args, **kwargs):
+    entered.set()
+    if not release.wait(5): raise RuntimeError('test synchronization timeout')
+    return 0.01
+request = object.__new__(gw.H); request.path='/v1/messages'; request.headers=email.message.Message()
+raw=json.dumps(body).encode();request.headers['content-length']=str(len(raw));request.headers['x-run-token']='race-token';request.rfile=io.BytesIO(raw)
+status=[];request.refuse=lambda code,why:status.append(code)
+admin_request=object.__new__(gw.Admin);admin_request.path='/runs/race/close';admin_request.headers=email.message.Message()
+admin_request.headers['Authorization']='Bearer fake-admin';admin_request.headers['content-length']='2';admin_request.rfile=io.BytesIO(b'{}')
+admin_status=[];admin_request.reply=lambda code,obj:admin_status.append(code)
+with patch.object(gw,'usd',side_effect=paused_price),patch.object(gw.UPSTREAM_HTTP,'open',side_effect=AssertionError('must not forward')) as upstream,patch.object(gw,'log'):
+    worker=threading.Thread(target=request.do_POST);worker.start();reached=entered.wait(5)
+    if reached:admin_request.do_POST()
+    release.set();worker.join(5)
+    check("17 closing a run between lookup and reservation prevents forwarding",
+          reached and not worker.is_alive() and admin_status==[200] and status==[403] and not upstream.called
+          and not gw.state['reserved'] and gw.state['spent_usd']==0,
+          f"closed={admin_status}, request={status}, forwarded={upstream.called}")
 sys.exit(0 if ok else 1)

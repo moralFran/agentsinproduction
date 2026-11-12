@@ -131,11 +131,11 @@ The judging page never opens `key.jsonl`. `verdicts.jsonl` is append-only (the l
 `rule` (green but failed the hidden tests); excluded cases are shown with `source=excluded`. In the archive, point the
 judge at a copy of `verdicts.jsonl` if you only want to look: it writes to the files it is given.
 
-Offline, no cluster: `python3 gateway/test_budget.py --short` (the gateway against a fake upstream, 17 checks) and
+Offline, no cluster: `python3 gateway/test_budget.py --short` (the gateway against a fake upstream, 20 checks) and
 `python3 executor/test_executor.py` (the executor's patch checks on a synthetic repository, 31 checks; no case code).
-From this historical folder, `python3 infra/test_workflow.py` runs 8 regression tests for fresh-run setup, the funnel,
+From this historical folder, `python3 infra/test_workflow.py` runs 9 regression tests for fresh-run setup, the funnel,
 the tally and audit resumption. It uses temporary folders and synthetic results; pod invocation is mocked, with no VM
-or provider calls. `python3 -B infra/test_security.py` adds 22 synthetic tests for isolation contracts, separate
+or provider calls. `python3 -B infra/test_security.py` adds 35 synthetic tests for isolation contracts, separate
 preparation/execution, cache separation, runner failures, the tally and judging; it includes a negative control that
 documents the remaining test-runner bypass. No live Kubernetes/Kata verification was performed for these changes.
 
@@ -184,6 +184,16 @@ and remaining trust boundaries. The archived records, verdicts and totals were p
 A follow-up fixes round resumption by skipping recorded attempts successfully, and calibrates the integrity rule on
 the maintainer's fix before freezing. If the fixed suite itself generates unignored output or changes source files,
 the case is marked incompatible with this validator, rather than letting every agent patch be rejected for that effect.
+
+A further review added random per-run gateway tokens, a locked close/reservation check, hardened Git integrity checks
+and a separate `test_changed_tree` outcome. Both validation phases use the broken-tree Go cache, and reproduction checks
+that the maintainer's own fix passes with that cache. Preparation requires the selected Go packages to compile on the
+fixed tree and records the result on the broken one; all reproduction samples restore their checkout. A
+non-discriminating hidden control, a broken tree that did not compile and a fix that fails with the agent's cache each
+require a recorded eligibility decision before freezing; setup restarts and waits for the gateway deployment.
+The addendum documents these controls, validation time estimates and the still-pending Go/Python cluster smoke test
+followed by revalidation of the 56 non-empty archived patches. The new token is limited to one run; the agent still
+receives no provider or administrative key.
 
 ## Folder map
 | Path | What it is |

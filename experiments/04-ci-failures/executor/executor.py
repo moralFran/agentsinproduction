@@ -16,7 +16,7 @@ Harness fixes of 2026-11-12, made AFTER the v1/v2 collection and the post-collec
   - FORBIDDEN matches everything UNDER CI directories (.github/, .circleci/, ...), not only the directory name itself;
   - `run` (audit mode) stops before the command when a patch or the maintainer's test changes do not apply.
 Offline test: executor/test_executor.py (synthetic repository, no case code)."""
-import hashlib, json, os, re, shutil, subprocess, sys, time
+import hashlib, json, os, re, shutil, stat, subprocess, sys, time
 
 RUN_TIMEOUT = 600
 # test files, including test EXPECTATIONS: snapshot files (__snapshots__/, *.snap) and golden files (*.golden, golden/).
@@ -33,6 +33,16 @@ FORBIDDEN = re.compile(r"(^|/)(\.github|\.circleci|\.gitlab|\.buildkite|\.woodpe
 CASE = REPO = WD = None; M = {}
 
 def _decode(b): return b.decode("utf-8", "surrogateescape")
+
+def checker_git(args, repo):
+    """No inherited Git overrides, global/system config, hooks, fsmonitor, or optional index refresh writes.
+    core.excludesFile is pinned: without it Git still reads $HOME/.config/git/ignore (HOME is writable in the pods),
+    where a test could hide new files from the listing."""
+    env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+    env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL="/dev/null", GIT_OPTIONAL_LOCKS="0")
+    return subprocess.run(["git", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null",
+                           "-c", "core.untrackedCache=false", "-c", "core.excludesFile=/dev/null", *args],
+                          cwd=repo, env=env, capture_output=True)
 
 def numstat_paths(patch_file, cwd):
     """Every path the patch names, both sides of a rename or copy, as Git parses it (`git apply --numstat -z`, which reads
@@ -53,7 +63,7 @@ def numstat_paths(patch_file, cwd):
 
 def status_entries(cwd):
     """{path: two-letter status} of the working copy, untracked files included, from `git status --porcelain -z`."""
-    p = subprocess.run(["git", "status", "--porcelain=v1", "-z", "--untracked-files=all", "--no-renames"], cwd=cwd, capture_output=True)
+    p = checker_git(["status", "--porcelain=v1", "-z", "--untracked-files=all", "--no-renames"], cwd)
     if p.returncode: raise ValueError("git status failed: " + _decode(p.stderr)[-200:])
     out = {}
     for rec in p.stdout.split(b"\0"):
@@ -89,48 +99,65 @@ def sh(cmd, cwd=None, timeout=None):
     except subprocess.TimeoutExpired as e:
         return 124, (e.stdout or b"").decode("utf-8", "replace") if isinstance(e.stdout, bytes) else (e.stdout or ""), time.monotonic() - t
 
-def runs(cmd, n):
+def runs(cmd, n, prepare=None):
     out = []
     for i in range(n):
+        if prepare is not None: prepare()
         rc, o, dt = sh(cmd, cwd=WD, timeout=RUN_TIMEOUT)
         tail = o.strip().splitlines()[-1][:200] if o.strip() else ""
         out.append({"rc": rc, "s": round(dt, 1), "tail": tail})
         if i == 0: open(f"/tmp/run-output.txt", "w").write(o[-60000:])
     return out
 
-def tree_state(repo):
-    """Git status plus content hashes: status alone misses a second edit to an already modified source file.
-    This detects persistent changes to tracked/non-ignored files, not in-process test-runner tampering."""
-    status = status_entries(repo)
-    p = subprocess.run(["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=repo, capture_output=True)
-    if p.returncode: raise ValueError("cannot enumerate working tree")
-    content = {}
-    for raw in p.stdout.split(b"\0"):
-        if not raw: continue
-        name = _decode(raw); path = os.path.join(repo, name)
-        if os.path.islink(path): content[name] = ("link", os.readlink(path))
-        elif os.path.isfile(path):
-            digest = hashlib.sha256()
-            with open(path, "rb") as f:
-                for chunk in iter(lambda: f.read(1024 * 1024), b""): digest.update(chunk)
-            content[name] = ("file", digest.hexdigest(), os.stat(path).st_mode & 0o777)
-        else: content[name] = ("missing",)
+GIT_METADATA = (".git", ".git/config", ".git/info/exclude", ".git/index", ".git/HEAD")
+
+def fingerprint(path):
+    try: info = os.lstat(path)
+    except (FileNotFoundError, NotADirectoryError): return ("missing",)
+    if stat.S_ISLNK(info.st_mode): return ("link", os.readlink(path))
+    if stat.S_ISREG(info.st_mode):
+        digest = hashlib.sha256()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 1024), b""): digest.update(chunk)
+        return ("file", digest.hexdigest(), info.st_mode & 0o777)
+    return ("other", info.st_mode)
+
+def tree_state(repo, baseline=None):
+    """Retain every pre-test path and hash checker metadata. Never consult changed Git metadata after a test.
+    New non-ignored files are added only when the metadata is intact; the earlier file list is never replaced.
+    This detects persistent changes, not in-process tampering or change-and-restore races.
+    """
+    metadata = {name: fingerprint(os.path.join(repo, name)) for name in GIT_METADATA}
+    names = set(baseline[1]) if baseline is not None else set()
+    if baseline is not None and any(metadata[name] != baseline[1][name] for name in GIT_METADATA):
+        status = baseline[0]  # comparing metadata/content is sufficient; do not run Git on altered config/index
+    else:
+        status = status_entries(repo)
+        p = checker_git(["ls-files", "-z", "--cached", "--others", "--exclude-standard"], repo)
+        if p.returncode: raise ValueError("cannot enumerate working tree")
+        names.update(_decode(raw) for raw in p.stdout.split(b"\0") if raw)
+    content = {name: fingerprint(os.path.join(repo, name)) for name in names if name not in GIT_METADATA}
+    content.update(metadata)
     return status, content
 
 
 def checked_run(cmd, repo, cwd, output_path=None):
     try:
+        # The checkout was copied, so the index holds stale stat data: the first plain `git status`, `git diff` or
+        # `git describe --dirty` run by the suite would rewrite .git/index and look like tampering. Refresh it once,
+        # before the baseline; the exit code is ignored (modified files make it non-zero), a broken index fails below.
+        checker_git(["update-index", "-q", "--refresh"], repo)
         before = tree_state(repo)
         rc, output, dt = sh(cmd, cwd=cwd, timeout=RUN_TIMEOUT)
         if output_path:
             with open(output_path, "w") as f: f.write(output[-60000:])
-        after = tree_state(repo)
+        after = tree_state(repo, baseline=before)
     except (ValueError, OSError) as e:
         return {"outcome": "infra_error", "why": f"cannot verify test-tree integrity: {e}"}
     sample = {"rc": rc, "s": round(dt, 1), "tail": output.strip().splitlines()[-1][:200] if output.strip() else ""}
     if before != after:
         paths = sorted(changed_by(before[0], after[0]) | changed_by(before[1], after[1]))
-        return {"outcome": "rejected_by_validator", "why": "test command changed the working tree: " + ", ".join(paths[:6]), "run": sample}
+        return {"outcome": "test_changed_tree", "why": "test command changed the working tree: " + ", ".join(paths[:6]), "run": sample}
     return {"outcome": "sampled", "run": sample}
 
 
@@ -156,17 +183,26 @@ def main():
     M["hidden_cmd"] = os.environ.get("HIDDEN_COMMAND", "")
     REPO = f"{CASE}/repo"; WD = os.path.normpath(os.path.join(REPO, M.get("workdir", ".")))
     mode = sys.argv[1]; r = {"id": M["id"], "mode": mode}
-    if mode != "validate-run": fresh()
+    if mode not in ("validate-run", "repro"): fresh()
     if mode == "repro":
         which, n = sys.argv[2], int(sys.argv[3]); r["tree"] = which
         if which == "hidden-broken":
             if not M.get("hidden_cmd"):
                 r.update(not_applicable=True); print("EXECUTOR " + json.dumps(r)); return
-            rc, o, _ = sh("git apply --binary /in/hidden.diff")
-            if rc: r.update(error="hidden tests do not apply: " + o[-200:]); print("EXECUTOR " + json.dumps(r)); return
+        # "fixed-agent-cache": the maintainer's fix in the environment agent patches are validated in (the broken-tree
+        # dependency cache; pod.py mounts the fixed-tree cache only for "fixed"). Only Go has two caches.
+        if which == "fixed-agent-cache" and M.get("language") != "Go":
+            r.update(not_applicable=True); print("EXECUTOR " + json.dumps(r)); return
+        fixed_tree = which in ("fixed", "fixed-agent-cache")
+        if which == "broken": r["prep_compiles"] = M.get("broken_compiles")   # recorded by preparation (Go); None otherwise
+        def restore_broken():
+            fresh()
+            if which == "hidden-broken":
+                rc, o, _ = sh("git apply --binary /in/hidden.diff")
+                if rc: raise ValueError("hidden tests do not apply: " + o[-200:])
         try:
-            r["runs"] = fixed_runs(M["test_cmd"], n) if which == "fixed" else runs(M["hidden_cmd"] if which == "hidden-broken" else M["test_cmd"], n)
-            if which == "fixed" and M.get("hidden_cmd"):
+            r["runs"] = fixed_runs(M["test_cmd"], n) if fixed_tree else runs(M["hidden_cmd"] if which == "hidden-broken" else M["test_cmd"], n, prepare=restore_broken)
+            if fixed_tree and M.get("hidden_cmd"):
                 r["hidden_runs"] = fixed_runs(M["hidden_cmd"], n)
         except ValueError as e:
             r.update(error=str(e)); print("EXECUTOR " + json.dumps(r)); return

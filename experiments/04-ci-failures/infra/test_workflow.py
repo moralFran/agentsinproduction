@@ -98,6 +98,25 @@ class FreshRunTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(path.read_text(), '{"keep": "this decision"}\n')
 
+    def test_tally_uses_actual_round_sizes_and_separates_tree_mutation(self):
+        self.start()
+        (self.dest/'cases/cases.csv').write_text('case_id,repo\nfixture,example/fixture\n')
+        (self.dest/'results/blind/key.jsonl').write_text('')
+        (self.dest/'results/blind/verdicts.csv').write_text('packet,verdict,source\n')
+        for counts in ((2,2),(2,3)):
+            with self.subTest(counts=counts):
+                for version,count in zip(('v1','v2'),counts):
+                    rows=[{'run':f'{version}-r{i}','round':version,'case':'fixture','rep':i,
+                           'agent':{'outcome':'finished'},'executor':{'outcome':'test_changed_tree' if i==1 else 'rejected_by_validator'},
+                           'gateway':{'spent_usd':0.01}} for i in range(1,count+1)]
+                    (self.dest/f'results/attempts-{version}.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+                self.python('results/analyze.py')
+                summary=(self.dest/'results/final-summary.md').read_text()
+                self.assertNotIn('33 tentativas',summary)
+                self.assertIn('todas as 2 tentativas por versão' if counts==(2,2) else 'todas as tentativas: v1 2, v2 3',summary)
+                data=json.loads((self.dest/'results/final.json').read_text())
+                self.assertEqual(data['table']['v1'],{'suíte alterou a árvore':1,'rejeitado pelo validador':1})
+
 
 def completed_log(rc=0, apply_rc=0):
     return f"NOTES patch applied rc={apply_rc}\nCOMMAND TEST\nOUTPUT_BEGIN\nfixture result\nOUTPUT_END rc={rc} s=0.1\n"

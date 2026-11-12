@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run one disposable Kata pod. Agent and suite validation never receive solution files. Hidden validation's init
-container receives only hidden.diff; its test container receives no diffs. Repro fixed receives fix.diff.
+container receives only hidden.diff; its test container receives no diffs. Repro fixed and fixed-agent-cache receive
+fix.diff; only repro fixed receives the fixed-tree module cache.
 Each validation repetition is orchestrated by cases/validate.py.
 Post-collection hardening; existing records are unchanged.
 usage: pod.py <exec|agent> <case_id> <pod_name> <deadline_s> [--patch FILE] [--env K=V ...] -- <command...>
@@ -29,7 +30,8 @@ def build_spec(role, cid, name, deadline, cmd, meta, patch=None, extra_env=(), s
         try: action = cmd[cmd.index("/code/executor.py") + 1:]
         except ValueError: raise ValueError("executor pods require an explicit executor action")
         if not action: raise ValueError("missing executor action")
-        fixed = action[:2] == ["repro", "fixed"]
+        fixed_cache = action[:2] == ["repro", "fixed"]
+        fixed = fixed_cache or action[:2] == ["repro", "fixed-agent-cache"]   # same inputs, the agent's dependency cache
         hidden = (action[:2] == ["validate", "hidden"] or
                   (action[:2] == ["repro", "hidden-broken"] and bool((secret_meta or {}).get("hidden_cmd"))) or
                   (action[0] == "run" and len(action) > 1 and action[1] == "1") or
@@ -43,8 +45,9 @@ def build_spec(role, cid, name, deadline, cmd, meta, patch=None, extra_env=(), s
                 key = filename.replace(".", "-")
                 vols.append({"name": key, "hostPath": {"path": f"/srv/ci/secret/{cid}/{filename}", "type": "File"}})
                 mounts.append({"name": key, "mountPath": f"/in/{filename}", "readOnly": True})
-        # Only executor controls/hidden tests receive dependencies prepared from the fixed tree.
-        if meta["language"] == "Go" and (fixed or hidden):
+        # Agent validation uses the broken-tree cache in BOTH phases. Fixed dependencies are for repro fixed only;
+        # "repro fixed-agent-cache" checks that the maintainer's fix also passes without them.
+        if meta["language"] == "Go" and fixed_cache:
             vols.append({"name": "fixed-gomod", "hostPath": {"path": f"/srv/ci/secret/{cid}/gomod", "type": "Directory"}})
             mounts.append({"name": "fixed-gomod", "mountPath": f"{CASE}/gomod", "readOnly": True})
     if patch:
@@ -80,6 +83,7 @@ def main():
     rest = sys.argv[5:]; cmd = rest[rest.index("--") + 1:]; opts = rest[:rest.index("--")]
     patch = opts[opts.index("--patch") + 1] if "--patch" in opts else None
     extra_env = [o for i, o in enumerate(opts) if i > 0 and opts[i - 1] == "--env"]
+    if role == "agent": extra_env.append("RUN_TOKEN=" + os.environ.pop("RUN_TOKEN"))  # not exposed in CLI arguments
     ns = "ci-exec" if role == "exec" else "ci-agent"
     meta = json.load(open(f"/srv/ci/cases/{cid}/meta.json"))
     secret_meta = json.load(open(f"/srv/ci/secret/{cid}/meta.json")) if role == "exec" else None

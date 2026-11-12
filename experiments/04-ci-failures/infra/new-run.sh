@@ -27,6 +27,7 @@ for f in "${files[@]}"; do mkdir -p "$dst/$(dirname "$f")"; cp -p "$f" "$dst/$f"
 # New judgments start without exclusions; never inherit the historical run's decisions.
 mkdir -p "$dst/results/blind"
 printf '{}\n' > "$dst/results/blind/excluded.json"
+printf '{}\n' > "$dst/cases/eligibility-decisions.json"
 printf 'Fresh run started %s from %s (code only%s). Not the historical record.\n' "$(date -u +%FT%TZ)" "$src" \
   "$([ "${2:-}" = --with-candidates ] && echo ', plus the 113 archived candidates and their mining logs')" > "$dst/FRESH_RUN"
 echo "fresh run folder: $dst ($(find "$dst" -type f | wc -l | tr -d ' ') files)"
