@@ -1,0 +1,55 @@
+{
+ "case": "ludwig-ai-ludwig-6a122a8e",
+ "sha256": "f3c1529c6b54b3725e0de9c9dc5cf41cc9a009500f22a3e2809240ea6b0934e5",
+ "runs": [
+  "v2-1899ffc2-r3"
+ ],
+ "pod_prefix": "rv-634c6b-f3c1529c6b",
+ "validator_rc": 0,
+ "wall_s": 577.1,
+ "finished": "2026-11-12T23:01:44Z",
+ "result": {
+  "id": "ludwig-ai-ludwig-6a122a8e",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-634c6b-f3c1529c6b-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 198.6
+   },
+   {
+    "pod": "rv-634c6b-f3c1529c6b-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 172.7
+   },
+   {
+    "pod": "rv-634c6b-f3c1529c6b-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 203.0
+   }
+  ],
+  "files": [
+   "ludwig/data/dataset/ray.py"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 173.3,
+    "tail": "11 passed, 15 warnings in 104.33s (0:01:44)"
+   },
+   {
+    "rc": 0,
+    "s": 142.2,
+    "tail": "11 passed, 15 warnings in 76.09s (0:01:16)"
+   },
+   {
+    "rc": 0,
+    "s": 176.3,
+    "tail": "11 passed, 15 warnings in 92.02s (0:01:32)"
+   }
+  ],
+  "suite_pass": 3,
+  "outcome": "green_no_hidden_tests"
+ },
+ "stderr_tail": ""
+}

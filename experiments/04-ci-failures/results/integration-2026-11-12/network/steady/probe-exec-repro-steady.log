@@ -1,0 +1,18 @@
+# pod probe-exec-repro-steady namespace ci-exec phase Succeeded/ wall 322s
+# main c exit 0
+# created 2026-11-12T18:26:30Z main-started 2026-11-12T18:26:48Z main-finished 2026-11-12T18:31:48Z
+[pod/probe-exec-repro-steady/c] NETFLAP {"event": "start", "role": "exec-repro", "seconds": 300.0}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 0.01, "target": "metadata 169.254.169.254:80", "now": "open"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 0.01, "target": "node ssh", "now": "open"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 0.02, "target": "kubernetes api clusterip", "now": "open"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 0.03, "target": "gateway admin port", "now": "blocked"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 0.02, "target": "gateway model port", "now": "blocked"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 0.0, "target": "public 1.1.1.1:443", "now": "open"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 1.04, "target": "node ssh", "now": "blocked"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 1.04, "target": "metadata 169.254.169.254:80", "now": "blocked"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 1.05, "target": "kubernetes api clusterip", "now": "blocked"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 1.09, "target": "public 1.1.1.1:443", "now": "blocked"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 149.14, "target": "kubernetes api clusterip", "now": "open"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"t_s": 149.34, "target": "kubernetes api clusterip", "now": "blocked"}
+[pod/probe-exec-repro-steady/c] NETFLAP {"event": "summary", "seconds": 300.0, "targets": {"public 1.1.1.1:443": {"tries": 459, "open": 5, "blocked": 454, "changes": 2, "open_after_5s": 0, "blocked_after_5s": 448}, "metadata 169.254.169.254:80": {"tries": 467, "open": 5, "blocked": 462, "changes": 2, "open_after_5s": 0, "blocked_after_5s": 455}, "node ssh": {"tries": 472, "open": 5, "blocked": 467, "changes": 2, "open_after_5s": 0, "blocked_after_5s": 459}, "kubernetes api clusterip": {"tries": 457, "open": 6, "blocked": 451, "changes": 4, "open_after_5s": 1, "blocked_after_5s": 445}, "gateway model port": {"tries": 470, "open": 0, "blocked": 470, "changes": 1, "open_after_5s": 0, "blocked_after_5s": 460}, "gateway admin port": {"tries": 470, "open": 0, "blocked": 470, "changes": 1, "open_after_5s": 0, "blocked_after_5s": 460}}}
+

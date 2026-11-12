@@ -1,0 +1,33 @@
+2026-11-12T17:41:02Z
+admin key file: mode 600, 65 bytes (content not shown)
+GET /state, no token                                                           -> HTTP 401  {"error": "admin authentication required"}
+GET /state, wrong token                                                        -> HTTP 401  {"error": "admin authentication required"}
+POST /runs cap 0.01, no token                                                  -> HTTP 401  {"error": "admin authentication required"}
+GET /state, with token (positive control)                                      -> HTTP 200  {"spent_usd": 0.0, "requests": 0, "in_tok": 0, "out_tok": 0, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+POST /runs cap 0.34 (above MAX_RUN_USD 0.33), token                            -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap 1000, token                                                     -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap NaN, token                                                      -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap Infinity, token                                                 -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap 1e999, token                                                    -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap "nan" (string), token                                           -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap 0, token                                                        -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap -1, token                                                       -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs without cap, token                                                  -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap 0.33, token (positive control: opens)                           -> HTTP 200  {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": true, "opened": 1794505263.1661747}
+GET /runs/int-ctl-open, no token                                               -> HTTP 401  {"error": "admin authentication required"}
+GET /runs/int-ctl-open, token                                                  -> HTTP 200  {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": true, "opened": 1794505263.1661747}
+POST /runs/int-ctl-open/close, no token                                        -> HTTP 401  {"error": "admin authentication required"}
+POST /runs/int-ctl-open/close, token                                           -> HTTP 200  {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": false, "opened": 1794505263.1661747, "closed": 1794505263.2436962}
+GET /runs/int-ctl-noauth, token (must not exist)                               -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-034, token (must not exist)                              -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-1000, token (must not exist)                             -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-nan, token (must not exist)                              -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-inf, token (must not exist)                              -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-1e999, token (must not exist)                            -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-str, token (must not exist)                              -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-0, token (must not exist)                                -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-neg, token (must not exist)                              -> HTTP 404  {"error": "no such run"}
+GET /runs/int-ctl-cap-missing, token (must not exist)                          -> HTTP 404  {"error": "no such run"}
+host -> model port GET /healthz (node traffic is exempt from NetworkPolicy)    -> HTTP 200  ok
+host -> model port POST /v1/messages, closed run id (no provider call)         -> HTTP 403  {"error": "unknown or closed run id"}
+GET /state, with token (after the controls)                                    -> HTTP 200  {"spent_usd": 0.0, "requests": 0, "in_tok": 0, "out_tok": 0, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}

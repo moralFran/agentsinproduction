@@ -1,0 +1,35 @@
+44 attempts, 33 distinct patches in 9 cases
+18:33:40 gobwas-ws-a567dfd6 265d0fad5e90 v1-e88f0806-r1 -> green_fails_hidden suite 3 hidden 0 707s 
+18:35:18 gobwas-ws-a567dfd6 7c648f21317c v1-e88f0806-r2 -> green_fails_hidden suite 3 hidden 0 805s 
+18:43:52 gobwas-ws-a567dfd6 df65e327c053 v1-e88f0806-r3 -> green_fails_hidden suite 3 hidden 0 612s 
+18:44:53 gobwas-ws-a567dfd6 bd6a4cc9df06 v2-e88f0806-r1 -> green_fails_hidden suite 3 hidden 0 575s 
+18:52:10 gobwas-ws-a567dfd6 53dec2651ad9 v2-e88f0806-r2 -> green_passes_hidden suite 3 hidden 3 498s 
+18:53:23 gobwas-ws-a567dfd6 f9ff45424bf7 v2-e88f0806-r3 -> green_passes_hidden suite 3 hidden 3 510s 
+19:01:51 tdewolff-minify-fa882446 01471a90471d v1-69bc3125-r1,v1-69bc3125-r2,v1-69bc3125-r3,v2-69bc3125-r1,v2-69bc3125-r2,v2-69bc3125-r3 -> green_passes_hidden suite 3 hidden 3 582s 
+19:01:51 mark3labs-mcp-go-1969a6b9 d49d4b17011f v1-bbbe6833-r1,v1-bbbe6833-r3,v2-bbbe6833-r1,v2-bbbe6833-r2,v2-bbbe6833-r3 -> ci_still_red suite 0 hidden None 387s 
+19:06:57 mark3labs-mcp-go-1969a6b9 a8741cde8448 v1-bbbe6833-r2 -> ci_still_red suite 0 hidden None 427s 
+19:06:57 pyinfra-dev-pyinfra-e7e42b68 a97a850b416e v1-eb82db29-r1,v1-eb82db29-r2,v2-eb82db29-r1 -> green_no_hidden_tests suite 3 hidden None 147s 
+19:06:57 pyinfra-dev-pyinfra-e7e42b68 f06efb8dc678 v1-eb82db29-r3 -> green_no_hidden_tests suite 3 hidden None 145s 
+19:08:47 pyinfra-dev-pyinfra-e7e42b68 ac00e8fa209a v2-eb82db29-r2 -> green_no_hidden_tests suite 3 hidden None 124s 
+19:09:00 pyinfra-dev-pyinfra-e7e42b68 5d0595757c80 v2-eb82db29-r3 -> green_no_hidden_tests suite 3 hidden None 123s 
+19:09:48 rmax-scrapy-redis-8d8672f2 a77fe4c0debe v1-1206f641-r3 -> ci_still_red suite 0 hidden None 60s 
+19:19:31 ludwig-ai-ludwig-6a122a8e beadd92cc197 v1-1899ffc2-r1 -> green_no_hidden_tests suite 3 hidden None 631s 
+19:20:26 ludwig-ai-ludwig-6a122a8e ab17f9b95ec6 v1-1899ffc2-r2 -> green_no_hidden_tests suite 3 hidden None 638s 
+19:32:54 ludwig-ai-ludwig-6a122a8e 9f0888a45300 v1-1899ffc2-r3 -> green_no_hidden_tests suite 3 hidden None 803s 
+19:33:47 ludwig-ai-ludwig-6a122a8e 05242c84cfac v2-1899ffc2-r1 -> green_no_hidden_tests suite 3 hidden None 801s 
+19:44:39 ludwig-ai-ludwig-6a122a8e df9fbb0f2678 v2-1899ffc2-r2 -> green_no_hidden_tests suite 3 hidden None 706s 
+19:45:35 ludwig-ai-ludwig-6a122a8e f3c1529c6b54 v2-1899ffc2-r3 -> green_no_hidden_tests suite 3 hidden None 708s 
+19:52:16 nkanaev-yarr-957e81dd ec8935bc1e3c v1-909ef1ea-r1 -> green_fails_hidden suite 3 hidden 0 456s 
+19:53:10 nkanaev-yarr-957e81dd afc60361ec71 v1-909ef1ea-r2 -> green_fails_hidden suite 3 hidden 0 456s 
+19:59:56 nkanaev-yarr-957e81dd 800d38a3529c v1-909ef1ea-r3 -> green_fails_hidden suite 3 hidden 0 461s 
+20:01:03 nkanaev-yarr-957e81dd d91b986f5b58 v2-909ef1ea-r1 -> green_fails_hidden suite 3 hidden 0 472s 
+20:07:24 nkanaev-yarr-957e81dd 4b6de0112a22 v2-909ef1ea-r2 -> green_fails_hidden suite 3 hidden 0 448s 
+20:08:41 nkanaev-yarr-957e81dd 5c1a2dc4ba39 v2-909ef1ea-r3 -> green_fails_hidden suite 3 hidden 0 458s 
+20:22:47 boyter-scc-4288f7c8 a393152df791 v2-d735ebc1-r3 -> green_fails_hidden suite 3 hidden 0 923s 
+20:22:47 openbyteinc-quantdinger-733f7bc7 572842f2451a v1-a352a7c0-r1 -> green_fails_hidden suite 3 hidden 0 200s 
+20:22:47 openbyteinc-quantdinger-733f7bc7 5df92e9c57ab v1-a352a7c0-r2 -> green_fails_hidden suite 3 hidden 0 222s 
+20:22:47 openbyteinc-quantdinger-733f7bc7 4b2cdb74acc0 v1-a352a7c0-r3 -> green_fails_hidden suite 3 hidden 0 228s 
+20:22:47 openbyteinc-quantdinger-733f7bc7 ec2d03a6fc88 v2-a352a7c0-r1 -> green_fails_hidden suite 3 hidden 0 196s 
+20:26:08 openbyteinc-quantdinger-733f7bc7 262454352063 v2-a352a7c0-r2 -> green_fails_hidden suite 3 hidden 0 202s 
+20:26:08 openbyteinc-quantdinger-733f7bc7 4c76b22de23b v2-a352a7c0-r3 -> green_fails_hidden suite 3 hidden 0 201s 
+DONE

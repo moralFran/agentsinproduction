@@ -1,0 +1,23 @@
+# archive guard on the VM copy of the historical folder (has ARCHIVE): record-writing scripts must refuse
+$ cases/repro.sh gobwas-ws-a567dfd6
+this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1
+exit status: 1
+$ cases/attempt.sh v9 gobwas-ws-a567dfd6 1
+this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1
+exit status: 1
+$ cases/run-round.sh v9
+this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1
+exit status: 1
+$ cases/pipeline.sh 9
+this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1
+exit status: 1
+$ python3 cases/freeze.py
+this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1
+exit status: 1
+$ python3 cases/claim.py
+this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1
+exit status: 1
+$ cases/reset-case.sh gobwas-ws-a567dfd6 x
+this folder is the historical record (ARCHIVE file): start a fresh run with infra/new-run.sh <new-dir>, or set ALLOW_ARCHIVE_WRITE=1
+exit status: 1
+archive records unchanged on the VM copy: d0abec78c96b6bf7 cases.csv, e5e5948a7d9fb778 attempts

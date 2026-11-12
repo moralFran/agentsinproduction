@@ -1,0 +1,1 @@
+EXECUTOR {"id": "sigstore-cosign-1ab7015b", "mode": "validate", "phase": "hidden", "outcome": "sampled", "files": ["pkg/oci/remote/write.go"], "run": {"rc": 0, "s": 197.9, "tail": "ok  \tgithub.com/sigstore/cosign/v3/pkg/oci/remote\t94.281s"}}

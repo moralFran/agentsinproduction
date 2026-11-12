@@ -1,0 +1,29 @@
+rmax-scrapy-redis-8d8672f2 failure.txt 6000 chars
+gateway state before: {"spent_usd": 0.24470489999999998, "requests": 20, "in_tok": 172193, "out_tok": 10727, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+== 2026-11-12T21:10:32Z cases/attempt.sh smoke-gwdown rmax-scrapy-redis-8d8672f2 1  (expected run id: smoke-gwdown-1206f641-r1)
+closed from the host after 1 polls: {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": false, "opened": 1794517832.142508, "closed": 1794517832.225397}
+run smoke-gwdown-1206f641-r1: the model path was unavailable (see smoke/infra-smoke-gwdown.jsonl); not recorded as an attempt, the resume redoes it
+attempt.sh exit status: 1
+journal smoke/attempts-smoke-gwdown.jsonl exists: no
+lines in smoke/infra-smoke-gwdown.jsonl: 1
+patch files left for the round: 0
+admin view of smoke-gwdown-1206f641-r1: {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": false, "opened": 1794517832.142508, "closed": 1794517863.2960265}
+== 2026-11-12T21:11:03Z cases/attempt.sh smoke-gwdown rmax-scrapy-redis-8d8672f2 1  (expected run id: smoke-gwdown-1206f641-r1-t2)
+closed from the host after 1 polls: {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": false, "opened": 1794517863.4855225, "closed": 1794517863.5577524}
+run smoke-gwdown-1206f641-r1-t2: the model path was unavailable (see smoke/infra-smoke-gwdown.jsonl); not recorded as an attempt, the resume redoes it
+attempt.sh exit status: 1
+journal smoke/attempts-smoke-gwdown.jsonl exists: no
+lines in smoke/infra-smoke-gwdown.jsonl: 2
+patch files left for the round: 0
+admin view of smoke-gwdown-1206f641-r1-t2: {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": false, "opened": 1794517863.4855225, "closed": 1794517916.8367836}
+infra record: {'run': 'smoke-gwdown-1206f641-r1', 'reason': 'the model path was unavailable to the agent', 'agent_outcome': 'gateway_unavailable', 'agent_error': "PermissionDeniedError: Error code: 403 - {'error': 'unknown or closed run token'}", 'model_calls': 0, 'tool_calls': 0, 'patch_key_present': False, 'agent_pod': 'Succeeded/', 'gateway': {'spent_usd': 0.0, 'calls': 0, 'cap_usd': 0.33}}
+infra record: {'run': 'smoke-gwdown-1206f641-r1-t2', 'reason': 'the model path was unavailable to the agent', 'agent_outcome': 'gateway_unavailable', 'agent_error': "PermissionDeniedError: Error code: 403 - {'error': 'unknown or closed run token'}", 'model_calls': 0, 'tool_calls': 0, 'patch_key_present': False, 'agent_pod': 'Succeeded/', 'gateway': {'spent_usd': 0.0, 'calls': 0, 'cap_usd': 0.33}}
+gateway log lines of these runs:
+{"ts": 1794517832.201, "event": "run_opened", "run": "smoke-gwdown-1206f641-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794517832.25, "event": "run_closed", "run": "smoke-gwdown-1206f641-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794517863.302, "event": "run_closed", "run": "smoke-gwdown-1206f641-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794517863.489, "event": "run_opened", "run": "smoke-gwdown-1206f641-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794517863.562, "event": "run_closed", "run": "smoke-gwdown-1206f641-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794517916.843, "event": "run_closed", "run": "smoke-gwdown-1206f641-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+gateway state after: {"spent_usd": 0.24470489999999998, "requests": 20, "in_tok": 172193, "out_tok": 10727, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+== 2026-11-12T21:11:57Z done

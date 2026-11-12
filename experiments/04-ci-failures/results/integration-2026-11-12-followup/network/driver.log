@@ -1,0 +1,9 @@
+probe-agent-env ci-agent Succeeded/ main c exit 0 5 log lines
+probe-ctl default Succeeded/ main c exit 0 40 log lines
+probe-prep ci-prep Succeeded/ main c exit 0 42 log lines
+probe-agent ci-agent Succeeded/ main c exit 0 43 log lines
+probe-exec-repro ci-exec Succeeded/ main c exit 0 43 log lines
+probe-exec-fixed ci-exec Succeeded/ main c exit 0 43 log lines
+probe-exec-fixed-agent-cache ci-exec Succeeded/ main c exit 0 43 log lines
+probe-exec-validate-suite ci-exec Succeeded/ init prepare exit 0 main c exit 0 47 log lines
+probe-exec-validate-hidden ci-exec Succeeded/ init prepare exit 0 main c exit 0 47 log lines

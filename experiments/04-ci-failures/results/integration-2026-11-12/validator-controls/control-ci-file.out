@@ -1,0 +1,2 @@
+EXECUTOR {"id": "gobwas-ws-a567dfd6", "mode": "validate", "pods": [{"pod": "vc-control-ci-file-suite-1", "phase": "Succeeded/", "wall_s": 138.9}], "files": [".github/workflows/x.yml"], "outcome": "rejected_by_validator", "why": "touches .github/workflows/x.yml"}
+POD {"pods": [{"pod": "vc-control-ci-file-suite-1", "phase": "Succeeded/", "wall_s": 138.9}]}

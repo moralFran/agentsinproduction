@@ -1,0 +1,5 @@
+12 attempts, 3 distinct patches in 2 cases
+19:31:40 alicebob-miniredis-ce093519 1ba81967e240 v1-56d24d7d-r1,v1-56d24d7d-r2,v1-56d24d7d-r3,v2-56d24d7d-r1,v2-56d24d7d-r2,v2-56d24d7d-r3 -> ci_still_red suite 0 hidden None 269s 
+20:05:40 sigstore-cosign-1ab7015b 2787efd58ab0 v1-c2452a82-r1,v1-c2452a82-r3,v2-c2452a82-r1,v2-c2452a82-r2,v2-c2452a82-r3 -> green_passes_hidden suite 3 hidden 3 2041s 
+20:35:04 sigstore-cosign-1ab7015b 098eb32aca11 v1-c2452a82-r2 -> green_passes_hidden suite 3 hidden 3 1763s 
+DONE

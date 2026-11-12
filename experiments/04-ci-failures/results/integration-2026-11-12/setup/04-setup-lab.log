@@ -1,0 +1,25 @@
+2026-11-12T17:36:53Z
+namespace/ci-agent created
+namespace/ci-exec created
+namespace/ci-gateway created
+networkpolicy.networking.k8s.io/deny-all created
+networkpolicy.networking.k8s.io/agent-egress-gateway-only created
+serviceaccount/runner created
+serviceaccount/runner created
+networkpolicy.networking.k8s.io/gateway-ingress created
+namespace/ci-prep created
+networkpolicy.networking.k8s.io/prep-egress-public-only created
+configmap/gateway-code created
+secret/gateway-key created
+secret/gateway-admin-key created
+persistentvolumeclaim/gateway-state created
+deployment.apps/gateway created
+service/gateway created
+Waiting for deployment "gateway" rollout to finish: 0 of 1 updated replicas are available...
+deployment "gateway" successfully rolled out
+0001799c51df8cb2e842d3a5db70a02515ac59f3cd198442355b1c9db08a7428  executor/executor.py
+009fcc1e465d35332b335e14d6eed942301246bab1b6c474ffd0ab166ee890a1  agent/agent.py
+b30bb240d97069752a726a30c68bf990abcb9f3e67ac7b15cc6d9e8771c612bd  agent/prompt-v1.txt
+8544789f4f0ee930e223616e75fba7f3c0ea6307d8d79f7a07ff39054687860c  agent/prompt-v2.txt
+rc=0
+2026-11-12T17:37:04Z

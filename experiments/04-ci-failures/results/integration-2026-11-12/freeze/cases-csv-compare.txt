@@ -1,0 +1,13 @@
+# fresh-run cases.csv (freeze.py on the cluster, 2026-11-12) vs the archived cases/cases.csv, row by row
+same case ids: True | archived order: different (the fresh run claimed only the 11 frozen candidates, so the Go/Python interleaving differs)
+openbyteinc-quantdinger-733f7bc7 identical row
+ludwig-ai-ludwig-6a122a8e identical row
+mark3labs-mcp-go-1969a6b9 identical row
+boyter-scc-4288f7c8 identical row
+gobwas-ws-a567dfd6 identical row
+sigstore-cosign-1ab7015b identical row
+pyinfra-dev-pyinfra-e7e42b68 identical row
+rmax-scrapy-redis-8d8672f2 identical row
+tdewolff-minify-fa882446 identical row
+nkanaev-yarr-957e81dd DIFFERENT: hidden_tests: 'no' -> 'yes'; hidden_cmd: '' -> 'go test -count=1 ./src/parser github.com/nkanaev/yarr/src/parser'
+alicebob-miniredis-ce093519 identical row

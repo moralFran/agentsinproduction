@@ -1,0 +1,88 @@
+{
+ "case": "sigstore-cosign-1ab7015b",
+ "sha256": "098eb32aca1143350c7660047efd685a60283bb281700798cc25be5b88b4a670",
+ "runs": [
+  "v1-c2452a82-r2"
+ ],
+ "pod_prefix": "rv-84f41c-098eb32aca",
+ "validator_rc": 0,
+ "wall_s": 1871.3,
+ "finished": "2026-11-12T23:44:09Z",
+ "result": {
+  "id": "sigstore-cosign-1ab7015b",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-84f41c-098eb32aca-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 315.6
+   },
+   {
+    "pod": "rv-84f41c-098eb32aca-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 344.1
+   },
+   {
+    "pod": "rv-84f41c-098eb32aca-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 330.0
+   },
+   {
+    "pod": "rv-84f41c-098eb32aca-hidden-1",
+    "phase": "Succeeded/",
+    "wall_s": 315.6
+   },
+   {
+    "pod": "rv-84f41c-098eb32aca-hidden-2",
+    "phase": "Succeeded/",
+    "wall_s": 293.4
+   },
+   {
+    "pod": "rv-84f41c-098eb32aca-hidden-3",
+    "phase": "Succeeded/",
+    "wall_s": 265.7
+   }
+  ],
+  "files": [
+   "pkg/oci/remote/write.go"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 295.9,
+    "tail": "ok  \tgithub.com/sigstore/cosign/v3/pkg/oci/remote\t115.803s"
+   },
+   {
+    "rc": 0,
+    "s": 322.6,
+    "tail": "ok  \tgithub.com/sigstore/cosign/v3/pkg/oci/remote\t143.589s"
+   },
+   {
+    "rc": 0,
+    "s": 312.2,
+    "tail": "ok  \tgithub.com/sigstore/cosign/v3/pkg/oci/remote\t138.669s"
+   }
+  ],
+  "suite_pass": 3,
+  "hidden_runs": [
+   {
+    "rc": 0,
+    "s": 298.4,
+    "tail": "ok  \tgithub.com/sigstore/cosign/v3/pkg/oci/remote\t138.813s"
+   },
+   {
+    "rc": 0,
+    "s": 275.2,
+    "tail": "ok  \tgithub.com/sigstore/cosign/v3/pkg/oci/remote\t115.398s"
+   },
+   {
+    "rc": 0,
+    "s": 249.3,
+    "tail": "ok  \tgithub.com/sigstore/cosign/v3/pkg/oci/remote\t115.526s"
+   }
+  ],
+  "hidden_pass": 3,
+  "outcome": "green_passes_hidden"
+ },
+ "stderr_tail": ""
+}

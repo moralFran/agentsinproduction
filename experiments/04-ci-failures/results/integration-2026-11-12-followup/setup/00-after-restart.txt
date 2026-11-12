@@ -1,0 +1,29 @@
+2026-11-12T20:52:43Z
+# after the restart
+aip-ci-01 Ready control-plane v1.37.2+k3s1
+aip-ci-01.us-central1-a.c.<project>.internal Ready control-plane v1.37.2+k3s1
+aip-ci-01 kata-labels:  
+aip-ci-01.us-central1-a.c.<project>.internal kata-labels: true true
+kata-qemu   kata-qemu   3h19m
+ci-gateway gateway-84bc74c458-spkl6 1/1 Running 0
+kube-system coredns-577d995dff-z4z6j 1/1 Running 0
+kube-system helm-install-gateway-api-crd-nrqr2 0/1 Completed 0
+kube-system helm-install-traefik-7jrxm 0/1 Completed 1
+kube-system helm-install-traefik-crd-pggqf 0/1 Completed 0
+kube-system local-path-provisioner-56c6584955-4h59q 1/1 Running 0
+kube-system metrics-server-778c4649b4-jmswx 1/1 Running 0
+kube-system svclb-traefik-78f085ae-2fq54 2/2 Running 0
+kube-system svclb-traefik-78f085ae-gsdcw 2/2 Running 0
+kube-system traefik-68df944ff7-92pjd 1/1 Running 0
+1
+ci-agent agent-egress-gateway-only
+ci-exec deny-all
+ci-gateway gateway-ingress
+ci-prep prep-egress-public-only
+admin-key
+cases
+logs
+secret
+uv
+work
+load average: 0.48, 0.12, 0.04

@@ -1,0 +1,18 @@
+# pod probe-ctl-steady namespace default phase Succeeded/ wall 312s
+# main c exit 0
+# created 2026-11-12T18:26:30Z main-started 2026-11-12T18:26:34Z main-finished 2026-11-12T18:31:35Z
+[pod/probe-ctl-steady/c] NETFLAP {"event": "start", "role": "ctl", "seconds": 300.0}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 0.0, "target": "metadata 169.254.169.254:80", "now": "open"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 0.0, "target": "node ssh", "now": "open"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 0.01, "target": "kubernetes api clusterip", "now": "open"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 0.01, "target": "gateway model port", "now": "blocked"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 0.01, "target": "gateway admin port", "now": "blocked"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 0.0, "target": "public 1.1.1.1:443", "now": "open"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 66.06, "target": "public 1.1.1.1:443", "now": "blocked"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 66.76, "target": "public 1.1.1.1:443", "now": "open"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 126.16, "target": "public 1.1.1.1:443", "now": "blocked"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 126.86, "target": "public 1.1.1.1:443", "now": "open"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 199.02, "target": "public 1.1.1.1:443", "now": "blocked"}
+[pod/probe-ctl-steady/c] NETFLAP {"t_s": 199.72, "target": "public 1.1.1.1:443", "now": "open"}
+[pod/probe-ctl-steady/c] NETFLAP {"event": "summary", "seconds": 300.0, "targets": {"public 1.1.1.1:443": {"tries": 1403, "open": 1400, "blocked": 3, "changes": 7, "open_after_5s": 1376, "blocked_after_5s": 3}, "metadata 169.254.169.254:80": {"tries": 1491, "open": 1491, "blocked": 0, "changes": 1, "open_after_5s": 1466, "blocked_after_5s": 0}, "node ssh": {"tries": 1493, "open": 1493, "blocked": 0, "changes": 1, "open_after_5s": 1468, "blocked_after_5s": 0}, "kubernetes api clusterip": {"tries": 1493, "open": 1493, "blocked": 0, "changes": 1, "open_after_5s": 1468, "blocked_after_5s": 0}, "gateway model port": {"tries": 538, "open": 0, "blocked": 538, "changes": 1, "open_after_5s": 0, "blocked_after_5s": 527}, "gateway admin port": {"tries": 536, "open": 0, "blocked": 536, "changes": 1, "open_after_5s": 0, "blocked_after_5s": 525}}}
+

@@ -1,0 +1,33 @@
+# pod probe-exec-repro-fu1 namespace ci-exec phase Succeeded/ wall 24s
+# main c exit 0
+# created 2026-11-12T23:44:27Z main-started 2026-11-12T23:44:32Z main-finished 2026-11-12T23:44:47Z
+[pod/probe-exec-repro-fu1/c] NETTIME {"event": "start", "role": "exec-repro", "uid": 1000}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "open"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.02, "target": "metadata 169.254.169.254:80", "result": "open"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.02, "target": "node ssh", "result": "open"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.02, "target": "kubernetes api clusterip", "result": "open"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.02, "target": "gateway model port", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.02, "target": "gateway admin port", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.02, "target": "dns pod tcp 53", "result": "open"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 0.95, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 1.95, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 1.95, "target": "node ssh", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 2.95, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 2.95, "target": "gateway model port", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 3.95, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 5.26, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 8.56, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 9.56, "target": "node ssh", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 9.56, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 10.57, "target": "gateway model port", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 10.57, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 11.57, "target": "dns pod tcp 53", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 11.87, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 12.87, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 12.87, "target": "node ssh", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 13.87, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 13.87, "target": "gateway model port", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 14.87, "target": "gateway admin port", "result": "refused"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"t_s": 14.87, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-exec-repro-fu1/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 3, "blocked": 4, "last_open_s": 0.63, "first_blocked_s": 0.95}, "metadata 169.254.169.254:80": {"open": 3, "blocked": 4, "last_open_s": 0.65, "first_blocked_s": 1.95}, "node ssh": {"open": 3, "blocked": 4, "last_open_s": 0.65, "first_blocked_s": 1.95}, "kubernetes api clusterip": {"open": 3, "blocked": 4, "last_open_s": 0.65, "first_blocked_s": 2.95}, "gateway model port": {"open": 0, "blocked": 7, "last_open_s": null, "first_blocked_s": 0.02}, "gateway admin port": {"open": 0, "blocked": 7, "last_open_s": null, "first_blocked_s": 0.02}, "dns pod tcp 53": {"open": 3, "blocked": 4, "last_open_s": 0.65, "first_blocked_s": 3.95}}}
+

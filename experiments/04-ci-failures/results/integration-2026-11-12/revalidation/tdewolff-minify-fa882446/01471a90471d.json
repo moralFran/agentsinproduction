@@ -1,0 +1,93 @@
+{
+ "case": "tdewolff-minify-fa882446",
+ "sha256": "01471a90471da9dbde7dba2751aa7aa28e4376fa4f479e6416792272ccf75fb3",
+ "runs": [
+  "v1-69bc3125-r1",
+  "v1-69bc3125-r2",
+  "v1-69bc3125-r3",
+  "v2-69bc3125-r1",
+  "v2-69bc3125-r2",
+  "v2-69bc3125-r3"
+ ],
+ "pod_prefix": "rv-2af1d2-01471a9047",
+ "validator_rc": 0,
+ "wall_s": 581.8,
+ "finished": "2026-11-12T19:01:51Z",
+ "result": {
+  "id": "tdewolff-minify-fa882446",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-2af1d2-01471a9047-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 84.9
+   },
+   {
+    "pod": "rv-2af1d2-01471a9047-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 86.6
+   },
+   {
+    "pod": "rv-2af1d2-01471a9047-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 79.2
+   },
+   {
+    "pod": "rv-2af1d2-01471a9047-hidden-1",
+    "phase": "Succeeded/",
+    "wall_s": 91.4
+   },
+   {
+    "pod": "rv-2af1d2-01471a9047-hidden-2",
+    "phase": "Succeeded/",
+    "wall_s": 113.7
+   },
+   {
+    "pod": "rv-2af1d2-01471a9047-hidden-3",
+    "phase": "Succeeded/",
+    "wall_s": 118.7
+   }
+  ],
+  "files": [
+   "svg/pathdata.go"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 66.2,
+    "tail": "ok  \tgithub.com/tdewolff/minify/v2/minify\t0.050s"
+   },
+   {
+    "rc": 0,
+    "s": 68.3,
+    "tail": "ok  \tgithub.com/tdewolff/minify/v2/minify\t0.048s"
+   },
+   {
+    "rc": 0,
+    "s": 62.8,
+    "tail": "ok  \tgithub.com/tdewolff/minify/v2/minify\t0.040s"
+   }
+  ],
+  "suite_pass": 3,
+  "hidden_runs": [
+   {
+    "rc": 0,
+    "s": 71.9,
+    "tail": "ok  \tgithub.com/tdewolff/minify/v2/minify\t0.043s"
+   },
+   {
+    "rc": 0,
+    "s": 91.3,
+    "tail": "ok  \tgithub.com/tdewolff/minify/v2/minify\t0.058s"
+   },
+   {
+    "rc": 0,
+    "s": 97.9,
+    "tail": "ok  \tgithub.com/tdewolff/minify/v2/minify\t0.064s"
+   }
+  ],
+  "hidden_pass": 3,
+  "outcome": "green_passes_hidden"
+ },
+ "stderr_tail": ""
+}

@@ -135,9 +135,10 @@ Offline, no cluster: `python3 gateway/test_budget.py --short` (the gateway again
 `python3 executor/test_executor.py` (the executor's patch checks on a synthetic repository, 31 checks; no case code).
 From this historical folder, `python3 infra/test_workflow.py` runs 9 regression tests for fresh-run setup, the funnel,
 the tally and audit resumption. It uses temporary folders and synthetic results; pod invocation is mocked, with no VM
-or provider calls. `python3 -B infra/test_security.py` adds 40 synthetic tests for isolation contracts, separate
+or provider calls. `python3 -B infra/test_security.py` adds 41 synthetic tests for isolation contracts, separate
 preparation/execution, cache separation, runner failures, the tally and judging; it includes a negative control that
-documents the remaining test-runner bypass. No live Kubernetes/Kata verification was performed for these changes.
+documents the remaining test-runner bypass. These tests use no cluster; the two cluster runs of 2026-11-12 are in
+`results/integration-2026-11-12/` and `results/integration-2026-11-12-followup/` and summarised at the end of `FUTURE-RUNS.md`.
 
 ## Fixes after the collection (2026-11-12)
 The first external review of this copy found six harness problems. All six were fixed on 2026-11-12, **after** the v1/v2

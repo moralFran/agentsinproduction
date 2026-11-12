@@ -1,0 +1,25 @@
+# pod probe-exec-validate-suite-busy1 namespace ci-exec phase Succeeded/ wall 92s
+# init prepare exit 0 main c exit 0
+# created 2026-11-12T18:11:25Z main-started 2026-11-12T18:12:39Z main-finished 2026-11-12T18:12:53Z
+[pod/probe-exec-validate-suite-busy1/prepare] EXECUTOR {"id": "gobwas-ws-a567dfd6", "mode": "validate-prepare", "phase": "suite", "outcome": "applied", "files": ["wsflate/writer.go"]}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"event": "start", "role": "exec-validate-suite", "uid": 1000}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 0.0, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 0.01, "target": "node ssh", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 0.01, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 0.01, "target": "gateway model port", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 0.01, "target": "gateway admin port", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 0.01, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 1.31, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 2.31, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 3.31, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 4.31, "target": "dns pod tcp 53", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 4.61, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 5.62, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 5.62, "target": "node ssh", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 6.62, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 6.62, "target": "gateway model port", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 11.93, "target": "gateway admin port", "result": "refused"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"t_s": 11.93, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy1/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 0, "blocked": 4, "last_open_s": null, "first_blocked_s": 0.0}, "metadata 169.254.169.254:80": {"open": 0, "blocked": 4, "last_open_s": null, "first_blocked_s": 0.0}, "node ssh": {"open": 0, "blocked": 4, "last_open_s": null, "first_blocked_s": 0.01}, "kubernetes api clusterip": {"open": 0, "blocked": 4, "last_open_s": null, "first_blocked_s": 0.01}, "gateway model port": {"open": 0, "blocked": 4, "last_open_s": null, "first_blocked_s": 0.01}, "gateway admin port": {"open": 0, "blocked": 4, "last_open_s": null, "first_blocked_s": 0.01}, "dns pod tcp 53": {"open": 0, "blocked": 4, "last_open_s": null, "first_blocked_s": 0.01}}}
+

@@ -1,0 +1,4 @@
+6 attempts, 2 distinct patches in 1 cases
+23:12:58 sigstore-cosign-1ab7015b 2787efd58ab0 v1-c2452a82-r1,v1-c2452a82-r3,v2-c2452a82-r1,v2-c2452a82-r2,v2-c2452a82-r3 -> green_passes_hidden suite 3 hidden 3 1728s 
+23:44:09 sigstore-cosign-1ab7015b 098eb32aca11 v1-c2452a82-r2 -> green_passes_hidden suite 3 hidden 3 1871s 
+DONE

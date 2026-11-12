@@ -1,0 +1,14 @@
+{
+  "boyter-scc-4288f7c8": {
+    "decision": "include",
+    "reason": "throwaway entry written by the integration check to exercise the gate",
+    "reviewer": "integration check, not a real eligibility decision",
+    "repro_sha256": "c331096a7d4984d1ce9cdd7b399f2c469ef56dfe9544b26b5c6dd3bb77d8bd0b"
+  },
+  "nkanaev-yarr-957e81dd": {
+    "decision": "exclude",
+    "reason": "throwaway entry written by the integration check to exercise the gate",
+    "reviewer": "integration check, not a real eligibility decision",
+    "repro_sha256": "73442c8ed0be13a1a06e838b292d678d60324496b2fe2286f8311b8c242e2318"
+  }
+}

@@ -1,0 +1,18 @@
+# pod probe-exec-validate-suite-busy2 namespace ci-exec phase Succeeded/ wall 51s
+# init prepare exit 0 main c exit 0
+# created 2026-11-12T18:14:49Z main-started 2026-11-12T18:15:22Z main-finished 2026-11-12T18:15:35Z
+[pod/probe-exec-validate-suite-busy2/prepare] EXECUTOR {"id": "gobwas-ws-a567dfd6", "mode": "validate-prepare", "phase": "suite", "outcome": "applied", "files": ["wsflate/writer.go"]}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"event": "start", "role": "exec-validate-suite", "uid": 1000}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 1.01, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 1.01, "target": "node ssh", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 2.01, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 2.01, "target": "gateway model port", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 3.01, "target": "gateway admin port", "result": "refused"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 3.01, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 4.32, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 4.32, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 9.63, "target": "node ssh", "result": "refused"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"t_s": 9.63, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-exec-validate-suite-busy2/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 0, "blocked": 3, "last_open_s": null, "first_blocked_s": 0.0}, "metadata 169.254.169.254:80": {"open": 0, "blocked": 3, "last_open_s": null, "first_blocked_s": 1.01}, "node ssh": {"open": 0, "blocked": 3, "last_open_s": null, "first_blocked_s": 1.01}, "kubernetes api clusterip": {"open": 0, "blocked": 3, "last_open_s": null, "first_blocked_s": 2.01}, "gateway model port": {"open": 0, "blocked": 3, "last_open_s": null, "first_blocked_s": 2.01}, "gateway admin port": {"open": 0, "blocked": 3, "last_open_s": null, "first_blocked_s": 3.01}, "dns pod tcp 53": {"open": 0, "blocked": 3, "last_open_s": null, "first_blocked_s": 3.01}}}
+

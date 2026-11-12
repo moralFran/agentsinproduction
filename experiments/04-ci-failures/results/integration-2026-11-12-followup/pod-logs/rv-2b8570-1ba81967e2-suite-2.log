@@ -1,0 +1,1 @@
+EXECUTOR {"id": "alicebob-miniredis-ce093519", "mode": "validate", "phase": "suite", "outcome": "sampled", "files": ["db.go"], "run": {"rc": 1, "s": 55.2, "tail": "FAIL"}}

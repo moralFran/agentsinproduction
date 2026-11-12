@@ -1,0 +1,9 @@
+diff --git a/.github/workflows/x.yml b/.github/workflows/x.yml
+new file mode 100644
+index 0000000..0e9436e
+--- /dev/null
++++ b/.github/workflows/x.yml
+@@ -0,0 +1,3 @@
++name: x
++on: push
++jobs: {}

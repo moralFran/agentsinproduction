@@ -1,0 +1,32 @@
+== 2026-11-12T21:11:57Z failure text for the smoke cases
+rmax-scrapy-redis-8d8672f2 failure.txt 6000 chars
+gobwas-ws-a567dfd6 failure.txt 1786 chars
+gateway spent before this script: 0.24470489999999998
+== 2026-11-12T21:11:57Z attempt on rmax-scrapy-redis-8d8672f2, cap 0.33
+smoke-fu-1206f641-r1 agent: finished tools 9 calls 9 | gateway $ 0.0706171 | executor: ci_still_red 
+attempt.sh exit status: 0
+spent by this script so far: 0.070617; cap for the second attempt: 0.33
+== 2026-11-12T21:14:13Z attempt on gobwas-ws-a567dfd6, cap 0.33
+while smoke-fu-e88f0806-r1 is open: admin view open=True; model port with only x-run-id -> HTTP 403
+smoke-fu-e88f0806-r1 agent: finished tools 12 calls 12 | gateway $ 0.1240209 | executor: green_fails_hidden 
+attempt.sh exit status: 0
+== 2026-11-12T21:42:31Z gateway records (admin GET; must carry no token)
+smoke-fu-1206f641-r1: {"cap_usd": 0.33, "spent_usd": 0.0706171, "calls": 9, "open": false, "opened": 1794517917.572957, "closed": 1794517987.9156923}
+smoke-fu-e88f0806-r1: {"cap_usd": 0.33, "spent_usd": 0.1240209, "calls": 12, "open": false, "opened": 1794518053.8404212, "closed": 1794518737.6319594}
+state: {"spent_usd": 0.43934290000000004, "requests": 41, "in_tok": 336267, "out_tok": 20623, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+spent by this script: 0.194638
+== search for each run's token by its hash
+smoke-fu-1206f641-r1: gateway state keeps token_hash: True (64 hex characters); a field named token in the state file: False
+  gateway.log: 10890 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  .admin-smoke-fu-1206f641-r1.json: 127 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  attempts-smoke-fu.jsonl: 11056 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  smoke-fu-1206f641-r1.diff: 622 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  ag-smoke-fu-1206f641-r1.log: 4123 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+smoke-fu-e88f0806-r1: gateway state keeps token_hash: True (64 hex characters); a field named token in the state file: False
+  gateway.log: 10890 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  .admin-smoke-fu-e88f0806-r1.json: 129 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  attempts-smoke-fu.jsonl: 11056 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  smoke-fu-e88f0806-r1.diff: 852 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+  ag-smoke-fu-e88f0806-r1.log: 5332 bytes, 0 candidate strings, matching the token: 0, mentions of RUN_TOKEN: 0, of x-run-token: 0
+leftover /tmp files of the attempts: 0
+== 2026-11-12T21:42:32Z done

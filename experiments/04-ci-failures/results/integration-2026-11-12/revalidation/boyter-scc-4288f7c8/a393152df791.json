@@ -1,0 +1,89 @@
+{
+ "case": "boyter-scc-4288f7c8",
+ "sha256": "a393152df791bcdb76ce0d8e9e2023cd069b8c375a45f234e675c269d7394e91",
+ "runs": [
+  "v2-d735ebc1-r3"
+ ],
+ "pod_prefix": "rv-f4cc34-a393152df7",
+ "validator_rc": 0,
+ "wall_s": 923.0,
+ "finished": "2026-11-12T20:22:47Z",
+ "result": {
+  "id": "boyter-scc-4288f7c8",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-f4cc34-a393152df7-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 171.1
+   },
+   {
+    "pod": "rv-f4cc34-a393152df7-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 137.2
+   },
+   {
+    "pod": "rv-f4cc34-a393152df7-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 171.3
+   },
+   {
+    "pod": "rv-f4cc34-a393152df7-hidden-1",
+    "phase": "Succeeded/",
+    "wall_s": 139.4
+   },
+   {
+    "pod": "rv-f4cc34-a393152df7-hidden-2",
+    "phase": "Succeeded/",
+    "wall_s": 162.7
+   },
+   {
+    "pod": "rv-f4cc34-a393152df7-hidden-3",
+    "phase": "Succeeded/",
+    "wall_s": 134.8
+   }
+  ],
+  "files": [
+   "languages.json",
+   "processor/constants.go"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 133.0,
+    "tail": "ok  \tgithub.com/boyter/scc/v4/processor\t24.679s"
+   },
+   {
+    "rc": 0,
+    "s": 110.2,
+    "tail": "ok  \tgithub.com/boyter/scc/v4/processor\t29.560s"
+   },
+   {
+    "rc": 0,
+    "s": 135.6,
+    "tail": "ok  \tgithub.com/boyter/scc/v4/processor\t24.251s"
+   }
+  ],
+  "suite_pass": 3,
+  "hidden_runs": [
+   {
+    "rc": 1,
+    "s": 114.0,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 132.5,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 107.8,
+    "tail": "FAIL"
+   }
+  ],
+  "hidden_pass": 0,
+  "outcome": "green_fails_hidden"
+ },
+ "stderr_tail": ""
+}

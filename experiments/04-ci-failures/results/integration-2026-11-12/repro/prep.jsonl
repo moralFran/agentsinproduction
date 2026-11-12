@@ -1,0 +1,11 @@
+{"id": "openbyteinc-quantdinger-733f7bc7", "prep": "ok", "test_cmd": "python -m pytest -q -p no:cacheprovider tests/test_live_order_support.py", "hidden_cmd": "python -m pytest -q -p no:cacheprovider tests/test_live_exchange_fees.py tests/test_live_order_support.py"}
+{"id": "mark3labs-mcp-go-1969a6b9", "prep": "ok", "test_cmd": "go test -count=1 github.com/mark3labs/mcp-go/server", "hidden_cmd": "go test -count=1 ./server github.com/mark3labs/mcp-go/server"}
+{"id": "boyter-scc-4288f7c8", "prep": "ok", "test_cmd": "go test -count=1 github.com/boyter/scc/v4/processor", "hidden_cmd": "go test -count=1 ./processor github.com/boyter/scc/v4/processor"}
+{"id": "ludwig-ai-ludwig-6a122a8e", "prep": "ok", "test_cmd": "python -m pytest -q -p no:cacheprovider tests/ludwig/data/test_ray_data.py", "hidden_cmd": ""}
+{"id": "gobwas-ws-a567dfd6", "prep": "ok", "test_cmd": "go test -count=1 github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate", "hidden_cmd": "go test -count=1 ./wsflate github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate"}
+{"id": "pyinfra-dev-pyinfra-e7e42b68", "prep": "ok", "test_cmd": "python -m pytest -q -p no:cacheprovider tests/test_api/test_api_facts_preconditions.py", "hidden_cmd": ""}
+{"id": "rmax-scrapy-redis-8d8672f2", "prep": "ok", "test_cmd": "python -m pytest -q -p no:cacheprovider tests/test_spiders.py", "hidden_cmd": "python -m pytest -q -p no:cacheprovider tests/test_spiders.py"}
+{"id": "sigstore-cosign-1ab7015b", "prep": "ok", "test_cmd": "go test -count=1 github.com/sigstore/cosign/v3/pkg/oci/remote", "hidden_cmd": "go test -count=1 ./pkg/oci/remote github.com/sigstore/cosign/v3/pkg/oci/remote"}
+{"id": "tdewolff-minify-fa882446", "prep": "ok", "test_cmd": "go test -count=1 github.com/tdewolff/minify/v2/minify", "hidden_cmd": "go test -count=1 ./svg github.com/tdewolff/minify/v2/minify"}
+{"id": "nkanaev-yarr-957e81dd", "prep": "ok", "test_cmd": "go test -count=1 github.com/nkanaev/yarr/src/parser", "hidden_cmd": "go test -count=1 ./src/parser github.com/nkanaev/yarr/src/parser"}
+{"id": "alicebob-miniredis-ce093519", "prep": "ok", "test_cmd": "go test -count=1 github.com/alicebob/miniredis/v2 github.com/alicebob/miniredis/v2/integration", "hidden_cmd": "go test -count=1 ./. ./integration github.com/alicebob/miniredis/v2 github.com/alicebob/miniredis/v2/integration"}

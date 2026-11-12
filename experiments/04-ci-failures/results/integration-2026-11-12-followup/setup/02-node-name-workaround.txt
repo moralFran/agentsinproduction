@@ -1,0 +1,16 @@
+2026-11-12T20:53:18Z
+# workaround: restart k3s now that the hostname is the full name, then delete the stray node object
+kubelet hostname-override=aip-ci-01.us-central1-a.c.<project>.internal
+kubelet hostname-override=aip-ci-01.us-central1-a.c.<project>.internal
+Nov 12 20:53:24 aip-ci-01.us-central1-a.c.<project>.internal k3s[3134]: I1112 20:53:24.896754    3134 kubelet_node_status.go:78] "Successfully registered node" node="aip-ci-01.us-central1-a.c.exp
+node "aip-ci-01" deleted
+aip-ci-01.us-central1-a.c.<project>.internal Ready 3h20m
+ci-gateway gateway-84bc74c458-spkl6 1/1 Running 1 aip-ci-01.us-central1-a.c.<project>.internal
+kube-system coredns-577d995dff-z4z6j 1/1 Running 1 aip-ci-01.us-central1-a.c.<project>.internal
+kube-system local-path-provisioner-56c6584955-4h59q 1/1 Running 1 aip-ci-01.us-central1-a.c.<project>.internal
+kube-system metrics-server-778c4649b4-jmswx 1/1 Running 1 aip-ci-01.us-central1-a.c.<project>.internal
+kube-system svclb-traefik-78f085ae-2fq54 2/2 Running 0 aip-ci-01
+kube-system svclb-traefik-78f085ae-gsdcw 2/2 Running 2 aip-ci-01.us-central1-a.c.<project>.internal
+kube-system traefik-68df944ff7-92pjd 1/1 Running 1 aip-ci-01.us-central1-a.c.<project>.internal
+gateway healthz from the host: 200
+2026-11-12T20:54:10Z

@@ -1,0 +1,2 @@
+EXECUTOR {"id": "gobwas-ws-a567dfd6", "mode": "validate", "pods": [{"pod": "vc-control-test-file-suite-1", "phase": "Succeeded/", "wall_s": 95.5}], "files": ["cipher_test.go"], "outcome": "rejected_by_validator", "why": "touches cipher_test.go"}
+POD {"pods": [{"pod": "vc-control-test-file-suite-1", "phase": "Succeeded/", "wall_s": 95.5}]}

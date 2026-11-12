@@ -1,0 +1,56 @@
+2026-11-12T21:09:31Z
+# four files of commit d5e1195 copied over (coordinator update 3); gateway stays at cdffecd, executor at e7858e9 + the VM-only fix
+before:  2c8805c3161a922a6350607d97234b152115268af904d3ca1d2d3bde98f3eb5e  agent/agent.py
+d5e1195: 461c268abad3e2cf79e9cf704dbac69ab0c7da5b8cd8398bbd94ce6160c1ffa0  agent/agent.py
+before:  b5cea1bf0a81904c16462e805e14bee00a7416805092a87c57aee6b5506de25b  cases/attempt.sh
+d5e1195: 690ec51fd40b5db815aeef59464ee612f2c3f05281f96e0f2f6eb14ecab4ba3d  cases/attempt.sh
+before:  597c40669a40817a79bd088373038cde389ea8dddcb498ae01ac5f600f4330c9  results/analyze.py
+d5e1195: edf08ec4c50ff6f8f62e7a2c6b7cb6bb6d43380ae7cf1528188eba563ef3f993  results/analyze.py
+before:  5fb7f50d5eb43604f416d7d456a6d2f23d252363db602167d7d3c7d0d1258936  cases/queue.py
+d5e1195: 9d107f97504acf97f91a529bacb69d7d1f34ccf8bf00e0445ae5d8f0b24470db  cases/queue.py
+0a16040ead580738851b015d79c909f9f9347cc839601818c1dd0f885e49618a  executor/executor.py
+461c268abad3e2cf79e9cf704dbac69ab0c7da5b8cd8398bbd94ce6160c1ffa0  agent/agent.py
+b30bb240d97069752a726a30c68bf990abcb9f3e67ac7b15cc6d9e8771c612bd  agent/prompt-v1.txt
+8544789f4f0ee930e223616e75fba7f3c0ea6307d8d79f7a07ff39054687860c  agent/prompt-v2.txt
+code-configmap rc=0
+agent.py in ci-agent ConfigMap: 461c268abad3e2cf79e9cf704dbac69ab0c7da5b8cd8398bbd94ce6160c1ffa0
+executor.py in ci-exec ConfigMap: 0a16040ead580738851b015d79c909f9f9347cc839601818c1dd0f885e49618a
+
+# SDK introspection inside the box image (docker run aip-ci-box:1, agent venv, no repository code, no model call)
+anthropic 2.8.0
+APIStatusError.__init__ parameters: ['self', 'message', 'response', 'body']
+status_code declared on APIStatusError: True | assigned in __init__: True
+Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+ModuleNotFoundError: No module named 'httpx'
+docker rc=1
+# second pass: the SDK in the image does not ship httpx, so instances are built with a stand-in response object (attributes status_code, headers, request)
+anthropic 2.8.0
+APIStatusError.__init__ source:
+    def __init__(self, message: str, *, response: httpx2.Response, body: object | None) -> None:
+        # imported here so that modules in `types` can import this one
+        from .types.shared.error_details import ErrorDetails
+
+        super().__init__(message, response.request, body=body)
+        self.response = response
+        self.status_code = response.status_code
+        self.request_id = response.headers.get("request-id")
+        self.workspace_id = response.headers.get("anthropic-workspace-id")
+        self.api_message = extract_property(body, "error", "message")
+        self.type = extract_property(body, "error", "type")
+        self.error_code = extract_error_code(body)
+        self.details = construct_type_or_none(
+            value=extract_property(body, "error", "details"), type_=cast(Any, ErrorDetails)
+        )
+
+RateLimitError instance: status_code = 429 | is APIStatusError: True | str: run budget: synthetic | body: {'error': 'run budget: synthetic'}
+PermissionDeniedError instance: status_code = 403 | is APIStatusError: True | str: run budget: synthetic | body: {'error': 'run budget: synthetic'}
+InternalServerError instance: status_code = 503 | is APIStatusError: True | str: run budget: synthetic | body: {'error': 'run budget: synthetic'}
+APIStatusError instance: status_code = 529 | is APIStatusError: True | str: run budget: synthetic | body: {'error': 'run budget: synthetic'}
+APIConnectionError exists: True | APITimeoutError subclass of it: True
+RateLimitError subclass of APIStatusError: True
+APIConnectionError subclass of APIStatusError: False | status_code attribute on that class: False
+MRO of RateLimitError: ['RateLimitError', 'APIStatusError', 'APIError', 'AnthropicError', 'Exception']
+MRO of APITimeoutError: ['APITimeoutError', 'APIConnectionError', 'APIError', 'AnthropicError', 'Exception']
+status error classes with their status: [('APIStatusError', None), ('AuthenticationError', 401), ('BadRequestError', 400), ('CMEKContextUnavailableError', 503), ('CMEKKeyDisabledError', 400), ('CMEKKeyNetworkBlockedError', 400), ('CMEKKeyUnreachableError', 503), ('ClaudeCodeKeyCreatorNotMemberError', 400), ('ClaudeCodeVersionTooOldError', 400), ('ClientClosedRequestError', 499), ('ConflictError', 409), ('ContentTooLargeError', 413), ('DeadlineExceededError', 504), ('EnforcedSpendLimitReachedError', 429), ('GatewayTimeoutError', 504), ('HTTPNotImplementedError', 501), ('InternalServerError', None), ('NotFoundError', 404), ('OrganizationOnHoldError', 400), ('OrganizationTypeNotSupportedError', 400), ('OverloadedError', 529), ('PermissionDeniedError', 403), ('PreconditionFailedError', 412), ('RampLimitExceededError', 429), ('RateLimitError', 429), ('RequestBodyEncodingInvalidError', 400), ('RequestBodyEncodingUnsupportedError', 400), ('RequestBodyTooLargeAfterDecodingError', 413), ('RequestHeaderFieldsTooLargeError', 431), ('RequestTimeoutError', 408), ('RequestTooLargeError', 413), ('SandboxEgressRestrictedError', 403), ('ServiceUnavailableError', 503), ('UnprocessableEntityError', 422)]
+docker rc=0

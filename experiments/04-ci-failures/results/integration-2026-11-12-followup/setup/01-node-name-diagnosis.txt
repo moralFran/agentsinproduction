@@ -1,0 +1,17 @@
+2026-11-12T20:53:03Z
+hostname now: aip-ci-01.us-central1-a.c.<project>.internal
+Nov 12 20:52:11 aip-ci-01 k3s[809]: time="2026-11-12T20:52:11Z" level=info msg="Running kube-apiserver --advertise-port=6443 --allow-privileged=true --anonymous-auth=false --api-audiences=https://kubernetes.default.svc.c
+Nov 12 20:52:11 aip-ci-01 k3s[809]: time="2026-11-12T20:52:11Z" level=info msg="Running kube-proxy --cluster-cidr=10.42.0.0/16 --conntrack-max-per-core=0 --conntrack-tcp-timeout-close-wait=0s --conntrack-tcp-timeout-esta
+Nov 12 20:52:13 aip-ci-01 k3s[809]: time="2026-11-12T20:52:13Z" level=info msg="Running kubelet --cloud-provider=external --config-dir=/var/lib/rancher/k3s/agent/etc/kubelet.conf.d --hostname-override=aip-ci-01 --kubecon
+Nov 12 20:52:21 aip-ci-01.us-central1-a.c.<project>.internal k3s[809]: I1112 20:52:21.150626     809 kubelet_node_status.go:78] "Successfully registered node" node="aip-ci-01"
+Nov 12 20:52:22 aip-ci-01.us-central1-a.c.<project>.internal k3s[809]: I1112 20:52:22.192611     809 kube.go:710] List of node(aip-ci-01) annotations: map[string]string{"alpha.kubernetes.io/provided-node-ip":"10.128
+aip-ci-01 Ready 42s
+aip-ci-01.us-central1-a.c.<project>.internal Ready 3h19m
+ci-gateway gateway-84bc74c458-spkl6 Running aip-ci-01.us-central1-a.c.<project>.internal
+kube-system coredns-577d995dff-z4z6j Running aip-ci-01.us-central1-a.c.<project>.internal
+kube-system local-path-provisioner-56c6584955-4h59q Running aip-ci-01.us-central1-a.c.<project>.internal
+kube-system metrics-server-778c4649b4-jmswx Running aip-ci-01.us-central1-a.c.<project>.internal
+kube-system svclb-traefik-78f085ae-2fq54 Running aip-ci-01
+kube-system svclb-traefik-78f085ae-gsdcw Running aip-ci-01.us-central1-a.c.<project>.internal
+kube-system traefik-68df944ff7-92pjd Running aip-ci-01.us-central1-a.c.<project>.internal
+pvc-df3a9f4a-3fd5-4386-9590-f6266f6ae483 affinity: ["aip-ci-01.us-central1-a.c.<project>.internal"]

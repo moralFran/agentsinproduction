@@ -1,0 +1,56 @@
+{
+ "case": "mark3labs-mcp-go-1969a6b9",
+ "sha256": "a8741cde84483e242febe4bb49688ef9823c2fad97500559867f4a4fa3c75b54",
+ "runs": [
+  "v1-bbbe6833-r2"
+ ],
+ "pod_prefix": "rv-3c4078-a8741cde84",
+ "validator_rc": 0,
+ "wall_s": 427.1,
+ "finished": "2026-11-12T19:06:57Z",
+ "result": {
+  "id": "mark3labs-mcp-go-1969a6b9",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-3c4078-a8741cde84-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 153.9
+   },
+   {
+    "pod": "rv-3c4078-a8741cde84-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 136.2
+   },
+   {
+    "pod": "rv-3c4078-a8741cde84-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 133.0
+   }
+  ],
+  "files": [
+   "server/handler_errors.go",
+   "server/server.go"
+  ],
+  "suite_runs": [
+   {
+    "rc": 1,
+    "s": 133.5,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 117.1,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 113.9,
+    "tail": "FAIL"
+   }
+  ],
+  "suite_pass": 0,
+  "outcome": "ci_still_red"
+ },
+ "stderr_tail": ""
+}

@@ -1,0 +1,1 @@
+EXECUTOR {"id": "mark3labs-mcp-go-1969a6b9", "mode": "validate", "phase": "suite", "outcome": "sampled", "files": ["server/server.go"], "run": {"rc": 1, "s": 85.1, "tail": "FAIL"}}

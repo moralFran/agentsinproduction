@@ -1,0 +1,16 @@
+2026-11-12T20:56:13Z
+# three files of commit e7858e9 copied over the dec7c18 copy and the fresh-run folder (coordinator update)
+dec7c18: 4ac4631aaa524f883a823c75609bf2483fd04854a4f383fd6dfe15c3ffc2d7cb  agent/agent.py
+e7858e9: 2c8805c3161a922a6350607d97234b152115268af904d3ca1d2d3bde98f3eb5e  agent/agent.py
+dec7c18: b176c189023122ee490aade43480a484c988f81affa88835922d1c3961be34cf  executor/executor.py
+e7858e9: 4904dadb3f1f456deb166f90a1907d6b8ce8e3174f41a47d42aa8a2173ea7b90  executor/executor.py
+dec7c18: 29e607eb576efda20d5a7a954078b95829bf7d9a7bedc284db6d9e1f9db919a5  cases/attempt.sh
+e7858e9: 54b6444a3bd91e4b902c4ee4ae07abb0685c77877a8fc6de1bd0cc2bb4c89277  cases/attempt.sh
+4904dadb3f1f456deb166f90a1907d6b8ce8e3174f41a47d42aa8a2173ea7b90  executor/executor.py
+2c8805c3161a922a6350607d97234b152115268af904d3ca1d2d3bde98f3eb5e  agent/agent.py
+b30bb240d97069752a726a30c68bf990abcb9f3e67ac7b15cc6d9e8771c612bd  agent/prompt-v1.txt
+8544789f4f0ee930e223616e75fba7f3c0ea6307d8d79f7a07ff39054687860c  agent/prompt-v2.txt
+code-configmap rc=0
+ci-exec ci-code executor.py: 4904dadb3f1f456d agent.py: 2c8805c3161a922a
+ci-agent ci-code executor.py: e3b0c44298fc1c14 agent.py: 2c8805c3161a922a
+-rwxrwxr-x

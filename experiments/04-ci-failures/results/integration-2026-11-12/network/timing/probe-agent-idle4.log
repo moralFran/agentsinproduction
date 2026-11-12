@@ -1,0 +1,28 @@
+# pod probe-agent-idle4 namespace ci-agent phase Succeeded/ wall 22s
+# main c exit 0
+# created 2026-11-12T20:41:41Z main-started 2026-11-12T20:41:45Z main-finished 2026-11-12T20:41:58Z
+[pod/probe-agent-idle4/c] NETTIME {"event": "start", "role": "agent", "uid": 1000}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "open"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.02, "target": "metadata 169.254.169.254:80", "result": "open"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.02, "target": "node ssh", "result": "open"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.02, "target": "kubernetes api clusterip", "result": "open"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.02, "target": "gateway model port", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.02, "target": "gateway admin port", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.02, "target": "dns pod tcp 53", "result": "open"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.64, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.64, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 0.64, "target": "node ssh", "result": "timeout"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 1.64, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 1.64, "target": "gateway model port", "result": "open"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 1.64, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 2.94, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 4.95, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 5.95, "target": "gateway admin port", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 5.95, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 7.25, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 8.25, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 8.25, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 9.25, "target": "dns pod tcp 53", "result": "refused"}
+[pod/probe-agent-idle4/c] NETTIME {"t_s": 9.56, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-agent-idle4/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 2, "blocked": 4, "last_open_s": 0.32, "first_blocked_s": 0.64}, "metadata 169.254.169.254:80": {"open": 2, "blocked": 4, "last_open_s": 0.33, "first_blocked_s": 0.64}, "node ssh": {"open": 2, "blocked": 4, "last_open_s": 0.33, "first_blocked_s": 0.64}, "kubernetes api clusterip": {"open": 2, "blocked": 4, "last_open_s": 0.33, "first_blocked_s": 1.64}, "gateway model port": {"open": 4, "blocked": 2, "last_open_s": 11.56, "first_blocked_s": 0.02}, "gateway admin port": {"open": 0, "blocked": 6, "last_open_s": null, "first_blocked_s": 0.02}, "dns pod tcp 53": {"open": 3, "blocked": 3, "last_open_s": 2.64, "first_blocked_s": 5.95}}}
+

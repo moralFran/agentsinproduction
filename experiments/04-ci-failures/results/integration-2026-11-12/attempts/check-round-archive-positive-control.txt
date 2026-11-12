@@ -1,0 +1,5 @@
+# cases/check-round.py on the ARCHIVED rounds (read-only; run on the Mac on our own files, 2026-11-12): positive control for the completeness check
+v1: 33 unique attempts; all cases and repetitions present
+check-round.py v1 exit status: 0
+v2: 33 unique attempts; all cases and repetitions present
+check-round.py v2 exit status: 0

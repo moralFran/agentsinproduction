@@ -1,0 +1,46 @@
+# pod probe-exec-repro namespace ci-exec phase Succeeded/ wall 69s
+# main c exit 0
+[pod/probe-exec-repro/c] PROBE {"kind": "start", "role": "exec-repro"}
+[pod/probe-exec-repro/c] PROBE {"kind": "identity", "uid": 1000, "gid": 1000, "kernel": "6.18.56", "status": {"Uid": "1000\t1000\t1000\t1000", "Gid": "1000\t1000\t1000\t1000", "CapEff": "0000000000000000", "CapBnd": "0000000000000000", "NoNewPrivs": "1", "Seccomp": "0", "Seccomp_filters": "0"}}
+[pod/probe-exec-repro/c] PROBE {"kind": "mounts", "mounts": [{"path": "/code", "opts": "ro"}, {"path": "/probe", "opts": "ro"}, {"path": "/srv/ci/cases/gobwas-ws-a567dfd6", "opts": "ro"}, {"path": "/srv/ci/cases/gobwas-ws-a567dfd6/repo", "opts": "rw"}, {"path": "/srv/ci/uv", "opts": "ro"}, {"path": "/tmp", "opts": "rw"}]}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/in", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/in/patch.diff", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/in/hidden.diff", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/in/fix.diff", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/secret", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/secret/gobwas-ws-a567dfd6", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/secret/gobwas-ws-a567dfd6/meta.json", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/secret/gobwas-ws-a567dfd6/fix.diff", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/secret/gobwas-ws-a567dfd6/hidden.diff", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/admin-key", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/validation/prepared.json", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/cases/gobwas-ws-a567dfd6/meta.json", "state": "readable"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/cases/gobwas-ws-a567dfd6/snapshot", "state": "readable (directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/srv/ci/cases/gobwas-ws-a567dfd6/repo", "state": "readable (directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "path", "path": "/var/run/secrets/kubernetes.io/serviceaccount/token", "state": "not readable (No such file or directory)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "write", "path": "/srv/ci/cases/gobwas-ws-a567dfd6/snapshot", "state": "not writable (Read-only file system)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "write", "path": "/srv/ci/cases/gobwas-ws-a567dfd6/repo", "state": "writable"}
+[pod/probe-exec-repro/c] PROBE {"kind": "write", "path": "/srv/ci/cases/gobwas-ws-a567dfd6", "state": "not writable (Read-only file system)"}
+[pod/probe-exec-repro/c] PROBE {"kind": "dns", "name": "proxy.golang.org", "result": "resolved", "n": 6}
+[pod/probe-exec-repro/c] PROBE {"kind": "public_http", "url": "https://proxy.golang.org/github.com/gobwas/pool/@v/v0.2.1.zip", "result": "http 200", "bytes": 13438, "sha256_16": "79b505a9f42b141a"}
+[pod/probe-exec-repro/c] PROBE {"kind": "public_http", "url": "https://pypi.org/simple/pytest/", "result": "http 200", "bytes": 134449, "sha256_16": "1a6085a2e7e7aee4"}
+[pod/probe-exec-repro/c] PROBE {"kind": "public_http", "url": "http://example.com/", "result": "error: [Errno -3] Temporary failure in name resolution", "bytes": null, "sha256_16": null}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "public address, port 443", "addr": "1.1.1.1:443", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "public address, port 53 (not 80/443)", "addr": "1.1.1.1:53", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "cloud metadata endpoint", "addr": "169.254.169.254:80", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "node private address, ssh", "addr": "10.128.0.7:22", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "node private address, Kubernetes API", "addr": "10.128.0.7:6443", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "node private address, kubelet", "addr": "10.128.0.7:10250", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "Kubernetes API ClusterIP", "addr": "10.43.0.1:443", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "gateway ClusterIP, model port", "addr": "10.43.210.10:8080", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "gateway ClusterIP, admin port", "addr": "10.43.210.10:8081", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "gateway pod address, model port", "addr": "10.42.0.13:8080", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "gateway pod address, admin port", "addr": "10.42.0.13:8081", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "another pod (metrics-server)", "addr": "10.42.0.8:10250", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "tcp", "target": "DNS pod, tcp 53", "addr": "10.42.0.6:53", "result": "error: Connection refused"}
+[pod/probe-exec-repro/c] PROBE {"kind": "metadata_http", "result": "error: [Errno 111] Connection refused", "bytes": null}
+[pod/probe-exec-repro/c] PROBE {"kind": "gateway_healthz", "result": "error: [Errno 111] Connection refused", "bytes": null}
+[pod/probe-exec-repro/c] PROBE {"kind": "gateway_admin_state_no_token", "result": "error: [Errno 111] Connection refused", "bytes": null}
+[pod/probe-exec-repro/c] PROBE {"kind": "gateway_model_unknown_run", "result": "error: [Errno 111] Connection refused", "note": "403 = reached the gateway, which refused the unknown run id; no provider call"}
+[pod/probe-exec-repro/c] PROBE {"kind": "end"}
+

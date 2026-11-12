@@ -1,0 +1,93 @@
+diff --git a/wsflate/cbuf.go b/wsflate/cbuf.go
+index 5e2c445..d272bfd 100644
+--- a/wsflate/cbuf.go
++++ b/wsflate/cbuf.go
+@@ -11,6 +11,9 @@ type cbuf struct {
+ 	n   int
+ 	dst io.Writer
+ 	err error
++
++	// discard makes cbuf drop all written bytes.
++	discard bool
+ }
+ 
+ // Write implements io.Writer interface.
+@@ -18,6 +21,9 @@ func (c *cbuf) Write(p []byte) (int, error) {
+ 	if c.err != nil {
+ 		return 0, c.err
+ 	}
++	if c.discard {
++		return len(p), nil
++	}
+ 	head, tail := c.split(p)
+ 	n := c.n + len(tail)
+ 	if n > len(c.buf) {
+@@ -53,6 +59,7 @@ func (c *cbuf) split(p []byte) (head, tail []byte) {
+ func (c *cbuf) reset(dst io.Writer) {
+ 	c.n = 0
+ 	c.err = nil
++	c.discard = false
+ 	c.buf = [4]byte{0, 0, 0, 0}
+ 	c.dst = dst
+ }
+diff --git a/wsflate/writer.go b/wsflate/writer.go
+index 0342ccb..ded6f9f 100644
+--- a/wsflate/writer.go
++++ b/wsflate/writer.go
+@@ -55,6 +55,10 @@ type Writer struct {
+ 	c    Compressor
+ 	cbuf cbuf
+ 	err  error
++
++	// dirty reports whether there is data written to the compressor which has
++	// not been flushed yet.
++	dirty bool
+ }
+ 
+ // NewWriter returns a new Writer.
+@@ -74,6 +78,7 @@ func NewWriter(w io.Writer, ctor func(io.Writer) Compressor) *Writer {
+ // Any not flushed data will be lost.
+ func (w *Writer) Reset(dest io.Writer) {
+ 	w.err = nil
++	w.dirty = false
+ 	w.cbuf.reset(dest)
+ 	if x, ok := w.c.(WriteResetter); ok {
+ 		x.Reset(&w.cbuf)
+@@ -88,6 +93,7 @@ func (w *Writer) Write(p []byte) (n int, err error) {
+ 		return 0, w.err
+ 	}
+ 	n, w.err = w.c.Write(p)
++	w.dirty = true
+ 	return n, w.err
+ }
+ 
+@@ -98,6 +104,7 @@ func (w *Writer) Flush() error {
+ 	}
+ 	w.err = w.c.Flush()
+ 	w.checkTail()
++	w.dirty = false
+ 	return w.err
+ }
+ 
+@@ -107,10 +114,20 @@ func (w *Writer) Close() error {
+ 	if w.err != nil {
+ 		return w.err
+ 	}
++	if w.dirty {
++		// Make sure the message is properly terminated by the flush tail.
++		if err := w.Flush(); err != nil {
++			return err
++		}
++	}
+ 	if c, ok := w.c.(io.Closer); ok {
++		// Closing a compressor emits a final block, whose exact bytes depend
++		// on the compressor implementation. PMCE message must end with the
++		// (stripped) flush tail, so everything written on Close is dropped.
++		w.cbuf.discard = true
+ 		w.err = c.Close()
++		w.cbuf.discard = false
+ 	}
+-	w.checkTail()
+ 	return w.err
+ }
+ 

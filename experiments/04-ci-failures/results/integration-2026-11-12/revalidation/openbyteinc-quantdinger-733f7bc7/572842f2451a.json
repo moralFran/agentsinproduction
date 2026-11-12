@@ -1,0 +1,89 @@
+{
+ "case": "openbyteinc-quantdinger-733f7bc7",
+ "sha256": "572842f2451acfafd71b1cf0787ab9d039e8514b0f3fca94d90db17491e7e3f1",
+ "runs": [
+  "v1-a352a7c0-r1"
+ ],
+ "pod_prefix": "rv-70ecf5-572842f245",
+ "validator_rc": 0,
+ "wall_s": 200.1,
+ "finished": "2026-11-12T20:12:01Z",
+ "result": {
+  "id": "openbyteinc-quantdinger-733f7bc7",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-70ecf5-572842f245-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 40.0
+   },
+   {
+    "pod": "rv-70ecf5-572842f245-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 30.6
+   },
+   {
+    "pod": "rv-70ecf5-572842f245-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 28.4
+   },
+   {
+    "pod": "rv-70ecf5-572842f245-hidden-1",
+    "phase": "Succeeded/",
+    "wall_s": 30.6
+   },
+   {
+    "pod": "rv-70ecf5-572842f245-hidden-2",
+    "phase": "Succeeded/",
+    "wall_s": 30.8
+   },
+   {
+    "pod": "rv-70ecf5-572842f245-hidden-3",
+    "phase": "Succeeded/",
+    "wall_s": 33.1
+   }
+  ],
+  "files": [
+   "backend_api_python/app/services/live_trading/close_reconciliation.py",
+   "backend_api_python/app/services/pending_order_worker.py"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 10.2,
+    "tail": "24 passed in 5.43s"
+   },
+   {
+    "rc": 0,
+    "s": 7.9,
+    "tail": "24 passed in 4.08s"
+   },
+   {
+    "rc": 0,
+    "s": 7.4,
+    "tail": "24 passed in 3.82s"
+   }
+  ],
+  "suite_pass": 3,
+  "hidden_runs": [
+   {
+    "rc": 1,
+    "s": 9.0,
+    "tail": "1 failed, 52 passed in 5.26s"
+   },
+   {
+    "rc": 1,
+    "s": 8.5,
+    "tail": "1 failed, 52 passed in 4.97s"
+   },
+   {
+    "rc": 1,
+    "s": 10.3,
+    "tail": "1 failed, 52 passed in 6.09s"
+   }
+  ],
+  "hidden_pass": 0,
+  "outcome": "green_fails_hidden"
+ },
+ "stderr_tail": ""
+}

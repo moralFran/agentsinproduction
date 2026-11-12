@@ -1,0 +1,13 @@
+--- /home/<user>/lab2/executor/executor.py	2026-11-12 20:56:13.109059638 +0000
++++ /home/<user>/run2/executor/executor.py	2026-11-12 21:01:12.572188202 +0000
+@@ -41,7 +41,9 @@
+     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+     env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL="/dev/null", GIT_OPTIONAL_LOCKS="0")
+     return subprocess.run(["git", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null",
+-                           "-c", "core.untrackedCache=false", "-c", "core.excludesFile=/dev/null", *args],
++                           "-c", "core.untrackedCache=false", "-c", "core.excludesFile=/dev/null",
++                           "-c", "safe.directory=*",   # VM-only fix (integration 2026-11-12): the system config that carried it is disabled above
++                           *args],
+                           cwd=repo, env=env, capture_output=True)
+ 
+ def numstat_paths(patch_file, cwd):

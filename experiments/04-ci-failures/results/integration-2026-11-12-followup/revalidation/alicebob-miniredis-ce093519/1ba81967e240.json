@@ -1,0 +1,60 @@
+{
+ "case": "alicebob-miniredis-ce093519",
+ "sha256": "1ba81967e2404c9e361c6985baba969b4dd1a0305ccc1b23d6dc0a95f6c522a3",
+ "runs": [
+  "v1-56d24d7d-r1",
+  "v1-56d24d7d-r2",
+  "v1-56d24d7d-r3",
+  "v2-56d24d7d-r1",
+  "v2-56d24d7d-r2",
+  "v2-56d24d7d-r3"
+ ],
+ "pod_prefix": "rv-2b8570-1ba81967e2",
+ "validator_rc": 0,
+ "wall_s": 213.0,
+ "finished": "2026-11-12T22:34:37Z",
+ "result": {
+  "id": "alicebob-miniredis-ce093519",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-2b8570-1ba81967e2-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 74.7
+   },
+   {
+    "pod": "rv-2b8570-1ba81967e2-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 69.9
+   },
+   {
+    "pod": "rv-2b8570-1ba81967e2-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 65.4
+   }
+  ],
+  "files": [
+   "db.go"
+  ],
+  "suite_runs": [
+   {
+    "rc": 1,
+    "s": 60.6,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 55.2,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 50.5,
+    "tail": "FAIL"
+   }
+  ],
+  "suite_pass": 0,
+  "outcome": "ci_still_red"
+ },
+ "stderr_tail": ""
+}

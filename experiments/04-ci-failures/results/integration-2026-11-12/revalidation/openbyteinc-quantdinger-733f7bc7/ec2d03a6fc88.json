@@ -1,0 +1,88 @@
+{
+ "case": "openbyteinc-quantdinger-733f7bc7",
+ "sha256": "ec2d03a6fc888f38c78c6228185678b6dba1b4779955f2d2d84b920425fab510",
+ "runs": [
+  "v2-a352a7c0-r1"
+ ],
+ "pod_prefix": "rv-70ecf5-ec2d03a6fc",
+ "validator_rc": 0,
+ "wall_s": 195.8,
+ "finished": "2026-11-12T20:22:46Z",
+ "result": {
+  "id": "openbyteinc-quantdinger-733f7bc7",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-70ecf5-ec2d03a6fc-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 35.7
+   },
+   {
+    "pod": "rv-70ecf5-ec2d03a6fc-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 28.2
+   },
+   {
+    "pod": "rv-70ecf5-ec2d03a6fc-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 28.4
+   },
+   {
+    "pod": "rv-70ecf5-ec2d03a6fc-hidden-1",
+    "phase": "Succeeded/",
+    "wall_s": 30.9
+   },
+   {
+    "pod": "rv-70ecf5-ec2d03a6fc-hidden-2",
+    "phase": "Succeeded/",
+    "wall_s": 32.9
+   },
+   {
+    "pod": "rv-70ecf5-ec2d03a6fc-hidden-3",
+    "phase": "Succeeded/",
+    "wall_s": 33.1
+   }
+  ],
+  "files": [
+   "backend_api_python/app/services/pending_order_worker.py"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 7.6,
+    "tail": "24 passed in 4.11s"
+   },
+   {
+    "rc": 0,
+    "s": 7.3,
+    "tail": "24 passed in 3.77s"
+   },
+   {
+    "rc": 0,
+    "s": 8.1,
+    "tail": "24 passed in 4.42s"
+   }
+  ],
+  "suite_pass": 3,
+  "hidden_runs": [
+   {
+    "rc": 1,
+    "s": 9.4,
+    "tail": "1 failed, 52 passed in 5.57s"
+   },
+   {
+    "rc": 1,
+    "s": 9.2,
+    "tail": "1 failed, 52 passed in 5.44s"
+   },
+   {
+    "rc": 1,
+    "s": 10.1,
+    "tail": "1 failed, 52 passed in 5.91s"
+   }
+  ],
+  "hidden_pass": 0,
+  "outcome": "green_fails_hidden"
+ },
+ "stderr_tail": ""
+}

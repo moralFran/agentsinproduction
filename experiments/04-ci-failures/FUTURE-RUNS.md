@@ -266,8 +266,8 @@ per-case preparation pods running as the VM user, seccomp, the nested read-only 
 have only been exercised locally with stand-ins. The planned check, on a fresh VM, is: build the lab from an empty
 machine; prepare and reproduce the 11 frozen cases with the new preparation; re-validate the 56 non-empty archived
 patches with the new validator and compare each outcome with the archived one; run the gateway admin, cap and ingress
-controls live. Its results will be added here as a dated section. Until then this harness is **untested on a cluster**,
-and the archived results stand on the harness that produced them.
+controls live. That run happened on 2026-11-12: see "Cluster integration" below. The archived results stand on the harness
+that produced them.
 
 ## Follow-up verification (2026-11-12, after the baseline re-test)
 
@@ -276,7 +276,7 @@ All checks below passed locally on the follow-up implementation:
 | Check | Result |
 |---|---|
 | `python3 -B executor/test_executor.py` | 31/31 |
-| `python3 -B infra/test_security.py` | 40 tests, OK |
+| `python3 -B infra/test_security.py` | 41 tests, OK |
 | `python3 -B infra/test_workflow.py` | 9 tests, OK |
 | `python3 -B gateway/test_budget.py --short` | 22 checks, 0 failed |
 
@@ -292,9 +292,125 @@ checkout restoration on broken/hidden reproduction; eligibility decisions and st
 and the tally's actual round sizes and distinct tree-mutation outcome. Local servers use a fake upstream and make no
 provider calls. The earlier re-test record above is retained with its original counts.
 
-The cluster check remains open. On a fresh VM, start with **one Go and one Python case** through preparation,
-reproduction and validation, checking cache mounts, init containers, pod cleanup and actual network denial. Only after
-that smoke test should the lab reproduce all 11 historical cases and revalidate the 56 non-empty archived patches.
-Write comparison results separately, including infrastructure failures, changed outcomes and rejected case controls;
-do not overwrite the archive. Unchanged artifact hashes and identical regenerated totals do not establish that these
-new runtime checks would preserve every historical classification.
+The cluster check planned here (one Go and one Python case first, then the 11 historical cases and the 56 non-empty
+archived patches, results written separately from the archive) was run afterwards: see "Cluster integration, follow-up
+round" below. It found one defect that no local test could show.
+
+## Cluster integration (2026-11-12, fresh VM)
+
+First run of the hardened harness on a real cluster. **Revision tested: the first hardening of 2026-11-12** (the sections up to
+"Independent re-test", commit `ecdbcd7`), not the follow-up above, which was written while this run was in progress and ran on the
+cluster afterwards (next section).
+Everything is in `results/integration-2026-11-12/` (README with the answers, raw logs, tables, and the probe scripts in `controls/`).
+No archived record was written; the archived outcomes stand on the harness that produced them.
+
+**What was run.** A new VM (n2-standard-8, k3s v1.37.2+k3s1, Kata 4.3.1, on for 3.27 h) built with `infra/create.sh`,
+`install-docker.sh`, `install-k3s-kata.sh`, `build-images.sh` and `setup-lab.sh`; a fresh run folder from `infra/new-run.sh
+--with-candidates`, its candidate files reduced to the 11 frozen records; three `cases/pipeline.sh` workers; `cases/freeze.py`;
+`cases/validate.py` on the 56 non-empty archived patches (36 distinct); probe pods built with `pod.py` and `prep.py`'s own spec builders;
+the gateway admin controls from the host; three validator control patches; two agent attempts on gobwas/ws (an integration check, not data).
+
+**What passed.**
+- The lab came up from an empty machine in six minutes with the current scripts. No harness script failed.
+- Preparation pods ran under Kata as the lab user with only their own input and output; validation pods ran the init container and the
+  test container had no input diff and no secret directory. The fixed-tree Go cache was mounted only in fixed and hidden pods.
+- The 11 frozen cases prepared and reproduced (11 of 11, integrity control clean). `freeze.py` froze 11 on the fresh run.
+- 56 of 56 archived patches re-validated: 50 with the archived outcome. The main-analysis numbers computed from the new validator's
+  outcomes are the published ones (48 attempts, 30 green, 4 failing the hidden tests, all gobwas/ws; v1 15, v2 15).
+- A test-file patch and a `.github/workflows/x.yml` patch were `rejected_by_validator`. A patch that tries to read `/in/hidden.diff`,
+  `/in/fix.diff`, `/in/patch.diff` and the case's secret `meta.json` from inside the tests found none of them readable, in six of six samples.
+- Gateway: 401 on the admin port without the token or with a wrong one; caps above `MAX_RUN_USD`, non-finite, zero, negative or missing
+  refused with 400; runs opened and closed with the token. Agent pods reached the model port; pods of other namespaces did not.
+- The round runner stopped at the first failing attempt (`pipefail`, exit 123); a recorded attempt was skipped without spending;
+  `check-round.py` rejected two one-attempt rounds and accepted the archived rounds. Model cost US$0.2447, 20 requests.
+
+**What differed or failed.**
+1. **nkanaev/yarr now has hidden tests.** `prep.py` treats `fixtures/` as test data, so the fresh `cases.csv` differs from the archive in
+   that row, and the six yarr patches go from `green_no_hidden_tests` to `green_fails_hidden` (suite 3/3, hidden 0/3). yarr is outside the
+   main analysis (amendment 24). These six are the only outcome differences.
+2. **`hidden_control.discriminates` is false for boyter/scc and nkanaev/yarr**: the hidden tests pass on broken code plus only the test
+   changes. Both were already outside the main analysis for that reason. It is true for the seven other cases with hidden tests,
+   QuantDinger included, which confirms the warning above that a true value does not prove relevance.
+3. **NetworkPolicy does not apply during the first moments of a pod.** k3s's controller (kube-router v2.11.1-k3s1) enforces a namespace's
+   policy some tenths of a second after the pod's first process starts. In 24 of 31 timed pods without an init container (agent, executor
+   repro, preparation) the public internet, the metadata endpoint, the node and the Kubernetes API answered for the first 0.3 to 0.7 s.
+   Validation test containers start after the init container and had no window (8 of 8). In those first moments agent pods were also
+   refused by the gateway. Reproduction pods (`repro broken`, `fixed`, `hidden-broken`) run case code with no init container before it.
+4. **Rare single connections through a policy that was already applied**: one to the Kubernetes API ClusterIP from an executor pod in about
+   2,700 steady-state tries, one from a validation test container, one to the gateway's model port from an executor pod and three to its
+   admin port (which requires the token) from executor and preparation pods. Cause not investigated.
+5. `Seccomp: 0` inside the Kata guest in every pod kind although the pod spec requests `RuntimeDefault` (as in experiment 03).
+
+Findings 3 to 5 come from the cluster software, not from the hardening: the archived collection ran with the same k3s, Kata and policies.
+
+**Bugs found and fixed in the harness: none.** No file under `infra/`, `cases/`, `executor/`, `gateway/`, `agent/` or `k8s/` was changed.
+Not fixed, for a future run: gate the start of case code on the policy being in force (an init container in agent and reproduction pods
+that waits until a known address is refused, or a CNI that installs policy before the pod's network is usable), and do not describe the
+executor as having "no network at all" without that gate. Also seen in the archive: `agent.py` runs commands with `bash -lc`, which resets
+`PATH`, so the first `go` command of an attempt returns 127 until the agent exports `/usr/local/go/bin`.
+
+**Still unverified on a cluster.** A complete round through `run-round.sh` and its resume after a real interruption; the pipeline over all
+113 candidates; the outcomes `incompatible_test_side_effects`, `ci_flaky_after_patch`, `hidden_tests_flaky`, `did_not_apply` and timeouts on
+real cases (none occurred); the gateway's connection limits, idle timeouts, redirect refusal and total-budget halt; and the judge.
+The follow-up revision ran in the second round, below.
+
+## Cluster integration, follow-up round (2026-11-12, same VM restarted)
+
+Second run on the cluster, for the follow-up revision described above. **Revision tested: commit `d5e1195` plus one fix made on the
+VM**, now in `executor/executor.py` (see the defect below). Everything is in `results/integration-2026-11-12-followup/` (README with the
+answers, which commit ran which step with the sha256 of every file, raw logs, tables, the scripts in `controls/`). No archived record
+was written. The live attempts are an integration check, not data.
+
+**What was run.** The VM of the first round restarted (cluster and images reused, preparation from scratch in a new fresh-run folder);
+a smoke with one Go case (gobwas/ws) and Python cases (scrapy-redis, plus QuantDinger for a patch that reaches the hidden phase):
+preparation, reproduction, validation of an archived patch, one live agent attempt each; then the 11 frozen cases, `freeze.py`, and
+`cases/validate.py` on the 56 non-empty archived patches (36 distinct, 174 validation pods); the validator control patches and the
+gateway admin and token controls.
+
+**Defect found: the new integrity checker could not run in the pods.** `checker_git` disables Git's system and global configuration.
+The image carried `safe.directory = *` in the system configuration; the working copy is a root-owned emptyDir and the tests run as
+uid 1000, so with that configuration disabled Git refused the checkout ("dubious ownership") and every integrity sample came back
+`infra_error: git status failed`. The first smoke ended `infra_error` for all three cases (`repro/repro-before-fix.jsonl`,
+`pod-logs-before-fix/`). Fix: `-c safe.directory=*` in `checker_git` (`harness-fix/executor-safe-directory.diff`, applied on the VM
+first, then here). The local tests could not see it, because locally the checkout belongs to the user running Git;
+`infra/test_security.py` now reproduces it with Git's own different-owner switch. Every result below was produced with the fix.
+
+**Answers.**
+1. **`test_changed_tree` on real suites: none.** The maintainer integrity control is clean in 11 of 11 cases and the cache control in
+   the 7 Go cases; 0 of 56 archived attempts ended `test_changed_tree`, and none in an infrastructure error or timeout. The index
+   fingerprint (after the refresh) and the `.gitignore` fingerprint produced no hit.
+2. **The maintainer's fix with the agent's cache, and the broken-tree compile: yes for all 7 Go cases** (`cache_control.passes` true,
+   suite 3/3 and hidden 3/3, tree unchanged; `broken_compiles` true). Not applicable to the 4 Python cases.
+3. **Hidden phases with the broken-tree cache: same outcomes.** Against the first round, 56 of 56 identical, suite and hidden counts
+   included. Against the archive, 50 identical and 6 different, the same six nkanaev/yarr attempts as in the first round. The
+   main-analysis numbers computed from these outcomes are the published ones (48 attempts, 30 green, 4 failing the hidden tests, all
+   gobwas/ws; v1 15, v2 15).
+4. **Run tokens, live: work.** Two live attempts authenticated with their token (scrapy-redis `ci_still_red`, gobwas/ws
+   `green_fails_hidden`; US$0.1946, 21 requests). A request with only the `x-run-id` of an open run got 403, a wrong token 403, the
+   right token after close 403, a reused run id 409. The token is absent from the gateway log, the state file (hash only), admin
+   replies, the attempt journal, the patch and the agent pod's log.
+5. **The token in the tool's environment: absent**, checked in a pod of the agent's shape with the harness's own `bash()`. It is
+   still readable in `/proc/<pid>/environ`, as documented.
+6. **`gateway_unavailable`, live and without model calls:** with the run closed from the host before the pod started, the agent got
+   403 and reported `gateway_unavailable` with no patch; `attempt.sh` exited 1, wrote one line to the infra file and none to the
+   journal, and the next invocation opened the `-t2` run. Twice.
+
+Also checked: the SDK in the box image (anthropic 2.8.0) sets `status_code` on `APIStatusError`, has `APIConnectionError` with
+`APITimeoutError` as a subclass, and `RateLimitError` is an `APIStatusError`, which is what the classification relies on.
+`freeze.py` stopped for boyter/scc and then nkanaev/yarr ("the hidden control does not discriminate"), refused a stale digest, and
+with throwaway decisions marked as an integration check froze 10 and listed yarr as `excluded_after_eligibility_review`. The
+validator controls gave the same three results as in the first round. The fixed-tree Go cache was mounted only in `repro fixed`. No
+harness pod or patch ConfigMap was left; the gateway ended with `halted: null`.
+
+**Network: same behaviour and the same start-up weakness as the first round.** New observations: validation test containers reached
+the node's ssh port on their first try in 2 of 2 timed pods, and one reached the gateway's model port once at 10.9 s.
+
+**Worked around.** After the restart k3s registered a second node object under the short hostname, without the Kata labels; k3s was
+restarted once the hostname was complete and the stray object deleted.
+
+**Still unverified on a cluster.** A gateway state-write failure (covered only by `gateway/test_budget.py` 18 and 19); a complete
+round through `run-round.sh`; the pipeline over all 113 candidates; `analyze.py` and `queue.py` of this revision; and real cases that
+hit `test_changed_tree`, a flaky outcome, `did_not_apply`, a broken tree that does not compile or a failing cache control: none
+occurred among the 11. The `.gitignore` fingerprint has no before/after on real suites, because nothing ran with the earlier executor.
+
+Both rounds: 6.29 h of VM and US$0.4393 of model calls. The VM and its disk were deleted after the second round.

@@ -1,0 +1,30 @@
+2026-11-12T20:44:47Z
+# pods at the end
+ci-gateway gateway-84bc74c458-spkl6 Running
+kube-system coredns-577d995dff-z4z6j Running
+kube-system helm-install-gateway-api-crd-nrqr2 Completed
+kube-system helm-install-traefik-7jrxm Completed
+kube-system helm-install-traefik-crd-pggqf Completed
+kube-system local-path-provisioner-56c6584955-4h59q Running
+kube-system metrics-server-778c4649b4-jmswx Running
+kube-system svclb-traefik-78f085ae-gsdcw Running
+kube-system traefik-68df944ff7-92pjd Running
+# disk
+26G used of 193G
+12G	/srv/ci/cases
+2.3G	/srv/ci/secret
+# k3s network policy controller lines in the journal (count, first 5)
+6
+Nov 12 17:33:28 aip-ci-01.us-central1-a.c.<project>.internal k3s[3135]: time="2026-11-12T17:33:28Z" level=info msg="Starting network policy controller version v2.11.1-k3s1, built on 2026-11-03T17:22:21Z, go1.26.10"
+Nov 12 17:33:28 aip-ci-01.us-central1-a.c.<project>.internal k3s[3135]: I1112 17:33:28.202817    3135 npc_iptables.go:43] Starting network policy controller
+Nov 12 17:33:28 aip-ci-01.us-central1-a.c.<project>.internal k3s[3135]: I1112 17:33:28.297817    3135 npc_iptables.go:63] Starting network policy controller full sync goroutine
+Nov 12 17:34:49 aip-ci-01.us-central1-a.c.<project>.internal k3s[6449]: time="2026-11-12T17:34:49Z" level=info msg="Starting network policy controller version v2.11.1-k3s1, built on 2026-11-03T17:22:21Z, go1.26.10"
+Nov 12 17:34:49 aip-ci-01.us-central1-a.c.<project>.internal k3s[6449]: I1112 17:34:49.165595    6449 npc_iptables.go:43] Starting network policy controller
+# k3s flags
+ExecStartPre=-/sbin/modprobe br_netfilter
+ExecStartPre=-/sbin/modprobe overlay
+ExecStart=/usr/local/bin/k3s \
+    server \
+	'--write-kubeconfig-mode' \
+	'600' \
+

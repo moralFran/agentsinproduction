@@ -1,0 +1,55 @@
+{
+ "case": "rmax-scrapy-redis-8d8672f2",
+ "sha256": "a77fe4c0debe08f1c1a7560c1113949725b0c820699a64fc64e6b5882d6c6395",
+ "runs": [
+  "v1-1206f641-r3"
+ ],
+ "pod_prefix": "rv-9e7f51-a77fe4c0de",
+ "validator_rc": 0,
+ "wall_s": 60.4,
+ "finished": "2026-11-12T19:09:48Z",
+ "result": {
+  "id": "rmax-scrapy-redis-8d8672f2",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-9e7f51-a77fe4c0de-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 19.8
+   },
+   {
+    "pod": "rv-9e7f51-a77fe4c0de-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 19.7
+   },
+   {
+    "pod": "rv-9e7f51-a77fe4c0de-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 17.6
+   }
+  ],
+  "files": [
+   "src/scrapy_redis/spiders.py"
+  ],
+  "suite_runs": [
+   {
+    "rc": 1,
+    "s": 5.5,
+    "tail": "================== 1 failed, 36 passed, 741 warnings in 3.49s =================="
+   },
+   {
+    "rc": 1,
+    "s": 5.8,
+    "tail": "================== 1 failed, 36 passed, 741 warnings in 3.68s =================="
+   },
+   {
+    "rc": 1,
+    "s": 5.5,
+    "tail": "================== 1 failed, 36 passed, 741 warnings in 3.48s =================="
+   }
+  ],
+  "suite_pass": 0,
+  "outcome": "ci_still_red"
+ },
+ "stderr_tail": ""
+}

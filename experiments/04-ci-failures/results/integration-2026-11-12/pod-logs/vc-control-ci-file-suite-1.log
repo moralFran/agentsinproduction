@@ -1,0 +1,1 @@
+EXECUTOR {"id": "gobwas-ws-a567dfd6", "mode": "validate", "phase": "suite", "outcome": "rejected_by_validator", "why": "touches .github/workflows/x.yml", "files": [".github/workflows/x.yml"]}

@@ -1,0 +1,1 @@
+EXECUTOR {"id": "openbyteinc-quantdinger-733f7bc7", "mode": "validate", "phase": "suite", "outcome": "sampled", "files": ["backend_api_python/app/services/pending_order_worker.py"], "run": {"rc": 0, "s": 7.6, "tail": "24 passed in 4.32s"}}

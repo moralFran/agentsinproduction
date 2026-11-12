@@ -1,0 +1,331 @@
+{
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+        "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{},\"name\":\"prep-boyter-scc-4288f7c8-broken\",\"namespace\":\"ci-prep\"},\"spec\":{\"activeDeadlineSeconds\":2400,\"automountServiceAccountToken\":false,\"containers\":[{\"command\":[\"python3\",\"-u\",\"/code/prep_worker.py\"],\"env\":[{\"name\":\"HOME\",\"value\":\"/tmp\"},{\"name\":\"CASE_ID\",\"value\":\"boyter-scc-4288f7c8\"},{\"name\":\"TASK\",\"value\":\"{\\\"repo\\\": \\\"boyter/scc\\\", \\\"language\\\": \\\"Go\\\", \\\"broken_sha\\\": \\\"4288f7c8d5b42675e735b4c12eee4c1b86cf770e\\\", \\\"workflow\\\": \\\"Go\\\", \\\"failed_job\\\": \\\"build\\\", \\\"id\\\": \\\"boyter-scc-4288f7c8\\\", \\\"workdir\\\": \\\".\\\", \\\"test_cmd\\\": \\\"go test -count=1 github.com/boyter/scc/v4/processor\\\", \\\"targets\\\": [\\\"github.com/boyter/scc/v4/processor\\\"]}\"},{\"name\":\"UV_PYTHON_INSTALL_DIR\",\"value\":\"/srv/ci/uv/python\"},{\"name\":\"UV_CACHE_DIR\",\"value\":\"/tmp/uvcache\"},{\"name\":\"UV_LINK_MODE\",\"value\":\"copy\"},{\"name\":\"GOMODCACHE\",\"value\":\"/srv/ci/cases/boyter-scc-4288f7c8/gomod\"},{\"name\":\"GOCACHE\",\"value\":\"/tmp/gocache\"},{\"name\":\"GOPATH\",\"value\":\"/tmp/gopath\"},{\"name\":\"GOTOOLCHAIN\",\"value\":\"auto\"},{\"name\":\"GOFLAGS\",\"value\":\"-mod=mod\"},{\"name\":\"GOTELEMETRY\",\"value\":\"off\"}],\"image\":\"aip-ci-box:1\",\"imagePullPolicy\":\"Never\",\"name\":\"c\",\"resources\":{\"limits\":{\"cpu\":\"3\",\"memory\":\"8Gi\"},\"requests\":{\"cpu\":\"2\",\"memory\":\"4Gi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]}},\"volumeMounts\":[{\"mountPath\":\"/input\",\"name\":\"source\",\"readOnly\":true},{\"mountPath\":\"/srv/ci/cases/boyter-scc-4288f7c8\",\"name\":\"output\"},{\"mountPath\":\"/srv/ci/uv\",\"name\":\"output\",\"subPath\":\"uv\"},{\"mountPath\":\"/tmp\",\"name\":\"tmp\"},{\"mountPath\":\"/code\",\"name\":\"code\",\"readOnly\":true}]}],\"enableServiceLinks\":false,\"restartPolicy\":\"Never\",\"runtimeClassName\":\"kata-qemu\",\"securityContext\":{\"runAsGroup\":1002,\"runAsNonRoot\":true,\"runAsUser\":1001,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumes\":[{\"hostPath\":{\"path\":\"/srv/ci/cases/boyter-scc-4288f7c8/snapshot\",\"type\":\"Directory\"},\"name\":\"source\"},{\"hostPath\":{\"path\":\"/srv/ci/work/boyter-scc-4288f7c8/broken-output\",\"type\":\"Directory\"},\"name\":\"output\"},{\"emptyDir\":{\"sizeLimit\":\"8Gi\"},\"name\":\"tmp\"},{\"configMap\":{\"name\":\"ci-prep-code\"},\"name\":\"code\"}]}}\n"
+        },
+        "creationTimestamp": "2026-11-12T17:37:40Z",
+        "generation": 1,
+        "name": "prep-boyter-scc-4288f7c8-broken",
+        "namespace": "ci-prep",
+        "resourceVersion": "1209",
+        "uid": "b885449a-dad6-48c0-aa0f-1f6801f6149b"
+    },
+    "spec": {
+        "activeDeadlineSeconds": 2400,
+        "automountServiceAccountToken": false,
+        "containers": [
+            {
+                "command": [
+                    "python3",
+                    "-u",
+                    "/code/prep_worker.py"
+                ],
+                "env": [
+                    {
+                        "name": "HOME",
+                        "value": "/tmp"
+                    },
+                    {
+                        "name": "CASE_ID",
+                        "value": "boyter-scc-4288f7c8"
+                    },
+                    {
+                        "name": "TASK",
+                        "value": "{\"repo\": \"boyter/scc\", \"language\": \"Go\", \"broken_sha\": \"4288f7c8d5b42675e735b4c12eee4c1b86cf770e\", \"workflow\": \"Go\", \"failed_job\": \"build\", \"id\": \"boyter-scc-4288f7c8\", \"workdir\": \".\", \"test_cmd\": \"go test -count=1 github.com/boyter/scc/v4/processor\", \"targets\": [\"github.com/boyter/scc/v4/processor\"]}"
+                    },
+                    {
+                        "name": "UV_PYTHON_INSTALL_DIR",
+                        "value": "/srv/ci/uv/python"
+                    },
+                    {
+                        "name": "UV_CACHE_DIR",
+                        "value": "/tmp/uvcache"
+                    },
+                    {
+                        "name": "UV_LINK_MODE",
+                        "value": "copy"
+                    },
+                    {
+                        "name": "GOMODCACHE",
+                        "value": "/srv/ci/cases/boyter-scc-4288f7c8/gomod"
+                    },
+                    {
+                        "name": "GOCACHE",
+                        "value": "/tmp/gocache"
+                    },
+                    {
+                        "name": "GOPATH",
+                        "value": "/tmp/gopath"
+                    },
+                    {
+                        "name": "GOTOOLCHAIN",
+                        "value": "auto"
+                    },
+                    {
+                        "name": "GOFLAGS",
+                        "value": "-mod=mod"
+                    },
+                    {
+                        "name": "GOTELEMETRY",
+                        "value": "off"
+                    }
+                ],
+                "image": "aip-ci-box:1",
+                "imagePullPolicy": "Never",
+                "name": "c",
+                "resources": {
+                    "limits": {
+                        "cpu": "3",
+                        "memory": "8Gi"
+                    },
+                    "requests": {
+                        "cpu": "2",
+                        "memory": "4Gi"
+                    }
+                },
+                "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                        "drop": [
+                            "ALL"
+                        ]
+                    }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                    {
+                        "mountPath": "/input",
+                        "name": "source",
+                        "readOnly": true
+                    },
+                    {
+                        "mountPath": "/srv/ci/cases/boyter-scc-4288f7c8",
+                        "name": "output"
+                    },
+                    {
+                        "mountPath": "/srv/ci/uv",
+                        "name": "output",
+                        "subPath": "uv"
+                    },
+                    {
+                        "mountPath": "/tmp",
+                        "name": "tmp"
+                    },
+                    {
+                        "mountPath": "/code",
+                        "name": "code",
+                        "readOnly": true
+                    }
+                ]
+            }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "enableServiceLinks": false,
+        "nodeName": "aip-ci-01.us-central1-a.c.<project>.internal",
+        "nodeSelector": {
+            "kata-deploy.katacontainers.io/default": "true",
+            "katacontainers.io/kata-runtime": "true"
+        },
+        "overhead": {
+            "cpu": "250m",
+            "memory": "320Mi"
+        },
+        "preemptionPolicy": "PreemptLowerPriority",
+        "priority": 0,
+        "restartPolicy": "Never",
+        "runtimeClassName": "kata-qemu",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+            "runAsGroup": 1002,
+            "runAsNonRoot": true,
+            "runAsUser": 1001,
+            "seccompProfile": {
+                "type": "RuntimeDefault"
+            }
+        },
+        "serviceAccount": "default",
+        "serviceAccountName": "default",
+        "terminationGracePeriodSeconds": 30,
+        "tolerations": [
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            },
+            {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+            }
+        ],
+        "volumes": [
+            {
+                "hostPath": {
+                    "path": "/srv/ci/cases/boyter-scc-4288f7c8/snapshot",
+                    "type": "Directory"
+                },
+                "name": "source"
+            },
+            {
+                "hostPath": {
+                    "path": "/srv/ci/work/boyter-scc-4288f7c8/broken-output",
+                    "type": "Directory"
+                },
+                "name": "output"
+            },
+            {
+                "emptyDir": {
+                    "sizeLimit": "8Gi"
+                },
+                "name": "tmp"
+            },
+            {
+                "configMap": {
+                    "defaultMode": 420,
+                    "name": "ci-prep-code"
+                },
+                "name": "code"
+            }
+        ]
+    },
+    "status": {
+        "allocatedResources": {
+            "cpu": "2250m",
+            "memory": "4416Mi"
+        },
+        "conditions": [
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-11-12T17:37:43Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "PodReadyToStartContainers"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-11-12T17:37:40Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "Initialized"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-11-12T17:37:44Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "Ready"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-11-12T17:37:44Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "ContainersReady"
+            },
+            {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-11-12T17:37:40Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "PodScheduled"
+            }
+        ],
+        "containerStatuses": [
+            {
+                "allocatedResources": {
+                    "cpu": "2",
+                    "memory": "4Gi"
+                },
+                "containerID": "containerd://ebaf2c8a8ed039afc44f18f9e563546c36f36490828b6440b677ff0663a79616",
+                "image": "docker.io/library/aip-ci-box:1",
+                "imageID": "sha256:af2d9ddeb0485f46bc28292eed4e9ce0c8caa62d2c6ac3dbeec2c840d2384fe2",
+                "lastState": {},
+                "name": "c",
+                "ready": true,
+                "resources": {
+                    "limits": {
+                        "cpu": "3",
+                        "memory": "8Gi"
+                    },
+                    "requests": {
+                        "cpu": "2",
+                        "memory": "4Gi"
+                    }
+                },
+                "restartCount": 0,
+                "started": true,
+                "state": {
+                    "running": {
+                        "startedAt": "2026-11-12T17:37:44Z"
+                    }
+                },
+                "user": {
+                    "linux": {
+                        "gid": 1002,
+                        "supplementalGroups": [
+                            1002
+                        ],
+                        "uid": 1001
+                    }
+                },
+                "volumeMounts": [
+                    {
+                        "mountPath": "/input",
+                        "name": "source",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    },
+                    {
+                        "mountPath": "/srv/ci/cases/boyter-scc-4288f7c8",
+                        "name": "output"
+                    },
+                    {
+                        "mountPath": "/srv/ci/uv",
+                        "name": "output"
+                    },
+                    {
+                        "mountPath": "/tmp",
+                        "name": "tmp"
+                    },
+                    {
+                        "mountPath": "/code",
+                        "name": "code",
+                        "readOnly": true,
+                        "recursiveReadOnly": "Disabled"
+                    }
+                ]
+            }
+        ],
+        "hostIP": "10.128.0.7",
+        "hostIPs": [
+            {
+                "ip": "10.128.0.7"
+            }
+        ],
+        "observedGeneration": 1,
+        "phase": "Running",
+        "podIP": "10.42.0.15",
+        "podIPs": [
+            {
+                "ip": "10.42.0.15"
+            }
+        ],
+        "qosClass": "Burstable",
+        "resources": {
+            "limits": {
+                "cpu": "3250m",
+                "memory": "8512Mi"
+            },
+            "requests": {
+                "cpu": "2229m",
+                "memory": "4416Mi"
+            }
+        },
+        "startTime": "2026-11-12T17:37:40Z"
+    }
+}

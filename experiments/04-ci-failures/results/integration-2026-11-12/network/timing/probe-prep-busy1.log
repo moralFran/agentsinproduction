@@ -1,0 +1,23 @@
+# pod probe-prep-busy1 namespace ci-prep phase Succeeded/ wall 78s
+# main c exit 0
+# created 2026-11-12T18:10:05Z main-started 2026-11-12T18:11:08Z main-finished 2026-11-12T18:11:20Z
+[pod/probe-prep-busy1/c] NETTIME {"event": "start", "role": "prep", "uid": 1001}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "open"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.02, "target": "metadata 169.254.169.254:80", "result": "open"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.02, "target": "node ssh", "result": "open"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.02, "target": "kubernetes api clusterip", "result": "open"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.02, "target": "gateway model port", "result": "refused"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.02, "target": "gateway admin port", "result": "refused"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.02, "target": "dns pod tcp 53", "result": "open"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 0.97, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 1.97, "target": "node ssh", "result": "refused"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 1.97, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 2.97, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 4.28, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 6.6, "target": "node ssh", "result": "timeout"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 7.6, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 7.6, "target": "gateway model port", "result": "timeout"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 8.6, "target": "gateway admin port", "result": "refused"}
+[pod/probe-prep-busy1/c] NETTIME {"t_s": 8.92, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-prep-busy1/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 7, "blocked": 0, "last_open_s": 8.9, "first_blocked_s": null}, "metadata 169.254.169.254:80": {"open": 3, "blocked": 4, "last_open_s": 0.65, "first_blocked_s": 0.97}, "node ssh": {"open": 3, "blocked": 4, "last_open_s": 0.65, "first_blocked_s": 1.97}, "kubernetes api clusterip": {"open": 3, "blocked": 4, "last_open_s": 0.65, "first_blocked_s": 1.97}, "gateway model port": {"open": 0, "blocked": 7, "last_open_s": null, "first_blocked_s": 0.02}, "gateway admin port": {"open": 0, "blocked": 7, "last_open_s": null, "first_blocked_s": 0.02}, "dns pod tcp 53": {"open": 7, "blocked": 0, "last_open_s": 11.92, "first_blocked_s": null}}}
+

@@ -1,0 +1,6 @@
+[2] boyter-scc-4288f7c8 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+[2] pyinfra-dev-pyinfra-e7e42b68 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc None
+[2] rmax-scrapy-redis-8d8672f2 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+[2] tdewolff-minify-fa882446 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+[2] alicebob-miniredis-ce093519 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+[2] no unclaimed candidate; done

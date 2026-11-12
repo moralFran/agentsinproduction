@@ -1,0 +1,10 @@
+diff --git a/cipher_test.go b/cipher_test.go
+index af6a092..6cb04e3 100644
+--- a/cipher_test.go
++++ b/cipher_test.go
+@@ -196,3 +196,5 @@ func sinkValue(v int64) {
+ 		panic(fmt.Sprintf("impossible %g: %v", r, v))
+ 	}
+ }
++
++// integration control: one comment line in a test file

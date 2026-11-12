@@ -1,0 +1,1 @@
+EXECUTOR {"id": "tdewolff-minify-fa882446", "mode": "validate", "phase": "hidden", "outcome": "sampled", "files": ["svg/pathdata.go"], "run": {"rc": 0, "s": 86.4, "tail": "ok  \tgithub.com/tdewolff/minify/v2/minify\t0.090s"}}

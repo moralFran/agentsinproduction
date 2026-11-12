@@ -1,0 +1,17 @@
+755 <user>:root /srv/ci
+600 <user>:<user> /srv/ci/admin-key
+755 <user>:root /srv/ci/secret
+700 <user>:<user> /srv/ci/secret/gobwas-ws-a567dfd6
+664 <user>:<user> /srv/ci/secret/gobwas-ws-a567dfd6/fix.diff
+664 <user>:<user> /srv/ci/secret/gobwas-ws-a567dfd6/fix.json
+755 <user>:<user> /srv/ci/secret/gobwas-ws-a567dfd6/gomod
+664 <user>:<user> /srv/ci/secret/gobwas-ws-a567dfd6/hidden.diff
+664 <user>:<user> /srv/ci/secret/gobwas-ws-a567dfd6/meta.json
+775 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6
+664 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6/failure.txt
+755 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6/gomod
+664 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6/meta.json
+664 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6/overlay.list
+775 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6/repo
+775 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6/snapshot
+775 <user>:<user> /srv/ci/cases/gobwas-ws-a567dfd6/uv

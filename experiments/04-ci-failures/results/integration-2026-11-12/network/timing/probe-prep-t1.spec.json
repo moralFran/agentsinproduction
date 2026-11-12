@@ -1,0 +1,182 @@
+{
+ "replaced_command": [
+  "python3",
+  "-u",
+  "/code/prep_worker.py"
+ ],
+ "spec": {
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+   "name": "probe-prep-t1",
+   "namespace": "ci-prep"
+  },
+  "spec": {
+   "runtimeClassName": "kata-qemu",
+   "automountServiceAccountToken": false,
+   "enableServiceLinks": false,
+   "restartPolicy": "Never",
+   "activeDeadlineSeconds": 2400,
+   "securityContext": {
+    "runAsNonRoot": true,
+    "runAsUser": 1001,
+    "runAsGroup": 1002,
+    "seccompProfile": {
+     "type": "RuntimeDefault"
+    }
+   },
+   "containers": [
+    {
+     "name": "c",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "/probe/nettime.py"
+     ],
+     "env": [
+      {
+       "name": "HOME",
+       "value": "/tmp"
+      },
+      {
+       "name": "CASE_ID",
+       "value": "gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "TASK",
+       "value": "{\"repo\": \"gobwas/ws\", \"language\": \"Go\", \"broken_sha\": \"a567dfd636adf28fdf608402ba9ed7a80bfd0a33\", \"workflow\": \"CI\", \"failed_job\": \"test (macos-latest, stable)\", \"id\": \"gobwas-ws-a567dfd6\", \"workdir\": \".\", \"test_cmd\": \"go test -count=1 github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate\", \"targets\": [\"github.com/gobwas/ws/tests\", \"github.com/gobwas/ws/wsflate\"]}"
+      },
+      {
+       "name": "UV_PYTHON_INSTALL_DIR",
+       "value": "/srv/ci/uv/python"
+      },
+      {
+       "name": "UV_CACHE_DIR",
+       "value": "/tmp/uvcache"
+      },
+      {
+       "name": "UV_LINK_MODE",
+       "value": "copy"
+      },
+      {
+       "name": "GOMODCACHE",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/gomod"
+      },
+      {
+       "name": "GOCACHE",
+       "value": "/tmp/gocache"
+      },
+      {
+       "name": "GOPATH",
+       "value": "/tmp/gopath"
+      },
+      {
+       "name": "GOTOOLCHAIN",
+       "value": "auto"
+      },
+      {
+       "name": "GOFLAGS",
+       "value": "-mod=mod"
+      },
+      {
+       "name": "GOTELEMETRY",
+       "value": "off"
+      },
+      {
+       "name": "PROBE_TARGETS",
+       "value": "{\"case_id\": \"gobwas-ws-a567dfd6\", \"node_ip\": \"10.128.0.7\", \"gw_pod_ip\": \"10.42.0.13\", \"other_pod_ip\": \"10.42.0.8\", \"dns_pod_ip\": \"10.42.0.6\"}"
+      },
+      {
+       "name": "PROBE_ROLE",
+       "value": "prep"
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "200m",
+       "memory": "512Mi"
+      },
+      "limits": {
+       "cpu": "3",
+       "memory": "8Gi"
+      }
+     },
+     "volumeMounts": [
+      {
+       "name": "source",
+       "mountPath": "/input",
+       "readOnly": true
+      },
+      {
+       "name": "output",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "output",
+       "mountPath": "/srv/ci/uv",
+       "subPath": "uv"
+      },
+      {
+       "name": "tmp",
+       "mountPath": "/tmp"
+      },
+      {
+       "name": "code",
+       "mountPath": "/code",
+       "readOnly": true
+      },
+      {
+       "name": "probe",
+       "mountPath": "/probe",
+       "readOnly": true
+      }
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "name": "source",
+     "hostPath": {
+      "path": "/srv/ci/work/probe-probe-prep-t1/source",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "output",
+     "hostPath": {
+      "path": "/srv/ci/work/probe-probe-prep-t1/output",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "tmp",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "code",
+     "configMap": {
+      "name": "ci-prep-code"
+     }
+    },
+    {
+     "name": "probe",
+     "configMap": {
+      "name": "probe-code"
+     }
+    }
+   ]
+  }
+ }
+}

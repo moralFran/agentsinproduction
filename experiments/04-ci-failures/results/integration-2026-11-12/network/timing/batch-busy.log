@@ -1,0 +1,21 @@
+18:07:39 load 6.07 busy1
+probe-exec-repro-busy1 ci-exec Succeeded/ main c exit 0 30 log lines
+probe-agent-busy1 ci-agent Succeeded/ main c exit 0 21 log lines
+probe-prep-busy1 ci-prep Succeeded/ main c exit 0 19 log lines
+probe-exec-validate-suite-busy1 ci-exec Succeeded/ init prepare exit 0 main c exit 0 21 log lines
+18:12:57 load 4.27 busy2
+probe-exec-repro-busy2 ci-exec Succeeded/ main c exit 0 23 log lines
+probe-agent-busy2 ci-agent Succeeded/ main c exit 0 19 log lines
+probe-prep-busy2 ci-prep Succeeded/ main c exit 0 15 log lines
+probe-exec-validate-suite-busy2 ci-exec Succeeded/ init prepare exit 0 main c exit 0 14 log lines
+18:15:40 load 4.70 busy3
+probe-exec-repro-busy3 ci-exec Succeeded/ main c exit 0 23 log lines
+probe-agent-busy3 ci-agent Succeeded/ main c exit 0 28 log lines
+probe-prep-busy3 ci-prep Succeeded/ main c exit 0 17 log lines
+probe-exec-validate-suite-busy3 ci-exec Succeeded/ init prepare exit 0 main c exit 0 20 log lines
+18:19:06 load 8.53 busy4
+probe-exec-repro-busy4 ci-exec Succeeded/ main c exit 0 29 log lines
+probe-agent-busy4 ci-agent Succeeded/ main c exit 0 28 log lines
+probe-prep-busy4 ci-prep Succeeded/ main c exit 0 27 log lines
+probe-exec-validate-suite-busy4 ci-exec Succeeded/ init prepare exit 0 main c exit 0 14 log lines
+18:23:55 DONE

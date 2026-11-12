@@ -1,0 +1,1 @@
+EXECUTOR {"id": "pyinfra-dev-pyinfra-e7e42b68", "mode": "validate", "phase": "suite", "outcome": "sampled", "files": ["src/pyinfra/api/facts.py"], "run": {"rc": 0, "s": 6.3, "tail": "6 passed in 0.10s"}}

@@ -235,9 +235,16 @@ before its baseline (a suite that only queries Git is not a tree change), ignore
 any new or edited `.gitignore` as a change. The agent harness drops the run token from its environment before running
 tool commands. A gateway close that cannot be written halts forwarding, and a model call that fails for infrastructure
 reasons (gateway halted, provider error) is no longer an attempt: it is kept out of the journal and redone. Setup
-restarts the gateway and waits for rollout completion. These changes have local regressions; the 56 non-empty archived patches
-have **not** been rerun under this harness. Preserved files and totals do not establish that new runtime outcomes would
-be identical. See [the addendum](FUTURE-RUNS.md) for the planned integration and remaining shared-state limitations.
+restarts the gateway and waits for rollout completion.
+
+**Cluster runs (2026-11-12).** The hardened harness then ran on a real cluster twice, on a VM built from an empty machine: the
+first hardening, and the follow-up revision. In both, the 11 frozen cases reproduced, and the 56 non-empty archived patches were
+re-validated: 50 with the archived outcome and 6 different, all nkanaev/yarr (outside the main analysis; the current preparation
+treats its fixture as a hidden test). The main-analysis numbers computed from the new validator's outcomes are the published ones:
+48 attempts, 30 green, 4 failing the hidden tests. This is not a re-classification; the archived outcomes stand. The second run found
+one defect no local test could show (the integrity checker could not run in the pods), fixed since, and both found that the
+NetworkPolicy is not yet in force in a pod's first 0.3 to 0.7 s on this cluster software, which also applies to the archived
+collection. See [the addendum](FUTURE-RUNS.md), "Cluster integration", and `results/integration-2026-11-12*/`.
 
 **Historical checks:** all 66 attempt records and patches, frozen cases, blind packets/verdicts and audit logs remain
 unchanged. Recomputing `results/final.json`, `results/final-summary.md` and `cases/funnel.md` in a temporary copy produced
@@ -246,9 +253,8 @@ patch contains `/in/secret`, `/srv/ci`, `fix.diff` or `hidden.diff`. The two min
 `go.mod`/`go.sum` (centrifugo and templ) were not in the frozen case set. These checks found no recorded evidence of the
 identified answer-file/cache exposure being used; they do not prove the absence of all possible interference.
 
-**Verification limits:** 40 security regression tests, 31 executor checks, 9 workflow tests and 22 gateway checks passed
-locally on synthetic inputs/a fake upstream. No VM was started and no third-party suite or Kubernetes/Kata integration
-was rerun. A deliberate production-code `os._exit(0)` negative control still bypasses an assertion without changing the
+**Verification limits:** 41 security regression tests, 31 executor checks, 9 workflow tests and 22 gateway checks passed
+locally on synthetic inputs/a fake upstream. What ran on a cluster, and what did not, is listed in the addendum. A deliberate production-code `os._exit(0)` negative control still bypasses an assertion without changing the
 tree; semantic review of green patches remains required. See the addendum for the exact boundary.
 
 ## Where the sources disagree

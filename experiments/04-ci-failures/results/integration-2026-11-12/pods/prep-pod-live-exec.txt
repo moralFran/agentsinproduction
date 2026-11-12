@@ -1,0 +1,24 @@
+# kubectl exec into the live preparation pod prep-boyter-scc-4288f7c8-broken
+uid=1001 gid=1002 groups=1002
+6.18.56
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	0000000000000000
+NoNewPrivs:	1
+Seccomp:	0
+Seccomp_filters:	0
+MOUNTS
+/input ro,relatime none
+/tmp rw,relatime none
+/code ro,relatime tmpfs
+/srv/ci/uv rw,relatime none
+/srv/ci/cases/boyter-scc-4288f7c8 rw,relatime none
+LS
+drwxr-xr-x 4 root root 4096 Nov 12 17:37 /srv/ci
+drwxr-xr-x 3 root root 4096 Nov 12 17:37 /srv/ci/cases
+drwxrwxr-x 5 1001 1002 4096 Nov 12 17:37 /srv/ci/cases/boyter-scc-4288f7c8
+drwxrwxr-x 2 1001 1002 4096 Nov 12 17:37 /srv/ci/uv
+ls: cannot access '/srv/ci/secret': No such file or directory
+ls: cannot access '/in': No such file or directory
+touch: cannot touch '/input/x': Read-only file system
+agent

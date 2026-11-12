@@ -1,0 +1,23 @@
+# pod probe-agent-busy2 namespace ci-agent phase Succeeded/ wall 38s
+# main c exit 0
+# created 2026-11-12T18:13:42Z main-started 2026-11-12T18:14:01Z main-finished 2026-11-12T18:14:15Z
+[pod/probe-agent-busy2/c] NETTIME {"event": "start", "role": "agent", "uid": 1000}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.01, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.01, "target": "node ssh", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.01, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.01, "target": "gateway model port", "result": "open"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.01, "target": "gateway admin port", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.01, "target": "dns pod tcp 53", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 0.31, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 1.31, "target": "node ssh", "result": "timeout"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 2.32, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 8.93, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 9.93, "target": "gateway admin port", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 9.93, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 11.23, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 12.23, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 12.24, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-agent-busy2/c] NETTIME {"t_s": 13.24, "target": "dns pod tcp 53", "result": "refused"}
+[pod/probe-agent-busy2/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 0, "blocked": 5, "last_open_s": null, "first_blocked_s": 0.0}, "metadata 169.254.169.254:80": {"open": 0, "blocked": 5, "last_open_s": null, "first_blocked_s": 0.01}, "node ssh": {"open": 0, "blocked": 5, "last_open_s": null, "first_blocked_s": 0.01}, "kubernetes api clusterip": {"open": 0, "blocked": 5, "last_open_s": null, "first_blocked_s": 0.01}, "gateway model port": {"open": 5, "blocked": 0, "last_open_s": 12.23, "first_blocked_s": null}, "gateway admin port": {"open": 0, "blocked": 5, "last_open_s": null, "first_blocked_s": 0.01}, "dns pod tcp 53": {"open": 0, "blocked": 5, "last_open_s": null, "first_blocked_s": 0.01}}}
+

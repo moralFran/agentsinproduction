@@ -1,0 +1,48 @@
+2026-11-12T17:37:37Z
+<node> Ready control-plane v1.37.2+k3s1 Ubuntu 24.04.5 LTS 7.0.0-1017-gcp (amd64)
+NAME                            HANDLER                         AGE
+crun                            crun                            4m18s
+kata-clh                        kata-clh                        4m16s
+kata-clh-azure                  kata-clh-azure                  4m16s
+kata-clh-azure-runtime-rs       kata-clh-azure-runtime-rs       4m16s
+kata-clh-runtime-rs             kata-clh-runtime-rs             4m16s
+kata-dragonball                 kata-dragonball                 4m16s
+kata-openvmm-azure-runtime-rs   kata-openvmm-azure-runtime-rs   4m16s
+kata-qemu                       kata-qemu                       4m16s
+kata-qemu-runtime-rs            kata-qemu-runtime-rs            4m16s
+lunatic                         lunatic                         4m18s
+nvidia                          nvidia                          4m18s
+nvidia-experimental             nvidia-experimental             4m18s
+slight                          slight                          4m18s
+spin                            spin                            4m18s
+wasmedge                        wasmedge                        4m18s
+wasmer                          wasmer                          4m18s
+wasmtime                        wasmtime                        4m18s
+wws                             wws                             4m18s
+ci-gateway gateway-84bc74c458-spkl6 Running
+kube-system coredns-577d995dff-z4z6j Running
+kube-system helm-install-gateway-api-crd-nrqr2 Completed
+kube-system helm-install-traefik-7jrxm Completed
+kube-system helm-install-traefik-crd-pggqf Completed
+kube-system kata-deploy-install-aip-ci-01-us-centr-db2cba9bc9a4109079drrd7q Completed
+kube-system kata-deploy-install-dispatcher-9zwkk Completed
+kube-system local-path-provisioner-56c6584955-4h59q Running
+kube-system metrics-server-778c4649b4-jmswx Running
+kube-system svclb-traefik-78f085ae-gsdcw Running
+kube-system traefik-68df944ff7-92pjd Running
+NAMESPACE    NAME                        POD-SELECTOR   AGE
+ci-agent     agent-egress-gateway-only   <none>         44s
+ci-exec      deny-all                    <none>         44s
+ci-gateway   gateway-ingress             app=gateway    44s
+ci-prep      prep-egress-public-only     <none>         44s
+"kata-deploy-job-dispatcher/result":"succeeded"
+"kata-deploy.katacontainers.io/default":"true"
+"katacontainers.io/kata-runtime":"true"
+  Version:  v2.3.7-k3s1
+  Go version: go1.26.10
+ls: cannot access '/var/lib/rancher/k3s/server/manifests/': Permission denied
+daemonset.apps/svclb-traefik-78f085ae
+deployment.apps/coredns
+deployment.apps/local-path-provisioner
+deployment.apps/metrics-server
+deployment.apps/traefik

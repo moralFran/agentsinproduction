@@ -1,0 +1,35 @@
+== 2026-11-12T18:45:50Z control: round runner with a WRONG admin key (no pod, no model call; pipefail must stop the round)
+== ctl-pipefail repetition 1 start 18:45:50
+gateway refused to open run ctl-pipefail-bbbe6833-r1
+gateway refused to open run ctl-pipefail-a352a7c0-r1
+gateway refused to open run ctl-pipefail-d735ebc1-r1
+gateway refused to open run ctl-pipefail-1899ffc2-r1
+gateway refused to open run ctl-pipefail-e88f0806-r1
+gateway refused to open run ctl-pipefail-eb82db29-r1
+gateway refused to open run ctl-pipefail-c2452a82-r1
+gateway refused to open run ctl-pipefail-69bc3125-r1
+gateway refused to open run ctl-pipefail-1206f641-r1
+gateway refused to open run ctl-pipefail-909ef1ea-r1
+gateway refused to open run ctl-pipefail-56d24d7d-r1
+run-round.sh exit status: 123
+journal exists: no; gateway spent: 0.0
+== 2026-11-12T18:45:51Z attempt v1-int (prompt-v1.txt), cap 0.33
+v1-int-e88f0806-r1 agent: finished tools 9 calls 9 | gateway $ 0.103908 | executor: green_fails_hidden 
+attempt.sh exit status: 0
+gateway spent so far: 0.103908; cap for the second attempt: 0.33
+== 2026-11-12T19:06:39Z attempt v2-int (prompt-v2.txt), cap 0.33
+v2-int-e88f0806-r1 agent: finished tools 11 calls 11 | gateway $ 0.14079690000000003 | executor: green_passes_hidden 
+attempt.sh exit status: 0
+== 2026-11-12T19:27:10Z resume control: the same attempt again must be skipped (exit 0, no spend)
+run v1-int-e88f0806-r1 already recorded; skipping
+attempt.sh exit status: 0; spent before 0.24470489999999998, after 0.24470489999999998
+== 2026-11-12T19:27:10Z cases/check-round.py on the two round journals (1 attempt each of 33: must report incomplete)
+incomplete round v1-int: missing=[('alicebob-miniredis-ce093519', 1), ('alicebob-miniredis-ce093519', 2), ('alicebob-miniredis-ce093519', 3), ('boyter-scc-4288f7c8', 1), ('boyter-scc-4288f7c8', 2), ('boyter-scc-4288f7c8', 3), ('gobwas-ws-a567dfd6', 2), ('gobwas-ws-a567dfd6', 3), ('ludwig-ai-ludwig-6a122a8e', 1), ('ludwig-ai-ludwig-6a122a8e', 2), ('ludwig-ai-ludwig-6a122a8e', 3), ('mark3labs-mcp-go-1969a6b9', 1), ('mark3labs-mcp-go-1969a6b9', 2), ('mark3labs-mcp-go-1969a6b9', 3), ('nkanaev-yarr-957e81dd', 1), ('nkanaev-yarr-957e81dd', 2), ('nkanaev-yarr-957e81dd', 3), ('openbyteinc-quantdinger-733f7bc7', 1), ('openbyteinc-quantdinger-733f7bc7', 2), ('openbyteinc-quantdinger-733f7bc7', 3), ('pyinfra-dev-pyinfra-e7e42b68', 1), ('pyinfra-dev-pyinfra-e7e42b68', 2), ('pyinfra-dev-pyinfra-e7e42b68', 3), ('rmax-scrapy-redis-8d8672f2', 1), ('rmax-scrapy-redis-8d8672f2', 2), ('rmax-scrapy-redis-8d8672f2', 3), ('sigstore-cosign-1ab7015b', 1), ('sigstore-cosign-1ab7015b', 2), ('sigstore-cosign-1ab7015b', 3), ('tdewolff-minify-fa882446', 1), ('tdewolff-minify-fa882446', 2), ('tdewolff-minify-fa882446', 3)], unexpected=set()
+check-round.py v1-int exit status: 1
+incomplete round v2-int: missing=[('alicebob-miniredis-ce093519', 1), ('alicebob-miniredis-ce093519', 2), ('alicebob-miniredis-ce093519', 3), ('boyter-scc-4288f7c8', 1), ('boyter-scc-4288f7c8', 2), ('boyter-scc-4288f7c8', 3), ('gobwas-ws-a567dfd6', 2), ('gobwas-ws-a567dfd6', 3), ('ludwig-ai-ludwig-6a122a8e', 1), ('ludwig-ai-ludwig-6a122a8e', 2), ('ludwig-ai-ludwig-6a122a8e', 3), ('mark3labs-mcp-go-1969a6b9', 1), ('mark3labs-mcp-go-1969a6b9', 2), ('mark3labs-mcp-go-1969a6b9', 3), ('nkanaev-yarr-957e81dd', 1), ('nkanaev-yarr-957e81dd', 2), ('nkanaev-yarr-957e81dd', 3), ('openbyteinc-quantdinger-733f7bc7', 1), ('openbyteinc-quantdinger-733f7bc7', 2), ('openbyteinc-quantdinger-733f7bc7', 3), ('pyinfra-dev-pyinfra-e7e42b68', 1), ('pyinfra-dev-pyinfra-e7e42b68', 2), ('pyinfra-dev-pyinfra-e7e42b68', 3), ('rmax-scrapy-redis-8d8672f2', 1), ('rmax-scrapy-redis-8d8672f2', 2), ('rmax-scrapy-redis-8d8672f2', 3), ('sigstore-cosign-1ab7015b', 1), ('sigstore-cosign-1ab7015b', 2), ('sigstore-cosign-1ab7015b', 3), ('tdewolff-minify-fa882446', 1), ('tdewolff-minify-fa882446', 2), ('tdewolff-minify-fa882446', 3)], unexpected=set()
+check-round.py v2-int exit status: 1
+== gateway records
+v1-int-e88f0806-r1: {"cap_usd": 0.33, "spent_usd": 0.103908, "calls": 9, "open": false, "opened": 1794509151.1530774, "closed": 1794509824.6776648}
+v2-int-e88f0806-r1: {"cap_usd": 0.33, "spent_usd": 0.14079690000000003, "calls": 11, "open": false, "opened": 1794510399.7339547, "closed": 1794511140.5063074}
+state: {"spent_usd": 0.24470489999999998, "requests": 20, "in_tok": 172193, "out_tok": 10727, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+== 2026-11-12T19:27:10Z done

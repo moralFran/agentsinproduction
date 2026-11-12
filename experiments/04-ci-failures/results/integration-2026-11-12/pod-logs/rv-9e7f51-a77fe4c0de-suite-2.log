@@ -1,0 +1,1 @@
+EXECUTOR {"id": "rmax-scrapy-redis-8d8672f2", "mode": "validate", "phase": "suite", "outcome": "sampled", "files": ["src/scrapy_redis/spiders.py"], "run": {"rc": 1, "s": 5.8, "tail": "================== 1 failed, 36 passed, 741 warnings in 3.68s =================="}}

@@ -166,6 +166,23 @@ class RuntimeControls(unittest.TestCase):
         edit=shlex.join([sys.executable,'-B','-c','open("new/.gitignore","a").write("# edited\\n")'])
         result=ex.checked_run(edit,str(self.repo),str(self.repo))
         self.assertEqual(result['outcome'],'test_changed_tree',result);self.assertIn('new/.gitignore',result['why'])
+    def test_checker_works_when_the_checkout_belongs_to_another_user(self):
+        # In the pods the working copy is a root-owned emptyDir and the tests run as uid 1000. The image allowed that in
+        # the system Git config, which the checker disables; found on the cluster (2026-11-12), invisible locally.
+        real=subprocess.run
+        def other_owner(args,**kwargs):
+            if isinstance(args,list) and args[:1]==['git'] and 'env' in kwargs:
+                kwargs['env']={**kwargs['env'],'GIT_TEST_ASSUME_DIFFERENT_OWNER':'1'}  # Git's own switch for this situation
+            return real(args,**kwargs)
+        refused=real(['git','status','--porcelain'],cwd=self.repo,capture_output=True,text=True,
+                     env={**os.environ,'GIT_TEST_ASSUME_DIFFERENT_OWNER':'1','GIT_CONFIG_GLOBAL':'/dev/null','GIT_CONFIG_NOSYSTEM':'1'})
+        self.assertIn('dubious ownership',refused.stderr)  # the situation is real on this Git
+        with patch.object(ex.subprocess,'run',side_effect=other_owner):
+            clean=ex.checked_run('true',str(self.repo),str(self.repo))
+            edit=shlex.join([sys.executable,'-B','-c','open("core.py","w").write("value = 5\\n")'])
+            changed=ex.checked_run(edit,str(self.repo),str(self.repo))
+        self.assertEqual(clean['outcome'],'sampled',clean)
+        self.assertEqual(changed['outcome'],'test_changed_tree',changed);self.assertIn('core.py',changed['why'])
     def test_negative_control_early_exit_is_still_a_semantic_review_requirement(self):
         # Deliberately demonstrate the limit: no path rule proves that the test assertion actually ran.
         (self.repo/'core.py').write_text('import os\nos._exit(0)\n')

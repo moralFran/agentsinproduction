@@ -1,0 +1,88 @@
+{
+ "case": "nkanaev-yarr-957e81dd",
+ "sha256": "d91b986f5b58460dcbf4f9adfbe4519bb03a76c699f0e0180efa736a2c3a271a",
+ "runs": [
+  "v2-909ef1ea-r1"
+ ],
+ "pod_prefix": "rv-028fe7-d91b986f5b",
+ "validator_rc": 0,
+ "wall_s": 402.1,
+ "finished": "2026-11-12T23:18:56Z",
+ "result": {
+  "id": "nkanaev-yarr-957e81dd",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-028fe7-d91b986f5b-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 57.0
+   },
+   {
+    "pod": "rv-028fe7-d91b986f5b-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 77.9
+   },
+   {
+    "pod": "rv-028fe7-d91b986f5b-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 82.4
+   },
+   {
+    "pod": "rv-028fe7-d91b986f5b-hidden-1",
+    "phase": "Succeeded/",
+    "wall_s": 59.3
+   },
+   {
+    "pod": "rv-028fe7-d91b986f5b-hidden-2",
+    "phase": "Succeeded/",
+    "wall_s": 54.5
+   },
+   {
+    "pod": "rv-028fe7-d91b986f5b-hidden-3",
+    "phase": "Succeeded/",
+    "wall_s": 64.1
+   }
+  ],
+  "files": [
+   "src/parser/atom.go"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 37.2,
+    "tail": "ok  \tgithub.com/nkanaev/yarr/src/parser\t0.055s"
+   },
+   {
+    "rc": 0,
+    "s": 54.4,
+    "tail": "ok  \tgithub.com/nkanaev/yarr/src/parser\t0.079s"
+   },
+   {
+    "rc": 0,
+    "s": 54.4,
+    "tail": "ok  \tgithub.com/nkanaev/yarr/src/parser\t0.065s"
+   }
+  ],
+  "suite_pass": 3,
+  "hidden_runs": [
+   {
+    "rc": 1,
+    "s": 36.2,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 34.9,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 43.6,
+    "tail": "FAIL"
+   }
+  ],
+  "hidden_pass": 0,
+  "outcome": "green_fails_hidden"
+ },
+ "stderr_tail": ""
+}

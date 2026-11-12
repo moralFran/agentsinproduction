@@ -1,0 +1,88 @@
+{
+ "case": "gobwas-ws-a567dfd6",
+ "sha256": "bd6a4cc9df065aa47709d8cb23212f488340a29a15c9d93aba19f6ce4587cce3",
+ "runs": [
+  "v2-e88f0806-r1"
+ ],
+ "pod_prefix": "rv-e7f4b6-bd6a4cc9df",
+ "validator_rc": 0,
+ "wall_s": 413.3,
+ "finished": "2026-11-12T22:15:30Z",
+ "result": {
+  "id": "gobwas-ws-a567dfd6",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-e7f4b6-bd6a4cc9df-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 70.0
+   },
+   {
+    "pod": "rv-e7f4b6-bd6a4cc9df-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 65.2
+   },
+   {
+    "pod": "rv-e7f4b6-bd6a4cc9df-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 70.0
+   },
+   {
+    "pod": "rv-e7f4b6-bd6a4cc9df-hidden-1",
+    "phase": "Succeeded/",
+    "wall_s": 65.3
+   },
+   {
+    "pod": "rv-e7f4b6-bd6a4cc9df-hidden-2",
+    "phase": "Succeeded/",
+    "wall_s": 72.1
+   },
+   {
+    "pod": "rv-e7f4b6-bd6a4cc9df-hidden-3",
+    "phase": "Succeeded/",
+    "wall_s": 65.3
+   }
+  ],
+  "files": [
+   "wsflate/writer.go"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 57.9,
+    "tail": "ok  \tgithub.com/gobwas/ws/wsflate\t0.026s"
+   },
+   {
+    "rc": 0,
+    "s": 52.8,
+    "tail": "ok  \tgithub.com/gobwas/ws/wsflate\t0.024s"
+   },
+   {
+    "rc": 0,
+    "s": 57.7,
+    "tail": "ok  \tgithub.com/gobwas/ws/wsflate\t0.024s"
+   }
+  ],
+  "suite_pass": 3,
+  "hidden_runs": [
+   {
+    "rc": 1,
+    "s": 52.9,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 58.0,
+    "tail": "FAIL"
+   },
+   {
+    "rc": 1,
+    "s": 53.1,
+    "tail": "FAIL"
+   }
+  ],
+  "hidden_pass": 0,
+  "outcome": "green_fails_hidden"
+ },
+ "stderr_tail": ""
+}

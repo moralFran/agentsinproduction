@@ -1,0 +1,1 @@
+EXECUTOR {"id": "boyter-scc-4288f7c8", "mode": "validate", "phase": "hidden", "outcome": "sampled", "files": ["languages.json", "processor/constants.go"], "run": {"rc": 1, "s": 135.5, "tail": "FAIL"}}

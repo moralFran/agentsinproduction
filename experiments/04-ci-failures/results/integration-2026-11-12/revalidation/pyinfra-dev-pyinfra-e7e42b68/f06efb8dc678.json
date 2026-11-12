@@ -1,0 +1,55 @@
+{
+ "case": "pyinfra-dev-pyinfra-e7e42b68",
+ "sha256": "f06efb8dc678de8fcb76088c25cc41b122b05ffadc26a8719fc48fcaebdb3562",
+ "runs": [
+  "v1-eb82db29-r3"
+ ],
+ "pod_prefix": "rv-ac567b-f06efb8dc6",
+ "validator_rc": 0,
+ "wall_s": 145.2,
+ "finished": "2026-11-12T19:06:44Z",
+ "result": {
+  "id": "pyinfra-dev-pyinfra-e7e42b68",
+  "mode": "validate",
+  "pods": [
+   {
+    "pod": "rv-ac567b-f06efb8dc6-suite-1",
+    "phase": "Succeeded/",
+    "wall_s": 40.2
+   },
+   {
+    "pod": "rv-ac567b-f06efb8dc6-suite-2",
+    "phase": "Succeeded/",
+    "wall_s": 51.6
+   },
+   {
+    "pod": "rv-ac567b-f06efb8dc6-suite-3",
+    "phase": "Succeeded/",
+    "wall_s": 49.6
+   }
+  ],
+  "files": [
+   "src/pyinfra/api/facts.py"
+  ],
+  "suite_runs": [
+   {
+    "rc": 0,
+    "s": 8.1,
+    "tail": "6 passed in 0.13s"
+   },
+   {
+    "rc": 0,
+    "s": 8.6,
+    "tail": "6 passed in 0.20s"
+   },
+   {
+    "rc": 0,
+    "s": 6.4,
+    "tail": "6 passed in 0.09s"
+   }
+  ],
+  "suite_pass": 3,
+  "outcome": "green_no_hidden_tests"
+ },
+ "stderr_tail": ""
+}

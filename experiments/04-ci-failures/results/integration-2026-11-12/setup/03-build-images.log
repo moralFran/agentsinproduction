@@ -1,0 +1,14 @@
+2026-11-12T17:35:14Z
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+sha256:3a526cf75a78bbd9cb2e5c9127bdaf73bcdba43759de073b33da43c3fdec29aa
+Importing	elapsed: 24.5s	total:   0.0 B	(0.0 B/s)	
+go version go1.27.4 linux/amd64
+Python 3.11.2
+anthropic 2.8.0
+uv 0.9.5
+git version 2.39.5
+rc=0
+2026-11-12T17:36:42Z

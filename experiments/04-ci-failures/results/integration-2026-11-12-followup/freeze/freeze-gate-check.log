@@ -1,0 +1,63 @@
+== 2026-11-12T22:44:09Z decisions file at the start: {}
+-- freeze.py run 1: exit status 1
+case boyter-scc-4288f7c8 needs an eligibility decision in cases/eligibility-decisions.json (the hidden control does not discriminate): include/exclude, reason, reviewer, repro_sha256=c331096a7d4984d1ce9cdd7b399f2c469ef56dfe9544b26b5c6dd3bb77d8bd0b
+   wrote decision for boyter-scc-4288f7c8: include (STALE digest on purpose)
+-- freeze.py run 2: exit status 1
+case boyter-scc-4288f7c8 needs an eligibility decision in cases/eligibility-decisions.json (the hidden control does not discriminate): include/exclude, reason, reviewer, repro_sha256=c331096a7d4984d1ce9cdd7b399f2c469ef56dfe9544b26b5c6dd3bb77d8bd0b
+   wrote decision for boyter-scc-4288f7c8: include (digest from the message)
+-- freeze.py run 3: exit status 1
+case nkanaev-yarr-957e81dd needs an eligibility decision in cases/eligibility-decisions.json (the hidden control does not discriminate): include/exclude, reason, reviewer, repro_sha256=73442c8ed0be13a1a06e838b292d678d60324496b2fe2286f8311b8c242e2318
+   wrote decision for nkanaev-yarr-957e81dd: exclude (digest from the message)
+-- freeze.py run 4: exit status 0
+sha256 fbb6cdd64ce846c382105e3cbf581a4a490c9c5a1cb7ade9cf655f9e0043b08d cases/cases.csv
+frozen 10 (Go 6, Python 4); intermittent 0; not reproduced 1
+== decisions file at the end
+{
+  "boyter-scc-4288f7c8": {
+    "decision": "include",
+    "reason": "throwaway entry written by the integration check to exercise the gate",
+    "reviewer": "integration check, not a real eligibility decision",
+    "repro_sha256": "c331096a7d4984d1ce9cdd7b399f2c469ef56dfe9544b26b5c6dd3bb77d8bd0b"
+  },
+  "nkanaev-yarr-957e81dd": {
+    "decision": "exclude",
+    "reason": "throwaway entry written by the integration check to exercise the gate",
+    "reviewer": "integration check, not a real eligibility decision",
+    "repro_sha256": "73442c8ed0be13a1a06e838b292d678d60324496b2fe2286f8311b8c242e2318"
+  }
+}
+== cases/eligibility-at-freeze.json
+{
+  "boyter-scc-4288f7c8": {
+    "decision": "include",
+    "reason": "throwaway entry written by the integration check to exercise the gate",
+    "reviewer": "integration check, not a real eligibility decision",
+    "repro_sha256": "c331096a7d4984d1ce9cdd7b399f2c469ef56dfe9544b26b5c6dd3bb77d8bd0b"
+  },
+  "nkanaev-yarr-957e81dd": {
+    "decision": "exclude",
+    "reason": "throwaway entry written by the integration check to exercise the gate",
+    "reviewer": "integration check, not a real eligibility decision",
+    "repro_sha256": "73442c8ed0be13a1a06e838b292d678d60324496b2fe2286f8311b8c242e2318"
+  }
+}
+== cases.csv (fbb6cdd64ce846c382105e3cbf581a4a490c9c5a1cb7ade9cf655f9e0043b08d)
+case_id,hidden_tests
+mark3labs-mcp-go-1969a6b9,yes
+openbyteinc-quantdinger-733f7bc7,yes
+boyter-scc-4288f7c8,yes
+ludwig-ai-ludwig-6a122a8e,no
+gobwas-ws-a567dfd6,go test -count=1 github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate
+pyinfra-dev-pyinfra-e7e42b68,python -m pytest -q -p no:cacheprovider tests/test_api/test_api_facts_preconditions.py
+sigstore-cosign-1ab7015b,yes
+rmax-scrapy-redis-8d8672f2,yes
+tdewolff-minify-fa882446,yes
+alicebob-miniredis-ce093519,yes
+== not-reproduced.csv
+case_id,repo,verdict,broken_fail,fixed_pass,n
+nkanaev-yarr-957e81dd,nkanaev/yarr,excluded_after_eligibility_review,3,3,3
+== intermittent.csv
+case_id,repo,verdict,broken_fail,fixed_pass,n
+== freeze.py again (the list is frozen once)
+cases/cases.csv already exists: the list is frozen
+exit status 1

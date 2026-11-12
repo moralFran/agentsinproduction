@@ -1,0 +1,38 @@
+2026-11-12T21:01:37Z
+# two files of commit cdffecd copied over (coordinator update 2); executor and agent stay at e7858e9
+before:  095fa9be591bd6088e6b285614b49e6cfaf2532dd57953b2abe57166dfdbd788  gateway/gateway.py
+cdffecd: 9d54c7e9e594974c3ce3a0906024164b912941bc504e2b9986ac18f6ba9d3cb9  gateway/gateway.py
+before:  54b6444a3bd91e4b902c4ee4ae07abb0685c77877a8fc6de1bd0cc2bb4c89277  cases/attempt.sh
+cdffecd: b5cea1bf0a81904c16462e805e14bee00a7416805092a87c57aee6b5506de25b  cases/attempt.sh
+gateway pod before: gateway-546684f6f4-8gxkv
+namespace/ci-agent unchanged
+namespace/ci-exec unchanged
+namespace/ci-gateway unchanged
+networkpolicy.networking.k8s.io/deny-all unchanged
+networkpolicy.networking.k8s.io/agent-egress-gateway-only unchanged
+serviceaccount/runner unchanged
+serviceaccount/runner unchanged
+networkpolicy.networking.k8s.io/gateway-ingress unchanged
+namespace/ci-prep unchanged
+networkpolicy.networking.k8s.io/prep-egress-public-only unchanged
+configmap/gateway-code configured
+secret/gateway-admin-key unchanged
+persistentvolumeclaim/gateway-state unchanged
+deployment.apps/gateway unchanged
+service/gateway unchanged
+deployment.apps/gateway restarted
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 of 1 updated replicas are available...
+deployment "gateway" successfully rolled out
+0a16040ead580738851b015d79c909f9f9347cc839601818c1dd0f885e49618a  executor/executor.py
+2c8805c3161a922a6350607d97234b152115268af904d3ca1d2d3bde98f3eb5e  agent/agent.py
+b30bb240d97069752a726a30c68bf990abcb9f3e67ac7b15cc6d9e8771c612bd  agent/prompt-v1.txt
+8544789f4f0ee930e223616e75fba7f3c0ea6307d8d79f7a07ff39054687860c  agent/prompt-v2.txt
+setup-lab rc=0
+gateway pod after: gateway-769c867dc9-8ptb8
+gateway.py inside the running pod: 9d54c7e9e594974c3ce3a0906024164b912941bc504e2b9986ac18f6ba9d3cb9
+executor.py in ci-exec ConfigMap (e7858e9 + the VM-only safe.directory fix): 0a16040ead580738851b015d79c909f9f9347cc839601818c1dd0f885e49618a
+agent.py in ci-agent ConfigMap: 2c8805c3161a922a6350607d97234b152115268af904d3ca1d2d3bde98f3eb5e
+2026-11-12T21:02:15Z

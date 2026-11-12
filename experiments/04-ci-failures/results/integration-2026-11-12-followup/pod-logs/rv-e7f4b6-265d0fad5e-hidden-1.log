@@ -1,0 +1,1 @@
+EXECUTOR {"id": "gobwas-ws-a567dfd6", "mode": "validate", "phase": "hidden", "outcome": "sampled", "files": ["wsflate/writer.go"], "run": {"rc": 1, "s": 53.4, "tail": "FAIL"}}

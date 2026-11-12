@@ -1,0 +1,32 @@
+# pod probe-exec-fixed-agent-cache-fu1 namespace ci-exec phase Succeeded/ wall 24s
+# main c exit 0
+# created 2026-11-12T23:46:04Z main-started 2026-11-12T23:46:08Z main-finished 2026-11-12T23:46:22Z
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"event": "start", "role": "exec-fixed-agent-cache", "uid": 1000}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "open"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.02, "target": "metadata 169.254.169.254:80", "result": "open"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.02, "target": "node ssh", "result": "open"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.02, "target": "kubernetes api clusterip", "result": "open"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.02, "target": "gateway model port", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.02, "target": "gateway admin port", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.02, "target": "dns pod tcp 53", "result": "open"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.64, "target": "public 1.1.1.1:443", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.64, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 0.64, "target": "node ssh", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 1.64, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 1.64, "target": "gateway model port", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 2.64, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 3.94, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 4.94, "target": "node ssh", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 4.94, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 5.95, "target": "gateway model port", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 5.95, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 6.95, "target": "dns pod tcp 53", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 10.55, "target": "public 1.1.1.1:443", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 11.56, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 11.56, "target": "node ssh", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 12.56, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 12.56, "target": "gateway model port", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 13.56, "target": "gateway admin port", "result": "refused"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"t_s": 13.56, "target": "dns pod tcp 53", "result": "timeout"}
+[pod/probe-exec-fixed-agent-cache-fu1/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 2, "blocked": 4, "last_open_s": 0.32, "first_blocked_s": 0.64}, "metadata 169.254.169.254:80": {"open": 2, "blocked": 4, "last_open_s": 0.33, "first_blocked_s": 0.64}, "node ssh": {"open": 2, "blocked": 4, "last_open_s": 0.33, "first_blocked_s": 0.64}, "kubernetes api clusterip": {"open": 2, "blocked": 4, "last_open_s": 0.33, "first_blocked_s": 1.64}, "gateway model port": {"open": 0, "blocked": 6, "last_open_s": null, "first_blocked_s": 0.02}, "gateway admin port": {"open": 0, "blocked": 6, "last_open_s": null, "first_blocked_s": 0.02}, "dns pod tcp 53": {"open": 2, "blocked": 4, "last_open_s": 0.34, "first_blocked_s": 2.64}}}
+

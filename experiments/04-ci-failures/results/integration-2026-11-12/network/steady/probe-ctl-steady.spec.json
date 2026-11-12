@@ -1,0 +1,65 @@
+{
+ "replaced_command": [
+  "true"
+ ],
+ "spec": {
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+   "name": "probe-ctl-steady",
+   "namespace": "default"
+  },
+  "spec": {
+   "runtimeClassName": "kata-qemu",
+   "automountServiceAccountToken": false,
+   "restartPolicy": "Never",
+   "activeDeadlineSeconds": 420,
+   "securityContext": {
+    "runAsNonRoot": true,
+    "runAsUser": 1000,
+    "runAsGroup": 1000
+   },
+   "containers": [
+    {
+     "name": "c",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "/probe/netflap.py"
+     ],
+     "volumeMounts": [
+      {
+       "name": "probe",
+       "mountPath": "/probe",
+       "readOnly": true
+      }
+     ],
+     "env": [
+      {
+       "name": "PROBE_TARGETS",
+       "value": "{\"case_id\": \"gobwas-ws-a567dfd6\", \"node_ip\": \"10.128.0.7\", \"gw_pod_ip\": \"10.42.0.13\", \"other_pod_ip\": \"10.42.0.8\", \"dns_pod_ip\": \"10.42.0.6\"}"
+      },
+      {
+       "name": "PROBE_ROLE",
+       "value": "ctl"
+      },
+      {
+       "name": "NETFLAP_SECONDS",
+       "value": "300"
+      }
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "name": "probe",
+     "configMap": {
+      "name": "probe-code"
+     }
+    }
+   ]
+  }
+ }
+}

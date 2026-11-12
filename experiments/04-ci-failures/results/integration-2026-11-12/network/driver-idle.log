@@ -1,0 +1,3 @@
+probe-exec-fixed-idle ci-exec Succeeded/ main c exit 0 43 log lines
+probe-exec-repro-idle ci-exec Succeeded/ main c exit 0 43 log lines
+probe-agent-idle ci-agent Succeeded/ main c exit 0 43 log lines

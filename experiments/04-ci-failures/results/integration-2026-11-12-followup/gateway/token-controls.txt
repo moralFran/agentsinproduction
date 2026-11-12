@@ -1,0 +1,42 @@
+2026-11-12T21:02:27Z
+# gateway of commit cdffecd
+== admin port (as in the first round)
+GET /state, no token                                                                   -> HTTP 401  {"error": "admin authentication required"}
+GET /state, wrong admin token                                                          -> HTTP 401  {"error": "admin authentication required"}
+POST /runs cap 0.01, no admin token                                                    -> HTTP 401  {"error": "admin authentication required"}
+GET /state, admin token (positive control)                                             -> HTTP 200  {"spent_usd": 0.24470489999999998, "requests": 20, "in_tok": 172193, "out_tok": 10727, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+POST /runs cap 0.34, admin token                                                       -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap 1000, admin token                                                       -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap NaN, admin token                                                        -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap Infinity, admin token                                                   -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap 1e999, admin token                                                      -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap "nan", admin token                                                      -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap 0, admin token                                                          -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs cap -1, admin token                                                         -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+POST /runs without cap, admin token                                                    -> HTTP 400  {"error": "run cap must be finite, positive and within MAX_RUN_USD"}
+GET /runs/fu-ctl-cap (must not exist)                                                  -> HTTP 404  {"error": "no such run"}
+== per-run token
+POST /runs fu-ctl-token-1794517348 cap 0.33, admin token (opens; the reply carries the token once) -> HTTP 200  {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": true, "opened": 1794517348.6264508, "token": "<redacted, 43 characters>"}
+token returned: 43 characters (value not shown)
+GET /runs/fu-ctl-token-1794517348, admin token (must carry no token and no token_hash) -> HTTP 200  {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": true, "opened": 1794517348.6264508}
+keys in that reply: ['calls', 'cap_usd', 'open', 'opened', 'spent_usd']
+model port, no credential at all                                                       -> HTTP 403  {"error": "unknown or closed run token"}
+model port, only x-run-id of the OPEN run (the old scheme)                             -> HTTP 403  {"error": "unknown or closed run token"}
+model port, x-run-token = the run id (not the token)                                   -> HTTP 403  {"error": "unknown or closed run token"}
+model port, a wrong token of the right length                                          -> HTTP 403  {"error": "unknown or closed run token"}
+model port, the run's token (accepted: 400 comes after the token check)                -> HTTP 400  {"error": "max_tokens is not a number"}
+POST /runs/fu-ctl-token-1794517348 again (reuse of the id must be refused)             -> HTTP 409  {"error": "missing or reused run id"}
+POST /runs/fu-ctl-token-1794517348/close, admin token                                  -> HTTP 200  {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": false, "opened": 1794517348.6264508, "closed": 1794517349.1412823}
+model port, the same token AFTER close                                                 -> HTTP 403  {"error": "unknown or closed run token"}
+GET /runs/fu-ctl-token-1794517348 after close                                          -> HTTP 200  {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "open": false, "opened": 1794517348.6264508, "closed": 1794517349.1412823}
+== where the token of that run can be found (exact string; counts only)
+gateway log, lines containing the token: 0
+gateway state file, occurrences of the token: 0
+gateway state file, the token's sha256 present for this run: 1
+gateway log, lines for this run: 3
+{"ts": 1794517348.632, "event": "run_opened", "run": "fu-ctl-token-1794517348", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794517349.048, "src": "10.42.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "max_tokens is not a number", "status": 400, "run": "fu-ctl-token-1794517348"}
+{"ts": 1794517349.148, "event": "run_closed", "run": "fu-ctl-token-1794517348", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+gateway log, any key named token: 0
+host -> model port GET /healthz                                                        -> HTTP 200  ok 
+GET /state, admin token (after the controls: nothing spent by them)                    -> HTTP 200  {"spent_usd": 0.24470489999999998, "requests": 20, "in_tok": 172193, "out_tok": 10727, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}

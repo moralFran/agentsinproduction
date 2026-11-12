@@ -1,0 +1,23 @@
+2026-11-12T23:48:25Z
+# end of the follow-up round
+pods outside kube-system:
+ci-gateway gateway-769c867dc9-8ptb8 Running
+leftover patch ConfigMaps: 0
+ConfigMaps in the case namespaces: configmap/ci-code configmap/kube-root-ca.crt configmap/probe-code  configmap/ci-code configmap/kube-root-ca.crt configmap/probe-code  configmap/ci-prep-code configmap/kube-root-ca.crt configmap/probe-code 
+gateway state: {"spent_usd": 0.43934290000000004, "requests": 41, "in_tok": 336267, "out_tok": 20623, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+nodes: aip-ci-01.us-central1-a.c.<project>.internal Ready;
+disk: 40G used of 193G
+harness files in the fresh-run folder at the end:
+0a16040ead580738851b015d79c909f9f9347cc839601818c1dd0f885e49618a  executor/executor.py
+461c268abad3e2cf79e9cf704dbac69ab0c7da5b8cd8398bbd94ce6160c1ffa0  agent/agent.py
+9d54c7e9e594974c3ce3a0906024164b912941bc504e2b9986ac18f6ba9d3cb9  gateway/gateway.py
+690ec51fd40b5db815aeef59464ee612f2c3f05281f96e0f2f6eb14ecab4ba3d  cases/attempt.sh
+4ee7fa1f60d61c9b90ca6a06488208b50386b673f7198c7f0eebb63348672396  cases/pod.py
+6b6a8b439a4eefbba14e3a05ae2e5e1e7eab0dd34de1ea92e045c402ebe32d91  cases/repro.sh
+561a73e697634159e75d1f45ec3d9ecaabc44d09837f9dae0e5cbb9099890e24  cases/prep.py
+98bf2e9dd0b27568e183c94da0d9b3fafc39576db3da4fef617ee84a1a489638  cases/prep_worker.py
+44010a7ccde3cbeb35ccfa0d06e190fc798e8427224f7ac42c8e5699021f6744  cases/validate.py
+a9f2edec962373ccce7465fde9d5d807429d6cf231638649f06977da8ec3050e  cases/freeze.py
+edf08ec4c50ff6f8f62e7a2c6b7cb6bb6d43380ae7cf1528188eba563ef3f993  results/analyze.py
+9d107f97504acf97f91a529bacb69d7d1f34ccf8bf00e0445ae5d8f0b24470db  cases/queue.py
+07a285528ae0f6f1e760712d4230b5a2599f779d8c4623a5b8869b2b6513f3f1  infra/setup-lab.sh

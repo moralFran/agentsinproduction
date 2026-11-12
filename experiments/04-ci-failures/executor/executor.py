@@ -37,11 +37,15 @@ def _decode(b): return b.decode("utf-8", "surrogateescape")
 def checker_git(args, repo):
     """No inherited Git overrides, global/system config, hooks, fsmonitor, or optional index refresh writes.
     core.excludesFile is pinned: without it Git still reads $HOME/.config/git/ignore (HOME is writable in the pods),
-    where a test could hide new files from the listing."""
+    where a test could hide new files from the listing. safe.directory is set here because the system config that
+    carried it in the image is disabled above: in the pods the working copy is a root-owned emptyDir and this process
+    is uid 1000, so without it Git refuses the checkout and every integrity sample is an infrastructure error (found
+    on the cluster, 2026-11-12). The repository's own config and hooks stay neutralised by the options around it."""
     env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
     env.update(GIT_CONFIG_NOSYSTEM="1", GIT_CONFIG_GLOBAL="/dev/null", GIT_OPTIONAL_LOCKS="0")
     return subprocess.run(["git", "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null",
-                           "-c", "core.untrackedCache=false", "-c", "core.excludesFile=/dev/null", *args],
+                           "-c", "core.untrackedCache=false", "-c", "core.excludesFile=/dev/null",
+                           "-c", "safe.directory=*", *args],
                           cwd=repo, env=env, capture_output=True)
 
 def numstat_paths(patch_file, cwd):

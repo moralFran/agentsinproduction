@@ -1,0 +1,45 @@
+2026-11-12T20:54:50Z
+gateway pod before: gateway-84bc74c458-spkl6
+namespace/ci-agent unchanged
+namespace/ci-exec unchanged
+namespace/ci-gateway unchanged
+networkpolicy.networking.k8s.io/deny-all unchanged
+networkpolicy.networking.k8s.io/agent-egress-gateway-only unchanged
+serviceaccount/runner unchanged
+serviceaccount/runner unchanged
+networkpolicy.networking.k8s.io/gateway-ingress unchanged
+namespace/ci-prep unchanged
+networkpolicy.networking.k8s.io/prep-egress-public-only unchanged
+configmap/gateway-code configured
+secret/gateway-admin-key unchanged
+persistentvolumeclaim/gateway-state unchanged
+deployment.apps/gateway unchanged
+service/gateway unchanged
+deployment.apps/gateway restarted
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 of 1 updated replicas are available...
+deployment "gateway" successfully rolled out
+b176c189023122ee490aade43480a484c988f81affa88835922d1c3961be34cf  executor/executor.py
+4ac4631aaa524f883a823c75609bf2483fd04854a4f383fd6dfe15c3ffc2d7cb  agent/agent.py
+b30bb240d97069752a726a30c68bf990abcb9f3e67ac7b15cc6d9e8771c612bd  agent/prompt-v1.txt
+8544789f4f0ee930e223616e75fba7f3c0ea6307d8d79f7a07ff39054687860c  agent/prompt-v2.txt
+rc=0
+2026-11-12T20:55:55Z
+gateway pod after: gateway-546684f6f4-8gxkv
+gateway.py in the ConfigMap: 095fa9be591bd608 ; file in the run folder: 095fa9be591bd608
+gateway.py inside the running pod: 095fa9be591bd608
+secret gateway-key still present: 2026-11-12T17:36:54Z
+state after restart: {"spent_usd": 0.24470489999999998, "requests": 20, "in_tok": 172193, "out_tok": 10727, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+old run record: {"cap_usd": 0.33, "spent_usd": 0.103908, "calls": 9, "open": false, "opened": 1794509151.1530774, "closed": 1794509824.6776648}
+total  
+drwxr-xr-x <user> .
+drwxr-xr-x root ..
+-rw------- <user> admin-key
+drwxr-xr-x <user> cases
+drwxr-xr-x <user> logs
+drwxr-xr-x <user> round1
+drwxr-xr-x <user> secret
+drwxr-xr-x <user> uv
+drwxr-xr-x <user> work

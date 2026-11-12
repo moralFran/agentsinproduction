@@ -1,0 +1,31 @@
+# pod probe-prep-busy4 namespace ci-prep phase Succeeded/ wall 60s
+# main c exit 0
+# created 2026-11-12T18:21:08Z main-started 2026-11-12T18:21:49Z main-finished 2026-11-12T18:22:04Z
+[pod/probe-prep-busy4/c] NETTIME {"event": "start", "role": "prep", "uid": 1001}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.0, "target": "public 1.1.1.1:443", "result": "open"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.03, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.03, "target": "node ssh", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.03, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.03, "target": "gateway model port", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.03, "target": "gateway admin port", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.03, "target": "dns pod tcp 53", "result": "open"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 0.35, "target": "node ssh", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 1.35, "target": "gateway model port", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 2.35, "target": "gateway admin port", "result": "open"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 2.67, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 3.68, "target": "node ssh", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 3.68, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 4.68, "target": "gateway model port", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 4.68, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 6.0, "target": "metadata 169.254.169.254:80", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 6.0, "target": "node ssh", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 7.0, "target": "kubernetes api clusterip", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 7.0, "target": "gateway model port", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 8.0, "target": "gateway admin port", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 10.63, "target": "metadata 169.254.169.254:80", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 11.63, "target": "node ssh", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 11.63, "target": "kubernetes api clusterip", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 12.64, "target": "gateway model port", "result": "refused"}
+[pod/probe-prep-busy4/c] NETTIME {"t_s": 12.64, "target": "gateway admin port", "result": "timeout"}
+[pod/probe-prep-busy4/c] NETTIME {"event": "summary", "seconds": 12.0, "targets": {"public 1.1.1.1:443": {"open": 6, "blocked": 0, "last_open_s": 10.62, "first_blocked_s": null}, "metadata 169.254.169.254:80": {"open": 0, "blocked": 6, "last_open_s": null, "first_blocked_s": 0.03}, "node ssh": {"open": 0, "blocked": 6, "last_open_s": null, "first_blocked_s": 0.03}, "kubernetes api clusterip": {"open": 0, "blocked": 6, "last_open_s": null, "first_blocked_s": 0.03}, "gateway model port": {"open": 0, "blocked": 6, "last_open_s": null, "first_blocked_s": 0.03}, "gateway admin port": {"open": 1, "blocked": 5, "last_open_s": 2.35, "first_blocked_s": 0.03}, "dns pod tcp 53": {"open": 6, "blocked": 0, "last_open_s": 13.64, "first_blocked_s": null}}}
+

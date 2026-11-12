@@ -1,0 +1,1 @@
+EXECUTOR {"id": "nkanaev-yarr-957e81dd", "mode": "validate", "phase": "suite", "outcome": "sampled", "files": ["src/parser/atom.go"], "run": {"rc": 0, "s": 48.2, "tail": "ok  \tgithub.com/nkanaev/yarr/src/parser\t0.121s"}}

@@ -1,0 +1,47 @@
+2026-11-12T18:45:34Z
+sha256 0729be1fa16634fa7ea263e385847a61e3b42374ba382eed93478f6734d6be38 cases/cases.csv
+frozen 11 (Go 7, Python 4); intermittent 0; not reproduced 0
+freeze rc=0
+archived: d0abec78c96b6bf7969fc3408d3e411664da7495b32cc6f78b97d383e032a5b8  cases/cases.csv
+0729be1fa16634fa7ea263e385847a61e3b42374ba382eed93478f6734d6be38  cases/cases.csv
+2,3d1
+< openbyteinc-quantdinger-733f7bc7,OpenByteInc/QuantDinger,Python,733f7bc75b5800b81937cfc07240c5f179c19b4e,adb5693b3ce1a31a5b5da9bb559a0af1dc1e5118,Backend CI,Backend tests (1/2),backend_api_python,python -m pytest -q -p no:cacheprovider tests/test_live_order_support.py,yes,python -m pytest -q -p no:cacheprovider tests/test_live_exchange_fees.py tests/test_live_order_support.py,https://github.com/OpenByteInc/QuantDinger/actions/runs/39720811807
+< ludwig-ai-ludwig-6a122a8e,ludwig-ai/ludwig,Python,6a122a8e6d7b963a06edd2a852998916dd8ca088,34fdde3dbfb26428ebebde3205aef879f537505a,pytest,Distributed (distributed_d),.,python -m pytest -q -p no:cacheprovider tests/ludwig/data/test_ray_data.py,no,,https://github.com/ludwig-ai/ludwig/actions/runs/31972016275
+4a3
+> openbyteinc-quantdinger-733f7bc7,OpenByteInc/QuantDinger,Python,733f7bc75b5800b81937cfc07240c5f179c19b4e,adb5693b3ce1a31a5b5da9bb559a0af1dc1e5118,Backend CI,Backend tests (1/2),backend_api_python,python -m pytest -q -p no:cacheprovider tests/test_live_order_support.py,yes,python -m pytest -q -p no:cacheprovider tests/test_live_exchange_fees.py tests/test_live_order_support.py,https://github.com/OpenByteInc/QuantDinger/actions/runs/39720811807
+6c5,7
+< gobwas-ws-a567dfd6,gobwas/ws,Go,a567dfd636adf28fdf608402ba9ed7a80bfd0a33,f78ea7a524e128d251f5fcc6028979ecd2ffafdf,CI,"test (macos-latest, stable)",.,go test -count=1 github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate,yes,go test -count=1 ./wsflate github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate
+---
+> ludwig-ai-ludwig-6a122a8e,ludwig-ai/ludwig,Python,6a122a8e6d7b963a06edd2a852998916dd8ca088,34fdde3dbfb26428ebebde3205aef879f537505a,pytest,Distributed (distributed_d),.,python -m pytest -q -p no:cacheprovider tests/ludwig/data/test_ray_data.py,no,,https://github.com/ludwig-ai/ludwig/actions/runs/31972016275
+> gobwas-ws-a567dfd6,gobwas/ws,Go,a567dfd636adf28fdf608402ba9ed7a80bfd0a33,f78ea7a524e128d251f5fcc6028979ecd2ffafdf,CI,"test (macos-latest, stable)",.,go test -count=1 github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate,yes,go test -count=1 ./wsflate github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate,https://github.com/gobwas/ws/actions/runs/40304365191
+> pyinfra-dev-pyinfra-e7e42b68,pyinfra-dev/pyinfra,Python,e7e42b68d31c4b9200445066d4c614bb3879b667,77e093f4ba3417a36cfd3a5ad1d40fbd378ae2fd,Lint & Test,"unit-test (windows-2025, 3.14)",.,python -m pytest -q -p no:cacheprovider tests/test_api/test_api_facts_preconditions.py,no,,https://github.com/pyinfra-dev/pyinfra/actions/runs/38394831235
+8d8
+< pyinfra-dev-pyinfra-e7e42b68,pyinfra-dev/pyinfra,Python,e7e42b68d31c4b9200445066d4c614bb3879b667,77e093f4ba3417a36cfd3a5ad1d40fbd378ae2fd,Lint & Test,"unit-test (windows-2025, 3.14)",.,python -m pytest -q -p no:cacheprovider tests/test_api/test_api_facts_preconditions.py,no,
+11c11
+< nkanaev-yarr-957e81dd,nkanaev/yarr,Go,957e81dd7102e7429d3427f6a8fc4ac6b54a81ae,019cf98a050bdfcc465f82a5176180e0f0832eae,CI,test / test,.,go test -count=1 github.com/nkanaev/yarr/src/parser,no,,https://github.com/nkanaev/yarr/actions/runs/40785828610
+---
+> nkanaev-yarr-957e81dd,nkanaev/yarr,Go,957e81dd7102e7429d3427f6a8fc4ac6b54a81ae,019cf98a050bdfcc465f82a5176180e0f0832eae,CI,test / test,.,go test -count=1 github.com/nkanaev/yarr/src/parser,yes,go test -count=1 ./src/parser github.com/nkanaev/yarr/src/parser,https://github.com/nkanaev/yarr/actions/runs/40785828610
+total  
+drwxrwxr-x 4096 .
+drwxr-xr-x 4096 ..
+-rw-rw-r-- 1786 failure.txt
+drwxr-xr-x 4096 gomod
+-rw-rw-r-- 385 meta.json
+-rw-rw-r-- 0 overlay.list
+drwxrwxr-x 4096 repo
+drwxrwxr-x 4096 snapshot
+drwxrwxr-x 4096 uv
+ 6000 /srv/ci/cases/alicebob-miniredis-ce093519/failure.txt
+ 6000 /srv/ci/cases/boyter-scc-4288f7c8/failure.txt
+ 1786 /srv/ci/cases/gobwas-ws-a567dfd6/failure.txt
+ 6002 /srv/ci/cases/ludwig-ai-ludwig-6a122a8e/failure.txt
+ 6000 /srv/ci/cases/mark3labs-mcp-go-1969a6b9/failure.txt
+ 1790 /srv/ci/cases/nkanaev-yarr-957e81dd/failure.txt
+ 1399 /srv/ci/cases/openbyteinc-quantdinger-733f7bc7/failure.txt
+ 6006 /srv/ci/cases/pyinfra-dev-pyinfra-e7e42b68/failure.txt
+ 6000 /srv/ci/cases/rmax-scrapy-redis-8d8672f2/failure.txt
+  729 /srv/ci/cases/sigstore-cosign-1ab7015b/failure.txt
+  407 /srv/ci/cases/tdewolff-minify-fa882446/failure.txt
+42119 total
+case_id,repo,verdict,broken_fail,fixed_pass,n
+case_id,repo,verdict,broken_fail,fixed_pass,n

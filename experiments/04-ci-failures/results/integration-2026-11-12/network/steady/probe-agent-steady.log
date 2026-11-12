@@ -1,0 +1,17 @@
+# pod probe-agent-steady namespace ci-agent phase Succeeded/ wall 323s
+# main c exit 0
+# created 2026-11-12T18:26:30Z main-started 2026-11-12T18:26:48Z main-finished 2026-11-12T18:31:48Z
+[pod/probe-agent-steady/c] NETFLAP {"event": "start", "role": "agent", "seconds": 300.0}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.03, "target": "gateway model port", "now": "blocked"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.03, "target": "gateway admin port", "now": "blocked"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.02, "target": "metadata 169.254.169.254:80", "now": "open"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.02, "target": "kubernetes api clusterip", "now": "open"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.02, "target": "node ssh", "now": "open"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.02, "target": "public 1.1.1.1:443", "now": "open"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.84, "target": "node ssh", "now": "blocked"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.84, "target": "kubernetes api clusterip", "now": "blocked"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.84, "target": "metadata 169.254.169.254:80", "now": "blocked"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 1.35, "target": "gateway model port", "now": "open"}
+[pod/probe-agent-steady/c] NETFLAP {"t_s": 0.88, "target": "public 1.1.1.1:443", "now": "blocked"}
+[pod/probe-agent-steady/c] NETFLAP {"event": "summary", "seconds": 300.0, "targets": {"public 1.1.1.1:443": {"tries": 459, "open": 4, "blocked": 455, "changes": 2, "open_after_5s": 0, "blocked_after_5s": 449}, "metadata 169.254.169.254:80": {"tries": 471, "open": 4, "blocked": 467, "changes": 2, "open_after_5s": 0, "blocked_after_5s": 461}, "node ssh": {"tries": 475, "open": 4, "blocked": 471, "changes": 2, "open_after_5s": 0, "blocked_after_5s": 462}, "kubernetes api clusterip": {"tries": 492, "open": 4, "blocked": 488, "changes": 2, "open_after_5s": 0, "blocked_after_5s": 482}, "gateway model port": {"tries": 1488, "open": 1484, "blocked": 4, "changes": 2, "open_after_5s": 1465, "blocked_after_5s": 0}, "gateway admin port": {"tries": 470, "open": 0, "blocked": 470, "changes": 1, "open_after_5s": 0, "blocked_after_5s": 460}}}
+

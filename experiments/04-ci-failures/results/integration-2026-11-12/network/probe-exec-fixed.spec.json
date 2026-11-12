@@ -1,0 +1,240 @@
+{
+ "replaced_command": [
+  "python3",
+  "-u",
+  "/code/executor.py",
+  "repro",
+  "fixed",
+  "1"
+ ],
+ "spec": {
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+   "name": "probe-exec-fixed",
+   "namespace": "ci-exec",
+   "labels": {
+    "app": "executor",
+    "case": "gobwas-ws-a567dfd6"
+   }
+  },
+  "spec": {
+   "runtimeClassName": "kata-qemu",
+   "serviceAccountName": "runner",
+   "automountServiceAccountToken": false,
+   "restartPolicy": "Never",
+   "activeDeadlineSeconds": 300,
+   "enableServiceLinks": false,
+   "securityContext": {
+    "runAsNonRoot": true,
+    "runAsUser": 1000,
+    "runAsGroup": 1000,
+    "seccompProfile": {
+     "type": "RuntimeDefault"
+    }
+   },
+   "containers": [
+    {
+     "name": "c",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "/probe/netprobe.py"
+     ],
+     "env": [
+      {
+       "name": "CASE_ID",
+       "value": "gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "HOME",
+       "value": "/tmp"
+      },
+      {
+       "name": "GOMODCACHE",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/gomod"
+      },
+      {
+       "name": "GOPROXY",
+       "value": "off"
+      },
+      {
+       "name": "GOSUMDB",
+       "value": "off"
+      },
+      {
+       "name": "GOFLAGS",
+       "value": "-mod=mod"
+      },
+      {
+       "name": "GOTOOLCHAIN",
+       "value": "auto"
+      },
+      {
+       "name": "GOCACHE",
+       "value": "/tmp/gocache"
+      },
+      {
+       "name": "GOPATH",
+       "value": "/tmp/gopath"
+      },
+      {
+       "name": "GOTELEMETRY",
+       "value": "off"
+      },
+      {
+       "name": "PATH",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/venv/bin:/usr/local/go/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      },
+      {
+       "name": "PYTHONDONTWRITEBYTECODE",
+       "value": "1"
+      },
+      {
+       "name": "PIP_NO_INDEX",
+       "value": "1"
+      },
+      {
+       "name": "HIDDEN_COMMAND",
+       "value": "go test -count=1 ./wsflate github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate"
+      },
+      {
+       "name": "PROBE_TARGETS",
+       "value": "{\"case_id\": \"gobwas-ws-a567dfd6\", \"node_ip\": \"10.128.0.7\", \"gw_pod_ip\": \"10.42.0.13\", \"other_pod_ip\": \"10.42.0.8\", \"dns_pod_ip\": \"10.42.0.6\"}"
+      },
+      {
+       "name": "PROBE_ROLE",
+       "value": "exec-fixed"
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "200m",
+       "memory": "512Mi"
+      },
+      "limits": {
+       "cpu": "3",
+       "memory": "8Gi"
+      }
+     },
+     "volumeMounts": [
+      {
+       "name": "case",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6",
+       "readOnly": true
+      },
+      {
+       "name": "uv",
+       "mountPath": "/srv/ci/uv",
+       "readOnly": true
+      },
+      {
+       "name": "repo",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6/repo"
+      },
+      {
+       "name": "tmp",
+       "mountPath": "/tmp"
+      },
+      {
+       "name": "code",
+       "mountPath": "/code",
+       "readOnly": true
+      },
+      {
+       "name": "fix-diff",
+       "mountPath": "/in/fix.diff",
+       "readOnly": true
+      },
+      {
+       "name": "hidden-diff",
+       "mountPath": "/in/hidden.diff",
+       "readOnly": true
+      },
+      {
+       "name": "fixed-gomod",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6/gomod",
+       "readOnly": true
+      },
+      {
+       "name": "probe",
+       "mountPath": "/probe",
+       "readOnly": true
+      }
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "name": "case",
+     "hostPath": {
+      "path": "/srv/ci/cases/gobwas-ws-a567dfd6",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "uv",
+     "hostPath": {
+      "path": "/srv/ci/cases/gobwas-ws-a567dfd6/uv",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "repo",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "tmp",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "code",
+     "configMap": {
+      "name": "ci-code"
+     }
+    },
+    {
+     "name": "fix-diff",
+     "hostPath": {
+      "path": "/srv/ci/secret/gobwas-ws-a567dfd6/fix.diff",
+      "type": "File"
+     }
+    },
+    {
+     "name": "hidden-diff",
+     "hostPath": {
+      "path": "/srv/ci/secret/gobwas-ws-a567dfd6/hidden.diff",
+      "type": "File"
+     }
+    },
+    {
+     "name": "fixed-gomod",
+     "hostPath": {
+      "path": "/srv/ci/secret/gobwas-ws-a567dfd6/gomod",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "probe",
+     "configMap": {
+      "name": "probe-code"
+     }
+    }
+   ]
+  }
+ }
+}

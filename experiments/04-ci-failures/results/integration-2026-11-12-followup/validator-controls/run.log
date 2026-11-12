@@ -1,0 +1,4 @@
+control-test-file rc=0
+control-ci-file rc=0
+control-probe rc=0
+VC_DONE

@@ -1,0 +1,9 @@
+# pod probe-agent-env namespace ci-agent phase Succeeded/ wall 36s
+# main c exit 0
+# created 2026-11-12T21:06:22Z main-started 2026-11-12T21:06:40Z main-finished 2026-11-12T21:06:52Z
+[pod/probe-agent-env/c] AGENTENV {"step": "before loading agent.py", "run_token_in_environ": true, "dummy_length": 47}
+[pod/probe-agent-env/c] AGENTENV {"step": "after loading agent.py", "run_token_in_environ": false, "agent_holds_token": true}
+[pod/probe-agent-env/c] AGENTENV {"step": "agent.bash tool command", "rc": 0, "run_token_variables_in_tool_env": "0", "tool_env_names": ["CASE_ID", "FAILURE_FILE", "GATEWAY_URL", "GOCACHE", "GOFLAGS", "GOLANG_VERSION", "GOMODCACHE", "GOPATH", "GOPROXY", "GOSUMDB", "GOTELEMETRY", "GOTOOLCHAIN", "HOME", "HOSTNAME", "KUBERNETES_PORT", "KUBERNETES_PORT_443_TCP", "KUBERNETES_PORT_443_TCP_ADDR", "KUBERNETES_PORT_443_TCP_PORT", "KUBERNETES_PORT_443_TCP_PROTO", "KUBERNETES_SERVICE_HOST", "KUBERNETES_SERVICE_PORT", "KUBERNETES_SERVICE_PORT_HTTPS", "LC_CTYPE", "PATH", "PIP_NO_INDEX", "PROBE_ROLE", "PROBE_TARGETS", "PROMPT_FILE", "PWD", "PYTHONDONTWRITEBYTECODE", "RUN_ID", "SHLVL", "_"]}
+[pod/probe-agent-env/c] AGENTENV {"step": "dummy value anywhere in the tool's environment", "count": "0"}
+[pod/probe-agent-env/c] AGENTENV {"step": "/proc/<agent pid>/environ read by a tool command (documented limitation)", "rc": 0, "run_token_variable_present": "1"}
+

@@ -1,0 +1,4 @@
+2026-11-12T20:38:10Z
+gateway state at the end:
+{"spent_usd": 0.24470489999999998, "requests": 20, "in_tok": 172193, "out_tok": 10727, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+20

@@ -1,0 +1,4 @@
+[3] mark3labs-mcp-go-1969a6b9 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+[3] gobwas-ws-a567dfd6 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+[3] sigstore-cosign-1ab7015b reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+[3] no unclaimed candidate; done
