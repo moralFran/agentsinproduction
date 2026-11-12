@@ -231,7 +231,9 @@ Preparation requires the selected Go packages to compile on the maintainer's fix
 broken one; all reproduction samples restore the checkout; reproduction also runs the maintainer's fix with the agent's
 dependency cache, where passing means exit code 0 and an unchanged tree. A non-discriminating hidden control, a broken tree that did not compile and a fix that fails with
 that cache each require a reasoned eligibility decision before freezing. The integrity check refreshes the Git index
-before its baseline (a suite that only queries Git is not a tree change) and ignores a home-level ignore file. Setup
+before its baseline (a suite that only queries Git is not a tree change), ignores a home-level ignore file and counts
+any new or edited `.gitignore` as a change. The agent harness drops the run token from its environment before running
+tool commands. Setup
 restarts the gateway and waits for rollout completion. These changes have local regressions; the 56 non-empty archived patches
 have **not** been rerun under this harness. Preserved files and totals do not establish that new runtime outcomes would
 be identical. See [the addendum](FUTURE-RUNS.md) for the planned integration and remaining shared-state limitations.
@@ -243,7 +245,7 @@ patch contains `/in/secret`, `/srv/ci`, `fix.diff` or `hidden.diff`. The two min
 `go.mod`/`go.sum` (centrifugo and templ) were not in the frozen case set. These checks found no recorded evidence of the
 identified answer-file/cache exposure being used; they do not prove the absence of all possible interference.
 
-**Verification limits:** 35 security regression tests, 31 executor checks, 9 workflow tests and 20 gateway checks passed
+**Verification limits:** 37 security regression tests, 31 executor checks, 9 workflow tests and 20 gateway checks passed
 locally on synthetic inputs/a fake upstream. No VM was started and no third-party suite or Kubernetes/Kata integration
 was rerun. A deliberate production-code `os._exit(0)` negative control still bypasses an assertion without changing the
 tree; semantic review of green patches remains required. See the addendum for the exact boundary.

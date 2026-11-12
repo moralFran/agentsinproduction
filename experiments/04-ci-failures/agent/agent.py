@@ -12,7 +12,11 @@ import anthropic
 
 MODEL = os.environ.get("MODEL", "claude-sonnet-5-5")
 RUN_ID = os.environ["RUN_ID"]
-RUN_TOKEN = os.environ["RUN_TOKEN"]  # only this attempt's model capability; never use the public id as authorization
+# Only this attempt's model capability; never use the public id as authorization. Removed from the environment here, so
+# the bash tool and the repository code it runs (tests, build scripts) do not inherit it. Not a boundary: a process of
+# the same UID can still read this process's initial environment in /proc/<pid>/environ. The bound on a leak stays the
+# run's cap and the revocation at close.
+RUN_TOKEN = os.environ.pop("RUN_TOKEN")
 MAX_TOOL_CALLS = int(os.environ.get("MAX_TOOL_CALLS", "60"))
 MAX_SECONDS = int(os.environ.get("MAX_SECONDS", "1440"))       # cooperative; the pod's hard deadline is 1500 s
 CASE = f"/srv/ci/cases/{os.environ['CASE_ID']}"; REPO = f"{CASE}/repo"

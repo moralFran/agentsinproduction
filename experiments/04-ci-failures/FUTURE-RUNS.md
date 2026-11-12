@@ -75,6 +75,13 @@ or `git describe --dirty` would rewrite the index and be recorded as `test_chang
 `core.excludesFile` to `/dev/null`; Git otherwise reads `$HOME/.config/git/ignore`, and `HOME` is writable in the pods,
 so a test could hide new files from the listing. Both were found in review and reproduced on a synthetic repository
 before the fix; neither has run against a real suite yet.
+Git's listing also honours `.gitignore` files in any directory, so a test could create `new/.gitignore` containing `*`
+and hide everything in `new/`, the ignore file included. The checker therefore finds every `.gitignore` by walking
+the checkout on disk and fingerprints them in both states: a new or edited ignore file is itself a change. The cost
+is that a suite whose tools create self-ignoring cache directories (a `.gitignore` with `*` inside the directory, as
+several linters and coverage reporters do) is now recorded as `test_changed_tree`; on the maintainer control that
+makes the case `incompatible_test_side_effects`. Whether any real case is affected is a question for the cluster run.
+`executor.py repro` rejects an unknown tree name instead of running the command in an empty directory.
 During reproduction, the maintainer's fix now undergoes this **same integrity
 check**, for all original and hidden samples. Each sample starts from a restored snapshot with the fix reapplied;
 restoration checks file content, so same-size edits within one timestamp tick cannot survive. If the fixed suite
@@ -159,8 +166,12 @@ from `ci-agent` on 8080; the host runner uses 8081 with authentication. Do not c
 Opening a run also returns a **separate random 256-bit model token**, exactly once. The runner passes it through the
 pod environment; the agent sends `x-run-token`. Public run ids remain log labels and cannot authorize requests, even
 while other attempts are open. The gateway stores only token hashes, rebuilds the lookup on restart and revokes the
-token on close. Admin reads, close responses, gateway logs and upstream headers omit it. The agent can read its own
-limited token; it receives no provider or admin key. Existing tokenless runs cannot authenticate after this change;
+token on close. Admin reads, close responses, gateway logs and upstream headers omit it. The agent harness removes
+the token from its environment as soon as it has read it, so the bash tool and the repository code it runs (tests,
+build scripts) do not inherit it. That is not a boundary: a process of the same UID can still read the harness's
+initial environment in `/proc/<pid>/environ`. What bounds a leaked token is the run's cap, one model, and revocation
+at close. The agent receives no provider or admin key. If a run opens but the reply carries no usable token,
+`attempt.sh` closes the run before giving up. Existing tokenless runs cannot authenticate after this change;
 they are not reset or reopened automatically. Preserve their recorded costs and start future collections separately.
 
 The open check and reservation now share the same lock as administrative closure. Closing before reservation rejects
@@ -241,13 +252,14 @@ All checks below passed locally on the follow-up implementation:
 | Check | Result |
 |---|---|
 | `python3 -B executor/test_executor.py` | 31/31 |
-| `python3 -B infra/test_security.py` | 35 tests, OK |
+| `python3 -B infra/test_security.py` | 37 tests, OK |
 | `python3 -B infra/test_workflow.py` | 9 tests, OK |
 | `python3 -B gateway/test_budget.py --short` | 20 checks, 0 failed |
 
 New regressions exercise token-bound parallel budgets, restart/revocation and closure between lookup and reservation;
 Git metadata tampering without executing fsmonitor; retained pre-test file inventories; suites that only query Git;
-an ignore file planted in `HOME`; Go compilation, mandatory on the fixed tree and recorded on the broken one;
+an ignore file planted in `HOME`; a new self-ignoring directory; the token absent from the tool's environment;
+a run closed when its token cannot be read; an unknown reproduction tree; Go compilation, mandatory on the fixed tree and recorded on the broken one;
 the maintainer's fix under the agent's dependency cache, from the executor through `repro.sh` to `freeze.py`,
 including a command that ends 0 but writes `go.sum` only under that cache;
 checkout restoration on broken/hidden reproduction; eligibility decisions and stale digests; gateway rollout ordering;

@@ -122,13 +122,26 @@ def fingerprint(path):
         return ("file", digest.hexdigest(), info.st_mode & 0o777)
     return ("other", info.st_mode)
 
+def ignore_files(repo):
+    """Every .gitignore under the checkout, found on disk (never through Git, which honours them). A test that creates
+    new/.gitignore containing "*" hides everything in new/ from `git ls-files --others --exclude-standard`, itself
+    included; listing the files here makes the new .gitignore count as a change. Symlinked directories are not followed."""
+    found = set()
+    for directory, dirs, files in os.walk(repo):
+        if directory == repo and ".git" in dirs: dirs.remove(".git")
+        if ".gitignore" in files or ".gitignore" in dirs:
+            found.add(os.path.relpath(os.path.join(directory, ".gitignore"), repo))
+    return found
+
 def tree_state(repo, baseline=None):
     """Retain every pre-test path and hash checker metadata. Never consult changed Git metadata after a test.
     New non-ignored files are added only when the metadata is intact; the earlier file list is never replaced.
+    Every .gitignore on disk is fingerprinted in both states, so a new or edited ignore file is itself a change.
     This detects persistent changes, not in-process tampering or change-and-restore races.
     """
     metadata = {name: fingerprint(os.path.join(repo, name)) for name in GIT_METADATA}
     names = set(baseline[1]) if baseline is not None else set()
+    names.update(ignore_files(repo))
     if baseline is not None and any(metadata[name] != baseline[1][name] for name in GIT_METADATA):
         status = baseline[0]  # comparing metadata/content is sufficient; do not run Git on altered config/index
     else:
@@ -186,6 +199,10 @@ def main():
     if mode not in ("validate-run", "repro"): fresh()
     if mode == "repro":
         which, n = sys.argv[2], int(sys.argv[3]); r["tree"] = which
+        # repro no longer starts with fresh(): each tree restores its own checkout. A mistyped tree would otherwise run
+        # the command in the empty working directory and come back as an ordinary "does not reproduce".
+        if which not in ("broken", "fixed", "hidden-broken", "fixed-agent-cache"):
+            raise SystemExit(f"unknown repro tree {which!r}: broken | fixed | hidden-broken | fixed-agent-cache")
         if which == "hidden-broken":
             if not M.get("hidden_cmd"):
                 r.update(not_applicable=True); print("EXECUTOR " + json.dumps(r)); return

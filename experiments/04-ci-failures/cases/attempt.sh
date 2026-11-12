@@ -35,7 +35,13 @@ mkdir -p "$pd"
 ADMIN_KEY_FILE="${ADMIN_KEY_FILE:-/srv/ci/admin-key}"
 [ -s "$ADMIN_KEY_FILE" ] || { echo "missing gateway admin key: run infra/setup-lab.sh" >&2; exit 1; }
 admin() { printf 'header = "Authorization: Bearer %s"\n' "$(cat "$ADMIN_KEY_FILE")" | curl -sf --config - "$@"; }
-run_token=$(admin -X POST "$ADMIN/runs" -d "{\"run\": \"$run\", \"cap_usd\": $CAP}" | python3 -c 'import json,sys; token=json.load(sys.stdin)["token"]; assert isinstance(token,str) and len(token)>=32; print(token)') || { echo "gateway refused to open run $run"; exit 1; }
+opened=$(admin -X POST "$ADMIN/runs" -d "{\"run\": \"$run\", \"cap_usd\": $CAP}") || { echo "gateway refused to open run $run"; exit 1; }
+# The run exists from here on. If the reply carries no usable token (an older gateway, an unexpected body), close it
+# instead of leaving an open run behind.
+run_token=$(printf '%s' "$opened" | python3 -c 'import json,sys; token=json.load(sys.stdin)["token"]; assert isinstance(token,str) and len(token)>=32; print(token)') || {
+  admin -X POST "$ADMIN/runs/$run/close" -d '{}' >/dev/null || echo "could not close run $run either" >&2
+  echo "gateway opened run $run but returned no usable token; the run was closed"; exit 1; }
+unset opened
 t0=$(date +%s)
 case "$round" in v2*) pv=v2;; *) pv=v1;; esac        # agent version: the system prompt template (agent/prompt-<pv>.txt)
 RUN_TOKEN="$run_token" python3 cases/pod.py agent "$cid" "ag-$run" 1500 --env PROMPT_FILE="/code/prompt-$pv.txt" --env RUN_ID="$run" --env GATEWAY_URL=http://10.43.210.10:8080 \

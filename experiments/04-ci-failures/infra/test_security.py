@@ -151,6 +151,21 @@ class RuntimeControls(unittest.TestCase):
             result=ex.checked_run(shlex.join([sys.executable,'-B',str(script)]),str(self.repo),str(self.repo))
         self.assertTrue((home/'.config/git/ignore').exists())
         self.assertEqual(result['outcome'],'test_changed_tree',result);self.assertIn('leak.txt',result['why'])
+    def test_new_gitignore_cannot_hide_new_files(self):
+        # new/.gitignore with "*" hides new/ (itself included) from Git's listing; the checker finds ignore files on disk.
+        script=self.root/'hide.py';script.write_text('from pathlib import Path\nPath("new/deep").mkdir(parents=True)\n'
+            'Path("new/.gitignore").write_text("*\\n");Path("new/deep/output.txt").write_text("hidden output")\n')
+        listed=subprocess.run(['git','status','--porcelain','--untracked-files=all'],cwd=self.repo,capture_output=True,text=True).stdout
+        result=ex.checked_run(shlex.join([sys.executable,'-B',str(script)]),str(self.repo),str(self.repo))
+        self.assertEqual(listed,'')
+        after=subprocess.run(['git','status','--porcelain','--untracked-files=all'],cwd=self.repo,capture_output=True,text=True).stdout
+        self.assertEqual(after,'')  # Git itself still shows nothing
+        self.assertEqual(result['outcome'],'test_changed_tree',result);self.assertIn('new/.gitignore',result['why'])
+        # An ignore file that was already there and does not change is not a finding; editing it is.
+        result=ex.checked_run('true',str(self.repo),str(self.repo));self.assertEqual(result['outcome'],'sampled',result)
+        edit=shlex.join([sys.executable,'-B','-c','open("new/.gitignore","a").write("# edited\\n")'])
+        result=ex.checked_run(edit,str(self.repo),str(self.repo))
+        self.assertEqual(result['outcome'],'test_changed_tree',result);self.assertIn('new/.gitignore',result['why'])
     def test_negative_control_early_exit_is_still_a_semantic_review_requirement(self):
         # Deliberately demonstrate the limit: no path rule proves that the test assertion actually ran.
         (self.repo/'core.py').write_text('import os\nos._exit(0)\n')
@@ -266,6 +281,10 @@ class RuntimeControls(unittest.TestCase):
             self.assertEqual(result.returncode,0,result.stderr)
             record=val.last_record(result.stdout,'EXECUTOR ')
             self.assertEqual([s['rc'] for s in record['runs']],[7,7,7],record)
+        # A mistyped tree must not run the command in the empty working directory and report "does not reproduce".
+        (case/'snapshot/check.py').write_text('raise SystemExit(0)\n')
+        typo=subprocess.run([sys.executable,'-B',str(script),'repro','brokn','3'],capture_output=True,text=True,env={**os.environ,'CASE_ID':'fixture'})
+        self.assertNotEqual(typo.returncode,0);self.assertIn('unknown repro tree',typo.stderr);self.assertNotIn('EXECUTOR ',typo.stdout)
     def test_setup_restarts_gateway_and_waits_before_continuing(self):
         root=self.root/'setup';infra=root/'infra';infra.mkdir(parents=True);bin_dir=root/'bin';bin_dir.mkdir()
         ci=root/'ci';ci.mkdir();(ci/'admin-key').write_text('synthetic-admin')
@@ -294,6 +313,10 @@ class RuntimeControls(unittest.TestCase):
         with warnings.catch_warnings(),patch.dict(sys.modules,{'anthropic':types.ModuleType('anthropic')}),patch.dict(os.environ,{'CASE_ID':'fixture','RUN_ID':'fixture','RUN_TOKEN':'synthetic-token'}):
             warnings.simplefilter('ignore',ResourceWarning)
             agent=module('security_agent',script)
+            # Repository code run by the tool must not find the model token in its environment.
+            self.assertEqual(agent.RUN_TOKEN,'synthetic-token');self.assertNotIn('RUN_TOKEN',os.environ)
+            rc,out,_=agent.bash('printenv RUN_TOKEN; env | grep -c synthetic-token',5)
+            self.assertNotEqual(rc,0);self.assertNotIn('synthetic-token',out)
         rc,_,_=agent.bash('false | tail -1',5)
         self.assertNotEqual(rc,0)
     def test_agent_uses_token_for_model_auth_and_public_id_for_result(self):
@@ -379,6 +402,26 @@ class RuntimeControls(unittest.TestCase):
         self.assertEqual(again.returncode,0,again.stdout+again.stderr)
         self.assertEqual((journal.read_bytes(),requests.read_bytes()),before)
 
+    def test_attempt_closes_run_opened_without_usable_token(self):
+        cases=self.root/'cases';cases.mkdir();bin_dir=self.root/'bin';bin_dir.mkdir()
+        ci=self.root/'ci';(ci/'cases/a').mkdir(parents=True);(ci/'cases/a/failure.txt').write_text('failed');(ci/'admin-key').write_text('synthetic-key')
+        (cases/'cases.csv').write_text('case_id,repo\na,example/a\n')
+        target=cases/'attempt.sh';target.write_text((R/'cases/attempt.sh').read_text().replace('/srv/ci',str(ci)));target.chmod(0o755)
+        (cases/'pod.py').write_text('open("pod-ran","w").write("x")\n');(cases/'validate.py').write_text('open("pod-ran","w").write("x")\n')
+        md5=bin_dir/'md5sum';md5.write_text('#!'+sys.executable+'\nimport hashlib,sys\nprint(hashlib.md5(sys.stdin.buffer.read()).hexdigest()+"  -")\n');md5.chmod(0o755)
+        for name,reply in (('no-token','{"cap_usd":0.33,"open":true}'),('short-token','{"token":"short"}'),('not-json','ok')):
+            with self.subTest(reply=name):
+                curl=bin_dir/'curl';curl.write_text('#!'+sys.executable+'\nimport json,sys\n'
+                    'sys.stdin.read()\nwith open("gateway-calls.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
+                    'print('+repr(reply)+')\n');curl.chmod(0o755)
+                (self.root/'gateway-calls.jsonl').write_text('')
+                run=subprocess.run(['bash','cases/attempt.sh','v1','a','1'],cwd=self.root,capture_output=True,text=True,
+                    env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'ADMIN_KEY_FILE':str(ci/'admin-key')})
+                self.assertNotEqual(run.returncode,0);self.assertIn('returned no usable token; the run was closed',run.stdout)
+                calls=[json.loads(line) for line in (self.root/'gateway-calls.jsonl').read_text().splitlines()]
+                self.assertEqual(len(calls),2,calls)
+                self.assertTrue(any(a.endswith('/runs') for a in calls[0]));self.assertTrue(any(a.endswith('/close') for a in calls[1]))
+                self.assertFalse((self.root/'pod-ran').exists());self.assertFalse((self.root/'results/attempts-v1.jsonl').exists())
     def test_maintainer_side_effects_are_flagged_by_reproduction_before_freeze(self):
         # Actual executor -> repro.sh -> freeze.py, with only pod launching replaced by local subprocesses.
         records={}
