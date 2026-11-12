@@ -222,6 +222,35 @@ check("16 token mapping survives restart, closing revokes it, and bearer tokens 
       and all("token" not in result and "token_hash" not in result for result in (a,b,closed)),
       f"restart={restarted}, closed-token={revoked}, no bearer in artifacts")
 
+# A close that cannot be written: closed in memory, nothing forwarded until a close is written, durable after it.
+reset(); p = start(budget=10 ** 9)
+admin("/runs", {"run":"v1-close-a-r1", "cap_usd":10 * one}); admin("/runs", {"run":"v1-close-b-r1", "cap_usd":10 * one})
+open_before = post(body, "v1-close-a-r1")
+os.chmod(sdir, 0o500)                                  # the state directory becomes read-only
+failed = admin("/runs/v1-close-a-r1/close", {})
+in_memory = post(body, "v1-close-a-r1"); other_run = post(body, "v1-close-b-r1")
+disk_open = json.load(open(SF))["runs"]["v1-close-a-r1"]["open"]; mem_halted = admin("/state")["halted"]
+os.chmod(sdir, 0o700)
+still_halted = post(body, "v1-close-b-r1"); n_forwarded = len(calls)
+retried = admin("/runs/v1-close-a-r1/close", {})
+other_after = post(body, "v1-close-b-r1")
+stop(p); p = start(budget=10 ** 9)
+after_restart = post(body, "v1-close-a-r1"); disk = json.load(open(SF)); stop(p)
+check("18 a close that cannot be written keeps the token revoked, halts forwarding, and is durable once a close is written",
+      open_before == 200 and failed == {"status": 503} and in_memory == 403 and other_run == 503 and disk_open is True and mem_halted
+      and still_halted == 503 and n_forwarded == 1 and "cap_usd" in retried and other_after == 200 and after_restart == 403
+      and disk["runs"]["v1-close-a-r1"]["open"] is False and disk["halted"] is None,
+      f"before={open_before}, close={failed}, same token={in_memory}, other run={other_run}, disk open={disk_open}, halted={mem_halted!r}; "
+      f"writable again: other run={still_halted}; close again -> other run={other_after}; after restart: closed token={after_restart}")
+# The limit, shown on purpose: if the process restarts before any close is written, the file still says "open".
+reset(); p = start(budget=10 ** 9)
+admin("/runs", {"run":"v1-close-c-r1", "cap_usd":10 * one})
+os.chmod(sdir, 0o500); lost = admin("/runs/v1-close-c-r1/close", {}); refused = post(body, "v1-close-c-r1"); os.chmod(sdir, 0o700)
+stop(p); p = start(budget=10 ** 9)
+revived = post(body, "v1-close-c-r1"); stop(p)
+check("19 limit: a restart before the close is written brings the token back (the runner must stop on a failed close)",
+      lost == {"status": 503} and refused == 403 and revived == 200, f"close={lost}, before restart={refused}, after restart={revived}")
+
 # Force the close between the initial lookup and the reservation lock, without adding test hooks to the gateway.
 import email.message, hashlib, importlib.util, io
 from unittest.mock import patch

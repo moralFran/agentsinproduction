@@ -175,7 +175,15 @@ at close. The agent receives no provider or admin key. If a run opens but the re
 they are not reset or reopened automatically. Preserve their recorded costs and start future collections separately.
 
 The open check and reservation now share the same lock as administrative closure. Closing before reservation rejects
-the call; calls already reserved may still complete and be billed to that run. Setup explicitly restarts the gateway
+the call; calls already reserved may still complete and be billed to that run.
+
+A close that cannot be written to the state file used to leave the run closed in memory and open on disk, so a restart
+would have accepted its token again. Now the gateway answers 503, keeps the run closed and the token revoked in that
+process, and halts: nothing is forwarded for any run until a close is written, and that write carries every closure
+made in memory. `attempt.sh` retries the close three times; if the gateway never confirms, the attempt is recorded
+with unknown cost and the script fails, which stops the round. One limit remains and is shown by a test on purpose:
+while the state cannot be written a revocation cannot be made durable, so a restart before the close is written brings
+the token back. Make the state writable and close the run again before restarting the gateway. Setup explicitly restarts the gateway
 deployment after updating its ConfigMap and waits for rollout completion, so the next run uses the new Python process.
 
 Run caps must be finite, positive and no greater than `MAX_RUN_USD` (default US$ 0.33). Changing that upper limit is an
@@ -252,11 +260,12 @@ All checks below passed locally on the follow-up implementation:
 | Check | Result |
 |---|---|
 | `python3 -B executor/test_executor.py` | 31/31 |
-| `python3 -B infra/test_security.py` | 37 tests, OK |
+| `python3 -B infra/test_security.py` | 38 tests, OK |
 | `python3 -B infra/test_workflow.py` | 9 tests, OK |
-| `python3 -B gateway/test_budget.py --short` | 20 checks, 0 failed |
+| `python3 -B gateway/test_budget.py --short` | 22 checks, 0 failed |
 
 New regressions exercise token-bound parallel budgets, restart/revocation and closure between lookup and reservation;
+a close that cannot be written (revoked in memory, forwarding halted, durable once written, and the restart limit);
 Git metadata tampering without executing fsmonitor; retained pre-test file inventories; suites that only query Git;
 an ignore file planted in `HOME`; a new self-ignoring directory; the token absent from the tool's environment;
 a run closed when its token cannot be read; an unknown reproduction tree; Go compilation, mandatory on the fixed tree and recorded on the broken one;

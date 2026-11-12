@@ -101,6 +101,12 @@ class TimedHandler(BaseHTTPRequestHandler):
 lock = threading.Lock()
 state = {"spent_usd": 0.0, "requests": 0, "in_tok": 0, "out_tok": 0, "reserved": {}, "halted": None, "runs": {}}
 token_runs = {}  # SHA-256 of an unpredictable bearer token -> public run id; never store the bearer itself
+# A close that could not be written: the file may still say the run is open, so after a restart load() would accept
+# its token again. In this process the run stays closed and the token revoked, and the gateway halts (nothing is
+# forwarded) until a close is written; that write carries every closure made in memory. What cannot be fixed here:
+# while the state cannot be written, a revocation cannot be made durable, so a restart before that write brings the
+# token back. The runner must treat a failed close as fatal (cases/attempt.sh does).
+CLOSE_HALT = "a run close could not be written to the state file; close that run again once the state is writable"
 
 def public_run(run): return {k: v for k, v in run.items() if k != "token_hash"}
 
@@ -269,7 +275,8 @@ class H(TimedHandler):
 class Admin(TimedHandler):
     """Runner-only port (the agent's NetworkPolicy allows 8080 only). POST /runs {"run": id, "cap_usd": x} opens a run;
     Only opening returns the random model token. POST /runs/<id>/close revokes it; GET /runs/<id> reports the run
-    without its credential; GET /state reports the totals."""
+    without its credential; GET /state reports the totals. A close that cannot be written answers 503, keeps the run
+    closed in memory and halts the gateway until a close is written (CLOSE_HALT)."""
     protocol_version = "HTTP/1.1"
     def reply(self, code, obj):
         out = json.dumps(obj).encode(); self.send_response(code); self.send_header("content-type", "application/json")
@@ -295,6 +302,7 @@ class Admin(TimedHandler):
         except (ValueError, UnicodeError): return self.reply(400, {"error": "invalid JSON body"})
         token = None
         with lock:
+            halted_before = state["halted"]
             if self.path == "/runs":
                 run = str(body.get("run", ""))
                 try: cap = float(body.get("cap_usd", 0))
@@ -310,10 +318,14 @@ class Admin(TimedHandler):
                 if run not in state["runs"]: return self.reply(404, {"error": "no such run"})
                 state["runs"][run]["open"] = False; state["runs"][run]["closed"] = time.time()
                 token_runs.pop(state["runs"][run].get("token_hash"), None)
+                if halted_before == CLOSE_HALT: state["halted"] = None   # if the save below succeeds, every closure is on disk
             else: return self.reply(404, {"error": "no such endpoint"})
             try: save()
             except OSError as e:
                 if token is not None: del state["runs"][run]
+                else:                                   # see CLOSE_HALT: stay closed in memory, forward nothing
+                    state["halted"] = halted_before or CLOSE_HALT
+                    log(event="close_not_persisted", run=run, why=type(e).__name__)
                 return self.reply(503, {"error": f"cannot persist ({type(e).__name__})"})
             if token is not None: token_runs[token_hash] = run
             out = public_run(state["runs"][run])

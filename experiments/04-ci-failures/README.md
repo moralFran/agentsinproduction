@@ -131,11 +131,11 @@ The judging page never opens `key.jsonl`. `verdicts.jsonl` is append-only (the l
 `rule` (green but failed the hidden tests); excluded cases are shown with `source=excluded`. In the archive, point the
 judge at a copy of `verdicts.jsonl` if you only want to look: it writes to the files it is given.
 
-Offline, no cluster: `python3 gateway/test_budget.py --short` (the gateway against a fake upstream, 20 checks) and
+Offline, no cluster: `python3 gateway/test_budget.py --short` (the gateway against a fake upstream, 22 checks) and
 `python3 executor/test_executor.py` (the executor's patch checks on a synthetic repository, 31 checks; no case code).
 From this historical folder, `python3 infra/test_workflow.py` runs 9 regression tests for fresh-run setup, the funnel,
 the tally and audit resumption. It uses temporary folders and synthetic results; pod invocation is mocked, with no VM
-or provider calls. `python3 -B infra/test_security.py` adds 37 synthetic tests for isolation contracts, separate
+or provider calls. `python3 -B infra/test_security.py` adds 38 synthetic tests for isolation contracts, separate
 preparation/execution, cache separation, runner failures, the tally and judging; it includes a negative control that
 documents the remaining test-runner bypass. No live Kubernetes/Kata verification was performed for these changes.
 

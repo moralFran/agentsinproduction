@@ -422,6 +422,33 @@ class RuntimeControls(unittest.TestCase):
                 self.assertEqual(len(calls),2,calls)
                 self.assertTrue(any(a.endswith('/runs') for a in calls[0]));self.assertTrue(any(a.endswith('/close') for a in calls[1]))
                 self.assertFalse((self.root/'pod-ran').exists());self.assertFalse((self.root/'results/attempts-v1.jsonl').exists())
+    def test_attempt_stops_the_round_when_the_close_is_never_confirmed(self):
+        # The gateway halts when it cannot write a close. The attempt is still recorded (cost unknown) and the script fails.
+        cases=self.root/'cases';cases.mkdir();bin_dir=self.root/'bin';bin_dir.mkdir()
+        ci=self.root/'ci';(ci/'cases/a').mkdir(parents=True);(ci/'cases/a/failure.txt').write_text('failed');(ci/'admin-key').write_text('synthetic-key')
+        (cases/'cases.csv').write_text('case_id,repo\na,example/a\n')
+        target=cases/'attempt.sh';target.write_text((R/'cases/attempt.sh').read_text().replace('/srv/ci',str(ci)));target.chmod(0o755)
+        (cases/'pod.py').write_text('print(\'RESULT {"outcome":"finished","patch":"synthetic patch"}\')\n')
+        (cases/'validate.py').write_text('print(\'EXECUTOR {"outcome":"ci_still_red"}\')\n')
+        md5=bin_dir/'md5sum';md5.write_text('#!'+sys.executable+'\nimport hashlib,sys\nprint(hashlib.md5(sys.stdin.buffer.read()).hexdigest()+"  -")\n');md5.chmod(0o755)
+        curl=bin_dir/'curl';curl.write_text('#!'+sys.executable+'\nimport json,os,sys\n'
+            'sys.stdin.read()\nwith open("gateway-calls.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
+            'closing=any(a.endswith("/close") for a in sys.argv)\n'
+            'n=sum(1 for line in open("gateway-calls.jsonl") if "/close" in line)\n'
+            'if closing and n<=int(os.environ["FAIL_CLOSES"]):sys.exit(22)\n'
+            'print(json.dumps({"spent_usd":0.01,"calls":1,"cap_usd":0.33,"token":"synthetic-run-token-0123456789abcdef"}))\n');curl.chmod(0o755)
+        for rep,failing,expected_closes,ok in ((1,1,2,True),(2,3,3,False)):
+            with self.subTest(failing_closes=failing):
+                (self.root/'gateway-calls.jsonl').write_text('')
+                run=subprocess.run(['bash','cases/attempt.sh','v1','a',str(rep)],cwd=self.root,capture_output=True,text=True,
+                    env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'ADMIN_KEY_FILE':str(ci/'admin-key'),'CLOSE_RETRY_S':'0','FAIL_CLOSES':str(failing)})
+                closes=sum('/close' in line for line in (self.root/'gateway-calls.jsonl').read_text().splitlines())
+                self.assertEqual(closes,expected_closes,run.stdout+run.stderr)
+                row=json.loads((self.root/'results/attempts-v1.jsonl').read_text().splitlines()[-1])
+                self.assertEqual((row['rep'],row['executor']['outcome']),(rep,'ci_still_red'))
+                self.assertEqual(run.returncode==0,ok,run.stdout+run.stderr)
+                self.assertEqual(row['gateway']['spent_usd'],0.01 if ok else None)
+                self.assertEqual('did not confirm the close' in run.stderr,not ok)
     def test_maintainer_side_effects_are_flagged_by_reproduction_before_freeze(self):
         # Actual executor -> repro.sh -> freeze.py, with only pod launching replaced by local subprocesses.
         records={}

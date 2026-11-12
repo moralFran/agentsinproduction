@@ -47,7 +47,14 @@ case "$round" in v2*) pv=v2;; *) pv=v1;; esac        # agent version: the system
 RUN_TOKEN="$run_token" python3 cases/pod.py agent "$cid" "ag-$run" 1500 --env PROMPT_FILE="/code/prompt-$pv.txt" --env RUN_ID="$run" --env GATEWAY_URL=http://10.43.210.10:8080 \
   --env MAX_TOOL_CALLS=60 --env MAX_SECONDS=1440 -- /opt/agent-venv/bin/python -u /code/agent.py > "/tmp/$run.agent" 2>&1 || true
 unset run_token
-admin -X POST "$ADMIN/runs/$run/close" -d '{}' > "/tmp/$run.gw" || echo '{}' > "/tmp/$run.gw"
+# The close revokes the token. If the gateway cannot write it, it answers 503 and halts; try again, and if it never
+# confirms, record the attempt (cost unknown) and stop the round at the end: later attempts would only meet a halted gateway.
+close_ok=0
+for _ in 1 2 3; do
+  if admin -X POST "$ADMIN/runs/$run/close" -d '{}' > "/tmp/$run.gw"; then close_ok=1; break; fi
+  sleep "${CLOSE_RETRY_S:-2}"
+done
+[ "$close_ok" = 1 ] || echo '{}' > "/tmp/$run.gw"
 python3 - "/tmp/$run.agent" "$pd/$run.diff" <<'PY'
 import json, sys
 res = next((json.loads(l[7:]) for l in reversed(open(sys.argv[1]).readlines()) if l.startswith("RESULT ")), {"outcome": "no_result", "patch": ""})
@@ -66,3 +73,4 @@ print(json.dumps({"round": rnd, "case": cid, "rep": int(rep), "run": run, "agent
 PY
 rm -f "/tmp/$run".*
 tail -1 "$out" | python3 -c 'import json,sys; r=json.load(sys.stdin); a=r["agent"]; print(r["run"], "agent:", a.get("outcome"), "tools", a.get("tool_calls"), "calls", a.get("model_calls"), "| gateway $", r["gateway"]["spent_usd"], "| executor:", r["executor"].get("outcome"), r["executor"].get("why", "")[:80])'
+[ "$close_ok" = 1 ] || { echo "the gateway did not confirm the close of run $run (recorded with unknown cost): make its state writable, close the run again, then resume the round" >&2; exit 1; }
