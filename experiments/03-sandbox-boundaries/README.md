@@ -1,6 +1,7 @@
 # Experiment 03 · What can a compromised coding agent reach?
 
-Assume a coding agent with a shell already ran a command it should not have. This lab measures what that command can
+Assume a coding agent with a shell already ran a command it should not have, for example because a prompt injection
+in the code or docs it read worked. This lab measures what that command can
 reach, one boundary at a time, without the controls and with them: network, cluster permissions, the kernel. Then
 whether the agent can still do its job in the locked-down setup, and what the stronger isolation (Kata) costs.
 Results: [`results.md`](results.md). Every target is fake; no exploit is attempted.
@@ -8,7 +9,7 @@ Results: [`results.md`](results.md). Every target is fake; no exploit is attempt
 | Path | What it is |
 |---|---|
 | `infra/` | create/destroy the two ephemeral VMs (no service account), install k3s + Kata, build the images |
-| `k8s/` | namespaces, the gateway, the fake internal API, the NetworkPolicy under test, the RBAC lab, the agent's pod |
+| `k8s/` | plain Kubernetes manifests, applied to the k3s cluster ("k8s" is the usual short name for Kubernetes): namespaces, the gateway, the fake internal API, the NetworkPolicy under test, the RBAC lab, the agent's pod |
 | `gateway/gateway.py` | the only path out of the sandbox: holds the provider key, forwards `POST /v1/messages` only, in a restricted format (text and client tools), an estimated reservation per call written to disk before forwarding, a stop when reported usage exceeds it, logged |
 | `endpoint/`, `internal-api/` | the "outside" server and the fake internal service with dummy data |
 | `diag/` | fixed diagnostics run from the agent's position (network, DNS, RBAC, runtime, final configuration) and tallies |
@@ -39,6 +40,27 @@ On `aip-kata-01`, from this folder:
 `gateway/test_budget.py` tests the gateway's budget and request format offline against a fake upstream.
 `infra/list.sh` shows what the experiment created (the filter `destroy.sh` acts on). `capture/` holds the terminal
 captures of the video: the command list per scene, the player that types and runs them for real, and the recordings.
+
+## Kata on k3s: notes
+No manual edit of containerd or k3s was needed. What was specific, and what tripped us:
+- **Nested virtualization.** Kata starts a guest VM (QEMU) per pod, so the VM needs it: `--enable-nested-virtualization`
+  on an `n2` machine in `infra/create.sh`.
+- **The only k3s-specific setting** is the `kata-deploy` chart's `k8sDistribution=k3s` (`infra/install-k3s-kata.sh`).
+  It points kata-deploy at k3s's embedded containerd and creates the `kata-qemu` RuntimeClass; a pod opts in with
+  `runtimeClassName: kata-qemu`.
+- **Images without a registry.** They are imported with `k3s ctr images import` and used with
+  `imagePullPolicy: Never`. This kubelet then accepts a local image only under the name it was pulled with: written as
+  `docker.io/library/python:3.12-slim@sha256:…` it fails with `ErrImageNeverPull` although the image is on the node.
+  That is k3s/kubelet behaviour, not Kata, but it shows up in this registry-less setup (`results.md`, "Found while
+  recording the captures").
+- **Kubeconfig mode.** k3s writes the admin kubeconfig world-readable (0644) by default; install with
+  `--write-kubeconfig-mode 600`.
+- **Size for the overhead.** Each Kata sandbox added about 3.5 s to start and about 330 MiB of host memory (mostly
+  QEMU), untuned. Several Kata pods on a small node compete for CPU and memory; leave headroom in deadlines.
+- **NetworkPolicy works the same.** With flannel and k3s's embedded policy controller, the policy gave the same result
+  for Kata and runc pods (10 repetitions each), so moving to Kata does not change how the policy is written.
+- **Not verified:** the pinned procedure was never re-run from an empty VM (the recorded run used k3s `stable` and the
+  latest Kata at the time).
 
 The recorded run (2026-11-11) predates some of these scripts; `results.md` says which results come from the original
 collection and which from the corrections made after review.
