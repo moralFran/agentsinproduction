@@ -41,6 +41,14 @@ On `aip-kata-01`, from this folder:
 `infra/list.sh` shows what the experiment created (the filter `destroy.sh` acts on). `capture/` holds the terminal
 captures of the video: the command list per scene, the player that types and runs them for real, and the recordings.
 
+## Where the API key lives
+In this lab the provider key is a Kubernetes Secret (`gateway-key`, namespace `lab-gateway`) mounted only into the
+gateway pod; `infra/setup-lab.sh` reads it from stdin, so it is never written to a file on the machine. The agent's pod
+has no access to that Secret. In production, keep the key in a secret manager (or at least a Secret encrypted at rest),
+give the gateway access through its workload identity, and rotate it. The gateway still has the key in memory while it
+runs, because it is the component that adds it to the request. The property that matters here is that the key never
+enters the agent's sandbox: a hijacked command has nothing to steal there, it can only ask the gateway for a model call.
+
 ## Kata on k3s: notes
 No manual edit of containerd or k3s was needed. What was specific, and what tripped us:
 - **Nested virtualization.** Kata starts a guest VM (QEMU) per pod, so the VM needs it: `--enable-nested-virtualization`
