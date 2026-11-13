@@ -458,6 +458,35 @@ class RuntimeControls(unittest.TestCase):
         second=attempt('2');self.assertNotEqual(second.returncode,0);self.assertIn('not recorded as an attempt',second.stderr)
         self.assertEqual(len(journal.read_text().splitlines()),1)
         self.assertIn('could not close the run either',json.loads(infra.read_text())['reason'])
+    def test_pod_that_never_started_is_not_recorded_as_an_attempt(self):
+        # The network gate failed: the main container never ran. attempt.sh used to record no_result/no_patch, return 0
+        # and skip the repetition on resume (external review, 2026-11-13). It is infrastructure, redone under a new id.
+        cases=self.root/'cases';cases.mkdir();bin_dir=self.root/'bin';bin_dir.mkdir()
+        ci=self.root/'ci';(ci/'cases/a').mkdir(parents=True);(ci/'cases/a/failure.txt').write_text('failed');(ci/'admin-key').write_text('synthetic-key')
+        (cases/'cases.csv').write_text('case_id,repo\na,example/a\n')
+        target=cases/'attempt.sh';target.write_text((R/'cases/attempt.sh').read_text().replace('/srv/ci',str(ci)));target.chmod(0o755)
+        (cases/'pod.py').write_text('import json,os\n'
+            'if os.path.exists("gate-fails"): print("POD "+json.dumps({"pod":"ag","phase":"Failed/","wall_s":61.0,"infra_error":"netgate: {\\"ok\\": false, \\"why\\": \\"a forbidden destination still answers\\"}"}))\n'
+            'else: print("RESULT "+json.dumps({"outcome":"finished","patch":"synthetic patch"})); print("POD "+json.dumps({"pod":"ag","phase":"Succeeded/","wall_s":9.0}))\n')
+        (cases/'validate.py').write_text('open("validated","a").write("x")\nprint(\'EXECUTOR {"outcome":"ci_still_red"}\')\n')
+        md5=bin_dir/'md5sum';md5.write_text('#!'+sys.executable+'\nimport hashlib,sys\nprint(hashlib.md5(sys.stdin.buffer.read()).hexdigest()+"  -")\n');md5.chmod(0o755)
+        curl=bin_dir/'curl';curl.write_text('#!'+sys.executable+'\nimport json,sys\n'
+            'sys.stdin.read()\nwith open("gateway-calls.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
+            'print(json.dumps({"spent_usd":0.0,"calls":0,"cap_usd":0.33,"model_path_failures":0,"token":"synthetic-run-token-0123456789abcdef"}))\n');curl.chmod(0o755)
+        env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'ADMIN_KEY_FILE':str(ci/'admin-key'),'CLOSE_RETRY_S':'0'}
+        attempt=lambda:subprocess.run(['bash','cases/attempt.sh','v1','a','1'],cwd=self.root,env=env,capture_output=True,text=True)
+        journal=self.root/'results/attempts-v1.jsonl';infra=self.root/'results/infra-v1.jsonl';(self.root/'gate-fails').write_text('x')
+        first=attempt();self.assertNotEqual(first.returncode,0);self.assertIn('did not start',first.stderr)
+        self.assertFalse(journal.exists());self.assertFalse((self.root/'validated').exists())
+        self.assertFalse(list((self.root/'results/patches/v1').glob('*.diff')))
+        row=json.loads(infra.read_text());self.assertIn('netgate',row['reason']);self.assertIn('forbidden destination still answers',row['reason'])
+        self.assertEqual(row['agent_pod']['phase'],'Failed/')
+        closes=[a for a in map(json.loads,(self.root/'gateway-calls.jsonl').read_text().splitlines()) if a[-3].endswith('/close')]
+        self.assertEqual(len(closes),1)                                                        # the opened run was closed
+        (self.root/'gate-fails').unlink()
+        second=attempt();self.assertEqual(second.returncode,0,second.stdout+second.stderr)
+        rows=[json.loads(line) for line in journal.read_text().splitlines()]
+        self.assertEqual([(r['run'],r['agent']['outcome']) for r in rows],[(row['run']+'-t2','finished')])   # redone, new run id
     def test_agent_shell_keeps_the_path_it_was_started_with(self):
         # A login shell (-lc) re-read /etc/profile and lost the image's Go directory: the first `go` answered 127.
         case=self.root/'ci/cases/fixture';case.mkdir(parents=True);(case/'repo').mkdir()

@@ -10,12 +10,18 @@ Changes from v3 (experiment 03):
     A run has its own cap (US$0.33 in this experiment); a call that would pass it is refused (429) before forwarding.
     Unknown or closed run tokens are refused (403). The total cap
     (BUDGET_USD) still applies on top. Reservations carry their run id, so a crash books them to that run.
-  - FAILED MODEL CALLS, counted per run (added 2026-11-13). A call that carried a run's token and was answered with a
-    status the agent treats as "the model path was unavailable" (403, 5xx, or a 429 that is not that run's own cap,
-    whether the gateway refused it or the provider answered it) adds one to the run's model_path_failures, which the
-    close reports. The runner accepts an agent's gateway_unavailable only with that count above zero, so the pod
-    cannot void an attempt by claiming it. A call that never reached the gateway is not counted, and the count is
-    written with the next state write (a restart before the close loses it): both err towards recording the attempt.
+  - FAILED MODEL CALLS, counted per run (added 2026-11-13). The runner accepts an agent's gateway_unavailable only
+    when the close reports model_path_failures above zero, so the pod cannot void an attempt by claiming it. The pod
+    holds the run's token and writes its own requests, so only failures it cannot cause are counted, each with a
+    reason code (model_path_failure_reasons): the run was closed, the gateway is halted or cannot write its state,
+    the total cap is reached by a call that fits the run's own cap, the upstream connection failed, or the provider
+    answered 403, 429 or 5xx. NOT counted: anything decided from the request itself before or after authentication
+    (format, model, size, max_tokens: a 400/403/413 the sender controls) and the run's own cap. The run's cap is
+    checked before the total cap for the same reason: an oversized request must meet its own cap, not the total one.
+    A call that never reached the gateway is not counted, and the count is written with the next state write (a
+    restart before the close loses it): both err towards recording the attempt. Limit: a pod could try to provoke
+    the provider's own rate limit with a burst of small calls inside its cap; the reason code (provider_429) and the
+    run's call count go to the runner's infra record, and the runner stops after three such tries for a person.
   - PROMPT CACHING, priced. cache_control {"type": "ephemeral"} (5-minute TTL only) is allowed on text and
     tool_result blocks. Booking prices cache writes at 1.25x and cache reads at the model's read multiplier (0.05x
     Sonnet 5.5, 0.1x Haiku 5.5; pricing page checked 2026-11-11). The reservation assumes every input token is a
@@ -116,17 +122,16 @@ CLOSE_HALT = "a run close could not be written to the state file; close that run
 
 def public_run(run): return {k: v for k, v in run.items() if k != "token_hash"}
 
-def model_path_failure(status, why=""):
-    """True for an answer the agent reports as gateway_unavailable (agent.py, model_call_failure): 403, any 5xx, and
-    a 429 other than the run's own cap."""
-    if status == 429: return not why.startswith("run budget")
-    return status == 403 or (isinstance(status, int) and status >= 500)
+PROVIDER_FAILURE = lambda status: status in (403, 429) or (isinstance(status, int) and status >= 500)
 
-def count_model_path_failure(token_hash):
-    """Books one failed model call to the run that owns this token, open or closed. Call with the lock held."""
+def count_model_path_failure(token_hash, reason):
+    """Books one failed model call, with its reason code, to the run that owns this token, open or closed. Call with
+    the lock held. An unknown token belongs to no run and is not counted."""
     for r in state["runs"].values():
         if r.get("token_hash") == token_hash:
-            r["model_path_failures"] = r.get("model_path_failures", 0) + 1; return
+            r["model_path_failures"] = r.get("model_path_failures", 0) + 1
+            reasons = r.setdefault("model_path_failure_reasons", {}); reasons[reason] = reasons.get(reason, 0) + 1
+            return
 
 def log(**kw): print(json.dumps({"ts": round(time.time(), 3), **kw}), flush=True)
 
@@ -203,11 +208,13 @@ def format_error(body):
 
 class H(TimedHandler):
     protocol_version = "HTTP/1.1"
-    def refuse(self, code, why):
-        if self.command == "POST" and self.path == "/v1/messages" and model_path_failure(code, why):
-            with lock: count_model_path_failure(hashlib.sha256(self.headers.get("x-run-token", "").encode()).hexdigest())
+    def refuse(self, code, why, infra=None):
+        """infra: a reason code when the refusal is a failure the sender cannot cause (see FAILED MODEL CALLS above);
+        only those are booked to the run as failed model calls."""
+        if infra:
+            with lock: count_model_path_failure(hashlib.sha256(self.headers.get("x-run-token", "").encode()).hexdigest(), infra)
         log(src=self.client_address[0], method=self.command, path=self.path[:200], verdict="refused", why=why, status=code,
-            run=getattr(self, "run", None))
+            run=getattr(self, "run", None), **({"infra": infra} if infra else {}))
         out = json.dumps({"error": why}).encode()
         self.send_response(code); self.send_header("content-type", "application/json")
         self.send_header("content-length", str(len(out))); self.send_header("connection", "close"); self.end_headers(); self.wfile.write(out)
@@ -235,7 +242,7 @@ class H(TimedHandler):
         with lock:
             run = token_runs.get(token_hash)
             r = state["runs"].get(run)
-        if not r or not r.get("open"): return self.refuse(403, "unknown or closed run token")
+        if not r or not r.get("open"): return self.refuse(403, "unknown or closed run token", infra="run_closed")   # booked only if the token is a closed run's
         self.run = run
         try: body["max_tokens"] = max(1, min(int(body.get("max_tokens") or 1024), MAX_TOKENS_PER_CALL))
         except (TypeError, ValueError, OverflowError): return self.refuse(400, "max_tokens is not a number")
@@ -244,20 +251,20 @@ class H(TimedHandler):
         bound = usd(model, bound_in, body["max_tokens"], cache_write=bound_in)   # estimate: every input token a cache write
         rid, no = uuid.uuid4().hex[:12], None
         with lock:
-            if not r.get("open"): no = (403, "run was closed before reservation")
-            elif state["halted"]: no = (503, "gateway halted: " + state["halted"])
+            if not r.get("open"): no = (403, "run was closed before reservation", "run_closed")
+            elif state["halted"]: no = (503, "gateway halted: " + state["halted"], "gateway_halted")
+            elif r["spent_usd"] + reserved_run(run) + bound > r["cap_usd"]:      # the run's own cap first: the sender sizes the request
+                left = r["cap_usd"] - r["spent_usd"] - reserved_run(run)
+                no = (429, f"run budget: this call reserves ${bound:.4f}, ${max(left, 0):.4f} left in run {run}", None)
             elif state["spent_usd"] + reserved_total() + bound > BUDGET_USD:
                 left = BUDGET_USD - state["spent_usd"] - reserved_total()
-                no = (429, f"gateway budget: this call reserves ${bound:.4f}, ${max(left, 0):.4f} left")
-            elif r["spent_usd"] + reserved_run(run) + bound > r["cap_usd"]:
-                left = r["cap_usd"] - r["spent_usd"] - reserved_run(run)
-                no = (429, f"run budget: this call reserves ${bound:.4f}, ${max(left, 0):.4f} left in run {run}")
+                no = (429, f"gateway budget: this call reserves ${bound:.4f}, ${max(left, 0):.4f} left", "total_budget")
             else:
                 state["reserved"][rid] = {"usd": bound, "run": run}
                 try: save()                                             # durable BEFORE forwarding, or nothing is forwarded
                 except OSError as e:
-                    del state["reserved"][rid]; no = (503, f"cannot persist the budget reservation ({type(e).__name__}); not forwarding")
-        if no: return self.refuse(*no)
+                    del state["reserved"][rid]; no = (503, f"cannot persist the budget reservation ({type(e).__name__}); not forwarding", "state_write_failed")
+        if no: return self.refuse(no[0], no[1], infra=no[2])
         hdr = {"content-type": "application/json", "x-api-key": KEY,
                "anthropic-version": self.headers.get("anthropic-version", "2023-06-01")}
         t0 = time.time(); status, out, err = None, b"", None
@@ -280,12 +287,12 @@ class H(TimedHandler):
             state["spent_usd"] += real; state["requests"] += 1; state["in_tok"] += tin; state["out_tok"] += tout
             if run in state["runs"]: state["runs"][run]["spent_usd"] += real; state["runs"][run]["calls"] = state["runs"][run].get("calls", 0) + 1
             if over: state["halted"] = f"a call cost ${real:.6f}, above its reservation ${bound:.6f}"
-            if not err and model_path_failure(status): count_model_path_failure(token_hash)   # the provider's own 429/5xx/403
+            if not err and PROVIDER_FAILURE(status): count_model_path_failure(token_hash, f"provider_{status}")   # the provider's own 403/429/5xx
             try: save()
             except OSError as e: log(event="state_write_failed", why=type(e).__name__)    # the file still holds the reservation
             spent = state["spent_usd"]
         if over: log(event="bound_exceeded", run=run, usd=round(real, 6), bound_usd=round(bound, 6), in_tok=tin, bound_in_tok=bound_in)
-        if err: return self.refuse(502, f"upstream error: {err}")
+        if err: return self.refuse(502, f"upstream error: {err}", infra="upstream_error")
         log(src=self.client_address[0], method="POST", path="/v1/messages", verdict="forwarded", status=status, model=model,
             run=run, in_tok=tin, cache_write=cw, cache_read=cr, bound_in_tok=bound_in, out_tok=tout, usd=round(real, 6), bound_usd=round(bound, 6),
             spent_usd=round(spent, 6), ms=int((time.time() - t0) * 1000))

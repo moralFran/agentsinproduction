@@ -1,0 +1,19 @@
+config.d: 4096 .;4096 ..;40 50-user-overrides.toml;
+--- /opt/kata/share/defaults/kata-containers/runtimes/qemu/config.d/50-user-overrides.toml
+[runtime]
+disable_guest_seccomp = false
+--- base file
+627:disable_guest_seccomp = true
+gateway-api-crd revision 1 deployed gateway-api-crd-1.6.301
+kata-deploy revision 1 deployed kata-deploy-4.3.1
+traefik revision 1 deployed traefik-41.6.101+up41.6.1
+traefik-crd revision 1 deployed traefik-crd-41.6.101+up41.6.1
+USER-SUPPLIED VALUES:
+k8sDistribution: k3s
+shims:
+  qemu:
+    dropIn: |
+      [runtime]
+      disable_guest_seccomp = false
+kata-qemu   kata-qemu   113s
+node Ready v1.37.2+k3s1

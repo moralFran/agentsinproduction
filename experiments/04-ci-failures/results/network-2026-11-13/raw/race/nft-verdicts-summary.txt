@@ -1,3 +1,5 @@
-SYNs from pod addresses seen at the filter table: 60925 {'accept': 65, 'chain policy accept': 48, 'drop': 60812} | packets whose first filter line was a policy-accept line: 62
-accepted SYNs from probe pod addresses, by explanation: {'start-up (rule accept)': 48, 'start-up (chain policy accept, no accepting or dropping rule)': 48, 'allowed (rule accept)': 12}
+SYNs from pod addresses seen at the filter table: 60925 {'accept': 65, 'chain policy accept': 48, 'drop': 60812} | packets with a policy-accept line as first verdict line: 62
+accepted SYNs, time source: {'conntrack': 113}
+accepted SYNs by class: {'allowed': 12, "not a probe pod's address": 5, 'start-up': 96}
+unexplained or ambiguous accepted SYNs: 0 (each in race-nft-verdicts-examined.jsonl)
 SYNs from probe pod addresses with no verdict line in the trace (trace events lost): 0

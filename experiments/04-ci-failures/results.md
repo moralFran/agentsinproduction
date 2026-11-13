@@ -257,7 +257,7 @@ patch contains `/in/secret`, `/srv/ci`, `fix.diff` or `hidden.diff`. The two min
 `go.mod`/`go.sum` (centrifugo and templ) were not in the frozen case set. These checks found no recorded evidence of the
 identified answer-file/cache exposure being used; they do not prove the absence of all possible interference.
 
-**Verification limits:** 45 security regression tests, 31 executor checks, 9 workflow tests and 23 gateway checks passed
+**Verification limits:** 46 security regression tests, 31 executor checks, 9 workflow tests and 24 gateway checks passed
 locally on synthetic inputs/a fake upstream. What ran on a cluster, and what did not, is listed in the addendum. A deliberate production-code `os._exit(0)` negative control still bypasses an assertion without changing the
 tree; semantic review of green patches remains required. See the addendum for the exact boundary.
 

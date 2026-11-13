@@ -1,0 +1,42 @@
+2026-11-13T11:53:57Z
+node Ready v1.37.2+k3s1
+before:  1073e67710bf591f4a29eef904681e4a2a8e736e306fb86c3f0faefc39e434b1  cases/attempt.sh
+working tree copy: 964052ea4c9ecf47d4d5dd0f02a502a7f09435bfd81a456cc56a8cd9cb04000f  cases/attempt.sh
+before:  44010a7ccde3cbeb35ccfa0d06e190fc798e8427224f7ac42c8e5699021f6744  cases/validate.py
+working tree copy: 2bdba7c4ed9fd575774e737d3fb6ee322e698fd361ea3cda07b9eb87beb63909  cases/validate.py
+before:  5091ecd512af6e25b00f40c431016815c8d577818e4227a5c45573d99912105c  gateway/gateway.py
+working tree copy: 38d27b46bbea5a39a334592183d2f6694b4678ddf616cb151c110fa2315ae19c  gateway/gateway.py
+before:  2a6e83d41ca5c425c469538d6a0898d99ce8c06c8c861408ddd6141656e5d17c  cases/pod.py
+working tree copy: 2a6e83d41ca5c425c469538d6a0898d99ce8c06c8c861408ddd6141656e5d17c  cases/pod.py
+before:  0f60ad6b136398449d7c5fa79d2365b7894aa9beb56c1718c356470bbb15c55c  cases/prep.py
+working tree copy: 0f60ad6b136398449d7c5fa79d2365b7894aa9beb56c1718c356470bbb15c55c  cases/prep.py
+namespace/ci-agent unchanged
+namespace/ci-exec unchanged
+namespace/ci-gateway unchanged
+networkpolicy.networking.k8s.io/deny-all unchanged
+networkpolicy.networking.k8s.io/agent-egress-gateway-only unchanged
+serviceaccount/runner unchanged
+serviceaccount/runner unchanged
+networkpolicy.networking.k8s.io/gateway-ingress unchanged
+namespace/ci-prep unchanged
+networkpolicy.networking.k8s.io/prep-egress-public-only unchanged
+configmap/gateway-code configured
+secret/gateway-admin-key unchanged
+persistentvolumeclaim/gateway-state unchanged
+deployment.apps/gateway unchanged
+service/gateway unchanged
+deployment.apps/gateway restarted
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 of 1 updated replicas are available...
+deployment "gateway" successfully rolled out
+5119219fd92d7dfde7f3e5f0ab3bd22d880f8be4afa62b0ec661b9775c878e7b  executor/executor.py
+3acec97a9f9cf8ca6d4c520e2db82466d93d59de10cde8f2c48a7547139ab940  agent/agent.py
+b30bb240d97069752a726a30c68bf990abcb9f3e67ac7b15cc6d9e8771c612bd  agent/prompt-v1.txt
+8544789f4f0ee930e223616e75fba7f3c0ea6307d8d79f7a07ff39054687860c  agent/prompt-v2.txt
+setup-lab.sh rc=0
+gateway.py in ci-gateway ConfigMap: 38d27b46bbea5a39a334592183d2f6694b4678ddf616cb151c110fa2315ae19c (compare: 756361365ff4bbb912e25822645df03e36327fa2f71f7490f0c9ff50fa85deb0 without the final newline)
+gateway-57b55dbdf7-76jzc 1/1 Running
+provider key in the Secret is the dummy: 1
+2026-11-13T11:54:33Z

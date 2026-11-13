@@ -1,6 +1,6 @@
-  late tries without an xtables-monitor line: 41 | in the nft trace: blocked 40 passed 0 not found 1
+  late tries without an xtables-monitor line: 41 | in the nft trace: blocked 36 passed 0 not found 5
 late connections: 133; by runtime: {'kata': 133, 'runc': 0}
-  with a trace line: 92 | trace says blocked: 92 | trace says passed: 0
+  with a trace line for the same destination: 92 | trace says blocked: 92 | trace says passed: 0
   with a conntrack NEW event: 0
   with packets in the pcap: 101 | SYN-ACK seen: 0 | ICMP unreachable seen: 101
   socket state after connect(): {'not recorded (probe v1)': 86, 'st=7 peer=0 soerr=111': 47}

@@ -1,0 +1,4 @@
+c-agent-g: "status": {"NoNewPrivs": "1", "Seccomp": "2", "Seccomp_filters": "1"} "kernel": "6.18.56" | gate: NETGATE {"ok": true, "why": "policy in force", "waited_s": 5.28, "rounds": 8, "reachable_before": {}} | forbidden tries established: 0
+c-exec-g: "status": {"NoNewPrivs": "1", "Seccomp": "2", "Seccomp_filters": "1"} "kernel": "6.18.56" | gate: NETGATE {"ok": true, "why": "policy in force", "waited_s": 5.27, "rounds": 8, "reachable_before": {}} | forbidden tries established: 0
+c-prep-g: "status": {"NoNewPrivs": "1", "Seccomp": "2", "Seccomp_filters": "1"} "kernel": "6.18.56" | gate: NETGATE {"ok": true, "why": "policy in force", "waited_s": 4.77, "rounds": 8, "reachable_before": {}} | forbidden tries established: 0
+c-val-g: "status": {"NoNewPrivs": "1", "Seccomp": "2", "Seccomp_filters": "1"} "kernel": "6.18.56" | gate: NETGATE {"ok": true, "why": "policy in force", "waited_s": 5.27, "rounds": 8, "reachable_before": {}} | forbidden tries established: 0

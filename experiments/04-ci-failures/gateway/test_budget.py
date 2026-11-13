@@ -255,23 +255,43 @@ check("19 limit: a restart before the close is written brings the token back (th
       lost == {"status": 503} and refused == 403 and revived == 200, f"close={lost}, before restart={refused}, after restart={revived}")
 
 # Failed model calls are booked to the run whose token carried them, so the runner can check a pod's "unavailable".
+# Only failures the sender cannot cause count: the pod holds its token and writes its own requests.
 reset(); p = start(budget=10 ** 9)
-for name, cap in (("v1-mpf-ok-r1", 10 * one), ("v1-mpf-cap-r1", one), ("v1-mpf-prov-r1", 10 ** 6), ("v1-mpf-closed-r1", 10 * one), ("v1-mpf-fmt-r1", 10 * one)):
+for name, cap in (("v1-mpf-ok-r1", 10 * one), ("v1-mpf-cap-r1", one), ("v1-mpf-prov-r1", 10 ** 6), ("v1-mpf-closed-r1", 10 * one), ("v1-mpf-own-r1", 10 * one)):
     admin("/runs", {"run": name, "cap_usd": cap})
 fine = post(body, "v1-mpf-ok-r1")
 own_cap = [post(body, "v1-mpf-cap-r1"), post(body, "v1-mpf-cap-r1")]                    # the second one passes this run's cap
 provider = [post({**body, "system": "overloaded"}, "v1-mpf-prov-r1"), post({**body, "system": "ratelimited"}, "v1-mpf-prov-r1")]
 admin("/runs/v1-mpf-closed-r1/close", {}); after_close = [post(body, "v1-mpf-closed-r1"), post(body, "v1-mpf-closed-r1")]
-bad_format = post({**body, "stream": True}, "v1-mpf-fmt-r1"); stranger = post(body, token="not-a-token")
-other_path = urllib.request.Request("http://127.0.0.1:18080/v1/other", data=b"{}", headers={"x-run-token": TOKENS["v1-mpf-ok-r1"]})
-try: urllib.request.urlopen(other_path, timeout=10)
-except urllib.error.HTTPError: pass
-counts = {name: admin(f"/runs/{name}/close", {}).get("model_path_failures") for name in ("v1-mpf-ok-r1", "v1-mpf-cap-r1", "v1-mpf-prov-r1", "v1-mpf-closed-r1", "v1-mpf-fmt-r1")}
-stop(p); on_disk = json.load(open(SF))["runs"]["v1-mpf-prov-r1"].get("model_path_failures")
-check("20 failed model calls are booked to the token's run (closed token, provider 529/429, refused format), not its own cap or other paths",
-      fine == 200 and own_cap == [200, 429] and provider == [529, 429] and after_close == [403, 403] and bad_format == 403 and stranger == 403
-      and counts == {"v1-mpf-ok-r1": 0, "v1-mpf-cap-r1": 0, "v1-mpf-prov-r1": 2, "v1-mpf-closed-r1": 2, "v1-mpf-fmt-r1": 1} and on_disk == 2,
-      f"answers: ok={fine}, own cap={own_cap}, provider={provider}, closed={after_close}, format={bad_format}, unknown token={stranger}; counts={counts}; on disk={on_disk}")
+# Everything below is the sender's own doing, with a valid token: a forbidden format, a model that is not allowed,
+# a body that is not JSON, a non-numeric max_tokens, another path. None of it may confirm "unavailable".
+def raw(data, path="/v1/messages"):
+    try: return urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:18080" + path, data=data, headers={"x-run-token": TOKENS["v1-mpf-own-r1"]}), timeout=10).status
+    except urllib.error.HTTPError as e: return e.code
+own_doing = [post({**body, "stream": True}, "v1-mpf-own-r1"), post({**body, "model": "not-a-model"}, "v1-mpf-own-r1"), raw(b"{not json"),
+             post({**body, "max_tokens": "many"}, "v1-mpf-own-r1"), raw(b"{}", "/v1/other")]
+stranger = post(body, token="not-a-token")
+closes = {name: admin(f"/runs/{name}/close", {}) for name in ("v1-mpf-ok-r1", "v1-mpf-cap-r1", "v1-mpf-prov-r1", "v1-mpf-closed-r1", "v1-mpf-own-r1")}
+counts = {name: c.get("model_path_failures") for name, c in closes.items()}
+stop(p); on_disk = json.load(open(SF))["runs"]["v1-mpf-prov-r1"]
+check("20 failed model calls are booked with a reason to the token's run (closed run, provider 529/429), never the sender's own bad requests or its own cap",
+      fine == 200 and own_cap == [200, 429] and provider == [529, 429] and after_close == [403, 403] and own_doing == [403, 403, 400, 400, 403] and stranger == 403
+      and counts == {"v1-mpf-ok-r1": 0, "v1-mpf-cap-r1": 0, "v1-mpf-prov-r1": 2, "v1-mpf-closed-r1": 2, "v1-mpf-own-r1": 0}
+      and closes["v1-mpf-prov-r1"].get("model_path_failure_reasons") == {"provider_529": 1, "provider_429": 1}
+      and closes["v1-mpf-closed-r1"].get("model_path_failure_reasons") == {"run_closed": 2} and on_disk.get("model_path_failures") == 2,
+      f"answers: ok={fine}, own cap={own_cap}, provider={provider}, closed={after_close}, sender's own={own_doing}, unknown token={stranger}; counts={counts}; "
+      f"reasons={ {n: c.get('model_path_failure_reasons') for n, c in closes.items()} }")
+# The total cap confirms "unavailable" only for a call that fits its run's cap; an oversized request meets the run's cap first.
+reset(); p = start(budget=3 * one)
+admin("/runs", {"run": "v1-mpf-big-r1", "cap_usd": one}); admin("/runs", {"run": "v1-mpf-tot-r1", "cap_usd": 10 ** 6})
+oversized = post({**body, "system": "x" * 4000}, "v1-mpf-big-r1")                         # above the run's cap AND above the total
+spend = []
+while len(spend) < 50 and (not spend or spend[-1] == 200): spend.append(post(body, "v1-mpf-tot-r1"))   # until the total cap answers
+big = admin("/runs/v1-mpf-big-r1/close", {}); tot = admin("/runs/v1-mpf-tot-r1/close", {}); stop(p)
+check("21 an oversized request meets its run's cap (not booked); the total cap is booked only for a call that fits its run's cap",
+      oversized == 429 and big.get("model_path_failures") == 0 and not big.get("model_path_failure_reasons")
+      and 2 <= len(spend) < 50 and spend[-1] == 429 and set(spend[:-1]) == {200} and tot.get("model_path_failure_reasons") == {"total_budget": 1},
+      f"oversized={oversized}, its run={big.get('model_path_failures')}; calls until the total cap={spend}; that run's reasons={tot.get('model_path_failure_reasons')}")
 
 # Force the close between the initial lookup and the reservation lock, without adding test hooks to the gateway.
 import email.message, hashlib, importlib.util, io
@@ -291,7 +311,7 @@ def paused_price(*args, **kwargs):
     return 0.01
 request = object.__new__(gw.H); request.path='/v1/messages'; request.headers=email.message.Message()
 raw=json.dumps(body).encode();request.headers['content-length']=str(len(raw));request.headers['x-run-token']='race-token';request.rfile=io.BytesIO(raw)
-status=[];request.refuse=lambda code,why:status.append(code)
+status=[];request.refuse=lambda code,why,infra=None:status.append(code)
 admin_request=object.__new__(gw.Admin);admin_request.path='/runs/race/close';admin_request.headers=email.message.Message()
 admin_request.headers['Authorization']='Bearer fake-admin';admin_request.headers['content-length']='2';admin_request.rfile=io.BytesIO(b'{}')
 admin_status=[];admin_request.reply=lambda code,obj:admin_status.append(code)

@@ -9,6 +9,13 @@ single connections that seemed to pass a policy that had long been applied. **No
 archived record was written.** No provider key was on the machine: the gateway ran with a dummy key and its log has no
 forwarded call.
 
+**Corrected after an external review (second session, 11:50 to 12:02Z; section "Correction after review" below).** The
+script that matched accepted packets to probe tries joined on source address and port only. It now joins on address,
+port, destination and time. The second headline stands: **0 accepted SYNs unexplained or ambiguous among 928,346**; five
+packets moved from "allowed" to "start-up window", and five late events turned out to have no trace at all (they fall
+in the two minutes when no trace reader was running). The same session checked two harness fixes live and reinstalled
+k3s and Kata on the same VM with guest seccomp and the gate (sections "Review follow-up" at the end).
+
 **Time limit.** The owner capped the machine at 2 hours from creation (08:31Z), so the samples are smaller than first
 planned: about 15 pods per kind and arm for start-up, one 10-minute block without churn and one 16-minute block with
 churn for steady state, 5 repetitions per runtime for the apply latency. Every rate below carries its denominator.
@@ -171,26 +178,37 @@ Kata, v1: 76 in 276,318 tries (1 in about 3,600); 33 in 106,214 without churn an
 forbidden target after that target had already been blocked in the pod: **133 tries, all in Kata pods**
 (`raw/main/late-events.jsonl`, summary `raw/main/late-lookup-summary.txt`).
 
-| Evidence for the same source address and port, within 3 s | Result |
+| Evidence for the same source address, port **and destination**, within 3 s (corrected join) | Result |
 |---|---|
 | xtables-monitor trace line found | 92 of 133: **92 blocked** (reject rule of the pod's `KUBE-POD-FW-*` chain), 0 passed |
-| the 41 without one, in the nft trace | 40 blocked, 0 passed, 1 not found |
+| the 41 without one, in the nft trace (packet identified by its own pre-translation line and IP id) | 36 blocked, 0 passed, **5 not found** |
 | conntrack NEW event | **0 of 133** |
 | packets in the pcap (from 08:59Z) | 101 of 133: SYN-ACK to the pod **0**, ICMP port-unreachable to the pod 101 |
 | socket after `connect()` (probe v2) | 47 of 47: state CLOSE, `getpeername()` fails, `SO_ERROR` = `ECONNREFUSED`; the other 86 are v1 tries |
 
-The six-minute block with the v3 probe added 4 more (Kata), all blocked in the trace, no conntrack event, no
-SYN-ACK, 4 ICMP errors (`raw/race/`).
+So 128 of 133 are traced as rejected. The other 5 (steady pods, 08:51:38 to 08:52:48Z, v1 probe) fall in the gap
+from 08:51:10 to 08:53:03Z when neither trace reader was running, and before the pcap: for them the only host-side
+evidence is that conntrack, which was recording, has no NEW event. (The first version of this table said 132 and 1:
+four of those five had been paired with the blocked packet of a later try that reused the port.)
+
+The six-minute block with the v3 probe added 4 more (Kata), all blocked in the trace for the same destination, no
+conntrack event, no SYN-ACK, 4 ICMP errors (`raw/race/`).
 
 Independent of the probe's result, for the 12 steady pods after their first 5 s (`analysis-main.md`, "What the host
 recorded"): conntrack NEW events to forbidden destinations **0** (to allowed ones 8,362); traced SYNs to forbidden
 destinations 487,199 blocked, **0 passed**, 2,811 with an incomplete trace (reader restarts).
 And for the whole main block from the nft trace (`raw/main/nft-verdicts-summary.txt`): 928,346 SYNs from pod
-addresses, 905,702 dropped, 22,644 accepted. Every accepted one is accounted for: 7,394 to allowed destinations,
-3,298 in a start-up window, 11,753 from the T3 pods before their policy existed, 115 to port 4460 (the Kata guest, see
-below) and 84 from gated pods to the gate's four canary ports, i.e. the gate's own tries before it passed
-(`raw/main/nft-verdicts-accepted.txt`, `extra-checks-main.txt`). **No SYN to a probe target
-was accepted outside a window.**
+addresses, 905,702 dropped, 22,644 accepted. Each accepted SYN is matched to the probe try with the same source address,
+source port and destination whose time is closest (within 1 s; the packet's time is its conntrack NEW event for 22,590,
+its xtables-monitor line for 45, none for 9, which are matched on the three fields alone and each have tries of one
+class only). Corrected classes (version 1 in brackets): 7,389 to allowed destinations (7,394), 3,301 in a start-up
+window (3,298), 11,753 from the T3 pods before their policy existed (11,753), 117 to port 4460 from the Kata guest
+before the pod's window closed (115), and 84 from gated pods to the gate's canaries before the main process started
+(84). **Unexplained: 0. Ambiguous: 0.** No SYN to a probe target was accepted outside a window
+(`raw/main/nft-verdicts-summary.txt`, `nft-verdicts-accepted.txt`, `nft-verdicts-examined.jsonl`, which is empty).
+The v3 block (`raw/race/`): 60,925 SYNs, 113 accepted: 96 start-up, 12 allowed, and 5 to port 4460 from the address of
+a pod that is not a probe pod: the validation pod of T7 check B (`ci-exec`, Kata), sent between 0.7 s before and 0.1 s
+after the API first showed that pod's address (the Kata guest again); 0 unexplained.
 
 ### What the false success is
 
@@ -224,7 +242,8 @@ SYNs to TCP port 4460 (the key-exchange port of secure NTP) appear from the addr
 pod. No probe uses that port; the destinations are public time servers (`<public-ip>` in the raw files). In the timed
 trace summaries (`extra-checks-main.txt`): 752 such SYNs; **56 passed**, 41 of them before the container's process had
 started and 15 inside the pod's start-up window; 689 were rejected (28 before the process started, 661 after the pod's
-rules existed); 7 have an incomplete trace. So the guest's time service reaches the internet in the same window, from
+rules existed); 7 have an incomplete trace. The nft trace, which lost nothing, has 117 accepted SYNs to that port in the
+main block: 78 before the container's process started and 39 inside the pod's start-up window, none later. So the guest's time service reaches the internet in the same window, from
 pods of `ci-exec` and `ci-agent` too, and is cut off when the rules arrive. It is the Kata guest image's own service,
 not case code; whether it then works without its time source, and how to turn it off, was **not investigated**.
 
@@ -280,8 +299,8 @@ batch ran with.
 What the gate does not do: it shows the rules were in force when it looked. It cannot prevent a later lapse; this
 round found no later lapse to prevent. It does not stop the Kata guest's own connections before the rules exist
 (section above), and its canaries are fixed addresses: where a canary does not exist (no metadata endpoint) that
-check passes at once. A failed gate (timeout) was not provoked on the cluster. The gate was exercised through the
-real harness path once: the reproduction of T5 ran with it in all four pods.
+check passes at once. A failed gate (timeout) was provoked in the second session (B1 below). The gate was exercised
+through the real harness path once: the reproduction of T5 ran with it in all four pods.
 
 ## T5 · seccomp inside the Kata guest
 
@@ -301,7 +320,8 @@ kata-deploy ran again (51 s), the drop-in appeared, `configuration-qemu.toml` st
 - Start time: no change visible (quiet, one pod each: 3.6 to 3.8 s after the change; the pilot before it, four pods
   at once, 4.6 to 5.4 s). One pod per kind; not a measurement of small differences.
 
-Not done: the new `helm install` line from an empty machine (only the upgrade path ran); a hand edit of
+Not done: the new `helm install` line from an empty machine (in the first session only the upgrade path ran; in the
+second it ran after uninstalling k3s and removing `/opt/kata` on the same VM, section C below); a hand edit of
 `configuration-qemu.toml` to see whether a re-run overwrites it; any Python case under guest seccomp.
 
 ## T6 · why `bash -lc` loses Go
@@ -371,8 +391,122 @@ Not supported:
 
 - T8, another policy enforcer: cancelled with the time limit.
 - Steady state of 30 minutes per condition, 30 pods per kind, 10 apply repetitions: reduced as stated.
-- The gate's timeout path on the cluster; the gate inside a complete round (`run-round.sh`, `validate.py`).
+- The gate inside a complete round (`run-round.sh`, `validate.py`). (Its timeout path: run in the second session, B1.)
 - A block without the TRACE rule and recorders, to see whether they change the window.
+
+## Correction after review (classifier join)
+
+**The defect.** `controls/nft-verdicts.py` (version 1, kept as `controls/nft-verdicts-v1.py`) matched an accepted SYN to
+probe tries by source address and source port only, and any "allowed" try with that pair made the SYN "allowed"
+(then "start-up", then "pre-policy"). A pod reuses source ports for other destinations, so an accepted SYN to a
+forbidden destination could inherit another try's class, and a real late connection could have been hidden the same
+way. `late-lookup.py` and the per-event lines of `analyze.py` had the same weak join (address and port within 3 s,
+any destination). `extra-checks.py` part 1 and the count of start-up traces do not join on ports.
+
+**The fix** (`controls/nft-verdicts.py` version 2; its header says the rules):
+- the join is on source address, source port **and destination** (the destination before Service translation, from
+  the packet's own PREROUTING trace line) **and time**: the try closest in time among those with the same three fields,
+  within 1 s. The nft trace has no times; a packet's time is the conntrack NEW event of the same three fields (the n-th
+  accepted SYN of a key with the n-th event, only when the counts are equal), else its xtables-monitor summary line,
+  else none;
+- a doubt is never resolved towards "allowed": tries of different classes that time cannot separate are AMBIGUOUS; a
+  SYN with no try for its destination is explained only by a rule that uses its time (guest port 4460 before the
+  pod's window closed; a gate canary before the main process started), else UNEXPLAINED; each such SYN is written to
+  `nft-verdicts-examined.jsonl` with conntrack, pcap and probe evidence;
+- `controls/test_nft_verdicts.py`: a port reused for an allowed try and then for a late forbidden try whose SYN is
+  accepted must come out UNEXPLAINED (it does; version 1 said "allowed"); the same with the SYN dropped gives nothing
+  unexplained; the same without packet times is still UNEXPLAINED; a port reused for the same forbidden destination,
+  once in the window and once late, gives one start-up and one UNEXPLAINED with times and two AMBIGUOUS without. Five
+  of five pass, on the Mac and on the VM (`review-followup/a/test_nft_verdicts.out`);
+- `late-lookup.py` (version 1 kept as `late-lookup-v1.py`) requires the destination for the trace line, the conntrack
+  event and the nft trace; `analyze.py` (`analyze-v1.py`) quotes trace and conntrack lines only for the same
+  destination within 3 s, and reads the compressed probe logs and pod events of this folder (as published after the
+  first session it could no longer find the steady pods' logs, which had been compressed); the count of start-up traces
+  is now a script (`controls/startup-traces.py`).
+
+**Recomputed on the VM from the raw trace** (old outputs kept with the suffix `-v1` beside the new ones in `raw/main/`
+and `raw/race/`; `analysis-main-v1.md`, `extra-checks-main-v1.txt`):
+
+| Number | First report | Corrected |
+|---|---|---|
+| SYNs at the filter table / dropped / accepted | 928,346 / 905,702 / 22,644 | same |
+| accepted: allowed | 7,394 | **7,389** |
+| accepted: start-up window | 3,298 | **3,301** |
+| accepted: T3 pods before their policy | 11,753 | 11,753 |
+| accepted: guest port 4460 | 115 | **117** (78 before the container's process started, 39 inside the window) |
+| accepted: gate canaries | 84 | 84 (all before the gated pod's main process started) |
+| accepted: unexplained / ambiguous | 0 (weak join) | **0 / 0** |
+| late events traced as rejected | 132 of 133 (1 not found) | **128 of 133** (5 not found: no trace reader was running) |
+| late events with a conntrack NEW event / a SYN-ACK in the pcap | 0 of 133 / 0 of 101 | same |
+| complete passed start-up traces without a jump for the source address | 226 of 226 | same (`startup-traces.py`) |
+| port 4460 in the timed xtables-monitor summaries | 752: 56 passed, 689 blocked, 7 incomplete | same |
+| tables of `analysis-main.md` | | identical; only the per-event trace and conntrack lines changed |
+| v3 block | 4 late events, all blocked | same; 113 accepted SYNs: 96 start-up, 12 allowed, 5 guest port 4460 from a T7 validation pod |
+
+**The reclassified SYNs** (`review-followup/a/reclassified.txt`). Five that version 1 called "allowed" because the pod
+later or earlier used the same source port for an allowed destination; all five are start-up-window connections
+(conntrack NEW event within 0.2 s of a probe try with the same three fields that connected, socket ESTABLISHED, before
+that target was first blocked in the pod):
+- `10.42.0.37:38760` to `169.254.169.254:80` and `10.42.0.37:51540` to `10.43.0.1:443` (`steady2-agent-kata`, 09:03:20 to 21Z)
+- `10.42.0.38:36386` to `10.128.0.8:22` and `10.42.0.38:33326` to `169.254.169.254:80` (`steady2-prep-kata`, 09:03:21 to 22Z)
+- `10.42.0.130:40728` to `10.128.0.8:6443` (`b-prep-rn-07`, 09:10:10Z)
+
+Two more changed class: `10.42.0.137:53024` and `10.42.0.140:57746` to port 4460 of a public time server, "start-up" in
+version 1 by the same accident, now "guest port 4460" (one before the container's process started, one inside the
+window). Whether these five are the reviewer's five was not checked against the review; they are the only SYNs whose
+class left "allowed".
+
+**What this does and does not change.** No accepted SYN is unexplained or ambiguous, so the statement "no connection
+passed the applied policy" stands on the stronger join. It is weaker than first written in one place: for 5 of the 133
+late events there is no packet trace, only the absence of a conntrack entry. The guest clocks differ from the node's
+by up to about 0.2 s in these logs, which is why the tolerance is 1 s and not a few milliseconds; no key had two tries
+of different classes within it.
+
+## Review follow-up B · two harness fixes, live (second session)
+
+Files synced from the working tree: `cases/attempt.sh`, `cases/validate.py`, `gateway/gateway.py` (`cases/pod.py` and
+`cases/prep.py` as committed); redeployed with `infra/setup-lab.sh` and the dummy key
+(`review-followup/b/00-redeploy.log`). After the VM restart k3s had registered a second node object under the short
+host name, as on 2026-11-12; k3s was restarted and the stray object deleted before anything ran.
+Script `review-followup/controls/b-checks.sh`, SMOKE rounds, nothing is data.
+
+- **B1, the gate fails for an agent pod: pass.** `NETGATE_PUBLIC` pointed at the gateway's model port (allowed for agent
+  pods, so never refused) and `NETGATE_DEADLINE=8`. `attempt.sh` printed "the agent's pod did not start (netgate:
+  {"ok": false, "why": "a forbidden destination still answers", ...})", exit status 1; one infra line whose reason
+  carries the gate's JSON; no journal file; the run closed at the gateway with `spent_usd: 0.0, calls: 0,
+  model_path_failures: 0`; the second invocation opened `...-r1-t2` and ended the same way (`B1-gate-failure.log`,
+  `B1-infra-smoke-gatefail.jsonl`).
+- **B2, run closed before the pod's first call: pass.** attempt.sh's close returned `model_path_failures: 1,
+  model_path_failure_reasons: {"run_closed": 1}`; exit status 1; the infra line carries both; no journal
+  (`B2-run-closed.log`, `B2-infra-smoke-gwconf2.jsonl`).
+- **B3, a valid token with a forbidden request: pass.** From the host: a run opened; a request with `"stream": true`
+  and an unknown field got 403 "field not allowed"; a request with a model outside the price list got 403 "model not
+  allowed"; the close replied `model_path_failures: 0` with no reasons. Control: the same token after the close got 403
+  and that one was booked (`model_path_failures: 1, {"run_closed": 1}`) (`B3-valid-token-forbidden-request.log`).
+- **No forwarded call:** 0 lines with `"verdict": "forwarded"`; 4 `refused`; gateway state `spent_usd: 0.0, requests: 0`
+  (`no-forwarded-call.txt`, `gateway.log`).
+
+Not checked live: the other reason codes (gateway_halted, state_write_failed, total_budget, upstream_error,
+provider_<status>) and the order of the run cap and the total cap; they need a forwarded or failing upstream call.
+
+## Review follow-up C · reinstall with guest seccomp and the gate (second session)
+
+**Not an empty machine.** On the same VM: `k3s-uninstall.sh` (6 s; `/var/lib/rancher` gone), `/opt/kata` removed, then
+`infra/install-k3s-kata.sh` of the working tree as it is (2 min 7 s, exit 0: first run of its `helm install ... -f
+<values>` line), `infra/build-images.sh` (the box image again, from Docker's cache), `infra/setup-lab.sh` with the
+dummy key, and one gated Kata pod of each kind. Docker, Helm, `/srv/ci` with the prepared case and the run folder were
+there from before. `review-followup/controls/c-reinstall.sh`; logs in `review-followup/c/` (in the uninstall script's own
+trace one distribution name in a test expression is replaced by a placeholder).
+
+- Drop-in: `runtimes/qemu/config.d/50-user-overrides.toml` present after the install (helm revision 1), content
+  `[runtime]` / `disable_guest_seccomp = false`; the base file still says `true` on line 627 (`03-drop-in.txt`).
+- Four pods (agent, exec repro, prep, validation; `07-pods-summary.txt`): `Seccomp: 2`, `Seccomp_filters: 1` in 4 of 4;
+  gate `{"ok": true, "why": "policy in force"}` in 4 of 4 (waited 4.8 to 5.3 s); 0 established forbidden connections
+  from the main containers.
+- From uninstall to the last pod: 3 min 45 s (11:57:47 to 12:01:32Z).
+
+Not done here: a reproduction or any case code after the reinstall; the k3s extra verbosity of the first session is
+gone with the uninstall (default configuration now).
 
 ## Harness changes of this round (uncommitted, in the working tree)
 
@@ -385,6 +519,10 @@ harness file was edited by this round. On the VM, T7 added the four files listed
 touched. On it: k3s (with `v: 2`), Kata with guest seccomp on (helm revision 2), the gateway with the dummy key and
 the T7 `gateway.py`, the run folder with the T7 files, the gated `pod.py` / `prep.py` and a VM-only `attempt-b.sh`,
 one prepared case (gobwas/ws), no probe pod, the raw traces and pcaps of this round (about 4 GB, not copied).
-Time on: created 08:31:27Z; the last command of this round on it ran at 09:38Z and this report was finished at
-09:45Z (1.2 h). The owner stops the machine at 10:30Z
-(2.0 h in total).
+Time on: created 08:31:27Z; the last command of the first session ran at 09:38Z (1.2 h at 09:45Z); stopped by the owner
+at 10:30Z.
+
+Second session: started by the owner at 11:50Z, last command at about 12:03Z, stopped from outside at 12:30Z. State
+left by it: k3s and Kata freshly reinstalled (default k3s configuration, guest seccomp drop-in from the install), the
+lab namespaces and the gateway with the dummy key and the working tree's `gateway.py`, no probe pod; the raw traces
+and pcaps of the first session still on its disk.

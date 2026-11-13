@@ -1,0 +1,6 @@
+PASS leak -> {'allowed': 1, 'UNEXPLAINED': 1}
+PASS no-leak -> {'allowed': 1}
+PASS leak, no times -> {'allowed (no packet time; matched on address, port and destination)': 1, 'UNEXPLAINED': 1}
+PASS same destination, with times -> {'start-up': 1, 'UNEXPLAINED': 1}
+PASS same destination, no times -> {'AMBIGUOUS': 2}
+ALL PASS

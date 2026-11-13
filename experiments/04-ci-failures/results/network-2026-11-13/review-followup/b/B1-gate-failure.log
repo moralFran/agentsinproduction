@@ -1,0 +1,24 @@
+B1. The gate is made to fail for the agent pod: NETGATE_PUBLIC=10.43.210.10:8080 (the gateway's model port, which the
+    agent's policy allows, so that canary is never refused) and NETGATE_DEADLINE=8. No model call is possible: the main container never starts.
+gateway state before: {"spent_usd": 0.0, "requests": 0, "in_tok": 0, "out_tok": 0, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}
+== 2026-11-13T11:54:33Z NETGATE_PUBLIC=10.43.210.10:8080 NETGATE_DEADLINE=8 SMOKE=1 cases/attempt.sh smoke-gatefail gobwas-ws-a567dfd6 1  (expected run id: smoke-gatefail-e88f0806-r1)
+run smoke-gatefail-e88f0806-r1: the agent's pod did not start (netgate: {"ok": false, "why": "a forbidden destination still answers", "waited_s": 8.04, "rounds": 12, "reachable": {"10.43.210.10:8080": 12}}); not recorded as an attempt (see smoke/infra-smoke-gatefail.jsonl), the resume redoes it
+attempt.sh exit status: 1
+journal smoke/attempts-smoke-gatefail.jsonl exists: no
+lines in smoke/infra-smoke-gatefail.jsonl: 1
+admin view of smoke-gatefail-e88f0806-r1: {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "model_path_failures": 0, "open": false, "opened": 1794570873.717071, "closed": 1794570891.463841}
+== 2026-11-13T11:54:51Z NETGATE_PUBLIC=10.43.210.10:8080 NETGATE_DEADLINE=8 SMOKE=1 cases/attempt.sh smoke-gatefail gobwas-ws-a567dfd6 1  (expected run id: smoke-gatefail-e88f0806-r1-t2)
+run smoke-gatefail-e88f0806-r1-t2: the agent's pod did not start (netgate: {"ok": false, "why": "a forbidden destination still answers", "waited_s": 8.04, "rounds": 12, "reachable": {"10.43.210.10:8080": 12}}); not recorded as an attempt (see smoke/infra-smoke-gatefail.jsonl), the resume redoes it
+attempt.sh exit status: 1
+journal smoke/attempts-smoke-gatefail.jsonl exists: no
+lines in smoke/infra-smoke-gatefail.jsonl: 2
+admin view of smoke-gatefail-e88f0806-r1-t2: {"cap_usd": 0.33, "spent_usd": 0.0, "calls": 0, "model_path_failures": 0, "open": false, "opened": 1794570891.643492, "closed": 1794570907.2295356}
+infra file:
+{"round": "smoke-gatefail", "case": "gobwas-ws-a567dfd6", "rep": 1, "run": "smoke-gatefail-e88f0806-r1", "reason": "the agent's pod did not start its main container: netgate: {\"ok\": false, \"why\": \"a forbidden destination still answers\", \"waited_s\": 8.04, \"rounds\": 12, \"reachable\": {\"10.43.210.10:8080\": 12}}", "at": 1794570892, "agent": {}, "agent_pod": {"pod": "ag-smoke-gatefail-e88f0806-r1", "phase": "Failed/", "wall_s": 17.3, "infra_error": "netgate: {\"ok\": false, \"why\": \"a forbidden destination still answers\", \"waited_s\": 8.04, \"rounds\": 12, \"reachable\": {\"10.43.210.10:8080\": 12}}"}, "gateway": {"spent_usd": 0.0, "calls": 0, "cap_usd": 0.33, "model_path_failures": 0, "model_path_failure_reasons": null}}
+{"round": "smoke-gatefail", "case": "gobwas-ws-a567dfd6", "rep": 1, "run": "smoke-gatefail-e88f0806-r1-t2", "reason": "the agent's pod did not start its main container: netgate: {\"ok\": false, \"why\": \"a forbidden destination still answers\", \"waited_s\": 8.04, \"rounds\": 12, \"reachable\": {\"10.43.210.10:8080\": 12}}", "at": 1794570907, "agent": {}, "agent_pod": {"pod": "ag-smoke-gatefail-e88f0806-r1-t2", "phase": "Failed/", "wall_s": 15.1, "infra_error": "netgate: {\"ok\": false, \"why\": \"a forbidden destination still answers\", \"waited_s\": 8.04, \"rounds\": 12, \"reachable\": {\"10.43.210.10:8080\": 12}}"}, "gateway": {"spent_usd": 0.0, "calls": 0, "cap_usd": 0.33, "model_path_failures": 0, "model_path_failure_reasons": null}}
+gateway log lines of these runs:
+{"ts": 1794570873.721, "event": "run_opened", "run": "smoke-gatefail-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570891.467, "event": "run_closed", "run": "smoke-gatefail-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570891.647, "event": "run_opened", "run": "smoke-gatefail-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570907.233, "event": "run_closed", "run": "smoke-gatefail-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+== 2026-11-13T11:55:07Z done

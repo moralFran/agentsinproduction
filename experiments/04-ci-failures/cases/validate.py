@@ -22,7 +22,7 @@ def invoke(cid, patch, name, phase):
     if p.returncode or not str(pod.get("phase", "")).startswith("Succeeded/"):
         reason = str(pod.get("phase", ""))
         result = {"outcome": "timeout" if "DeadlineExceeded" in reason else "infra_error",
-                  "why": reason or p.stderr[-300:] or "pod produced no completion record"}
+                  "why": pod.get("infra_error") or reason or p.stderr[-300:] or "pod produced no completion record"}   # e.g. the network gate
     return result, pod
 
 

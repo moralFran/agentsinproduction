@@ -1,0 +1,18 @@
+B3. From the VM host: a run is opened, two requests with its VALID token are sent that the gateway refuses for their format
+    (a field that is not allowed; a model that is not allowed), the run is closed. Neither may count as a model-path failure.
+== 2026-11-13T11:55:21Z open smoke-b3-1794570921
+open reply (token removed): {"cap_usd": 0.01, "spent_usd": 0.0, "calls": 0, "model_path_failures": 0, "open": true, "opened": 1794570921.4423091, "token": "<43 characters>"}
+request 1 (allowed model, fields "stream": true and an unknown one): HTTP 403 {"error": "field not allowed: aip_field_not_allowed, stream"}
+request 2 (model not in the price list): HTTP 403 {"error": "model not allowed"}
+admin view while open: {"cap_usd": 0.01, "spent_usd": 0.0, "calls": 0, "model_path_failures": 0, "open": true, "opened": 1794570921.4423091}
+close reply: {"cap_usd": 0.01, "spent_usd": 0.0, "calls": 0, "model_path_failures": 0, "open": false, "opened": 1794570921.4423091, "closed": 1794570921.5335488}
+control, same token after the close (this one IS a model-path failure, reason run_closed): HTTP 403 {"error": "unknown or closed run token"}
+admin view after the control: {"cap_usd": 0.01, "spent_usd": 0.0, "calls": 0, "model_path_failures": 1, "open": false, "opened": 1794570921.4423091, "closed": 1794570921.5335488, "model_path_failure_reasons": {"run_closed": 1}}
+gateway log lines of this run and of the refused requests:
+{"ts": 1794570917.042, "src": "10.42.0.10", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "unknown or closed run token", "status": 403, "run": null, "infra": "run_closed"}
+{"ts": 1794570921.446, "event": "run_opened", "run": "smoke-b3-1794570921", "cap_usd": 0.01, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570921.508, "src": "10.42.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "field not allowed: aip_field_not_allowed, stream", "status": 403, "run": null}
+{"ts": 1794570921.517, "src": "10.42.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "model not allowed", "status": 403, "run": null}
+{"ts": 1794570921.537, "event": "run_closed", "run": "smoke-b3-1794570921", "cap_usd": 0.01, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570921.545, "src": "10.42.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "unknown or closed run token", "status": 403, "run": null, "infra": "run_closed"}
+== 2026-11-13T11:55:21Z done

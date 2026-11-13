@@ -1,0 +1,15 @@
+2026-11-13T11:57:47Z before: k3s version v1.37.2+k3s1 (f6973cb8); /opt/kata: 1.6G; drop-ins: 50-user-overrides.toml 
+2026-11-13T11:57:47Z k3s-uninstall.sh
+2026-11-13T11:57:53Z rc=0
+2026-11-13T11:57:53Z after uninstall: k3s binary absent; /opt/kata 0 entries; /var/lib/rancher 0 entries; /etc/rancher 1 entries
+f7baefef8f9bcb04e598918b691d1cbd1ec5654ec7b518c83aeb89441ead2f50  infra/install-k3s-kata.sh
+07a285528ae0f6f1e760712d4230b5a2599f779d8c4623a5b8869b2b6513f3f1  infra/setup-lab.sh
+2026-11-13T11:57:53Z infra/install-k3s-kata.sh
+2026-11-13T12:00:00Z rc=0
+2026-11-13T12:00:01Z infra/build-images.sh (Docker layer cache; imports the box image into the new containerd)
+2026-11-13T12:00:32Z rc=0
+2026-11-13T12:00:32Z infra/setup-lab.sh with the dummy key
+2026-11-13T12:00:43Z rc=0
+2026-11-13T12:00:43Z one gated Kata pod per kind
+2026-11-13T12:01:32Z rc=0
+2026-11-13T12:01:32Z C_DONE

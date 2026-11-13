@@ -57,7 +57,8 @@ try: gw = json.loads(open(fg).read() or "{}") if fg and os.path.exists(fg) else 
 except ValueError: gw = {}
 print(json.dumps({"round": rnd, "case": cid, "rep": int(rep), "run": run, "reason": reason, "at": round(time.time()), "agent": agent,
                   "agent_pod": grab(fa, "POD "), "gateway": {"spent_usd": gw.get("spent_usd"), "calls": gw.get("calls"), "cap_usd": gw.get("cap_usd"),
-                                                          "model_path_failures": gw.get("model_path_failures")}}))
+                                                          "model_path_failures": gw.get("model_path_failures"),
+                                                          "model_path_failure_reasons": gw.get("model_path_failure_reasons")}}))
 PY
 }
 [ -s "/srv/ci/cases/$cid/failure.txt" ] || { echo "case $cid has no failure.txt (written at the freeze, or by smoke-failure.py)"; exit 1; }
@@ -93,6 +94,18 @@ open(sys.argv[2], "w").write(res.get("patch", ""))
 print(res.get("outcome"))
 PY
 )
+# The pod never reached its main container (the network gate failed or timed out, cases/pod.py): the agent did not
+# run, so there is no attempt to record. This is the runner's own reading of the init container's log, which ran
+# before any command a model chose. Kept in the infra file and redone under a new run id (added 2026-11-13).
+pod_infra=$(python3 -c 'import json,sys
+row = next((json.loads(l[4:]) for l in reversed(open(sys.argv[1]).readlines()) if l.startswith("POD ")), {})
+print(str(row.get("infra_error") or "")[:400])' "/tmp/$run.agent" 2>/dev/null || true)
+if [ -n "$pod_infra" ] && [ "$agent_outcome" = no_result ]; then
+  not_an_attempt "the agent's pod did not start its main container: $pod_infra" "/tmp/$run.agent" "/tmp/$run.gw"
+  rm -f "$pd/$run.diff" "/tmp/$run".*
+  echo "run $run: the agent's pod did not start ($pod_infra); not recorded as an attempt (see $infra), the resume redoes it" >&2
+  exit 1
+fi
 unconfirmed=0
 if [ "$agent_outcome" = gateway_unavailable ]; then
   failed_calls=$(python3 -c 'import json,sys

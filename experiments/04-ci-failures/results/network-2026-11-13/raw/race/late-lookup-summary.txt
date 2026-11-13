@@ -1,6 +1,6 @@
   late tries without an xtables-monitor line: 1 | in the nft trace: blocked 1 passed 0 not found 0
 late connections: 4; by runtime: {'kata': 4, 'runc': 0}
-  with a trace line: 3 | trace says blocked: 3 | trace says passed: 0
+  with a trace line for the same destination: 3 | trace says blocked: 3 | trace says passed: 0
   with a conntrack NEW event: 0
   with packets in the pcap: 4 | SYN-ACK seen: 0 | ICMP unreachable seen: 4
   socket state after connect(): {'st=2 peer=0 soerr=111 rc=115 revents=0x8 soerr_first=0': 4}

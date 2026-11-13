@@ -6,10 +6,14 @@
    - kata pod, inside the pod's start-up window (before its last established forbidden connection, +0.3 s): incomplete trace: 1
    - kata pod, inside the pod's start-up window (before its last established forbidden connection, +0.3 s): passed: 15
    source addresses by runtime of the owning probe pod: {'kata': 40, 'runc': 0} pods
-2. accepted in the nft trace, not matched to an allowed or start-up probe try, not port 4460: 5
-   - 10.42.0.71:54658 -> 10.128.0.8:10250: UNEXPLAINED (chain policy accept, no accepting or dropping rule); probe pods that had this address: [('b-exec-kg-03', 'gate')]; port 10250 is tried only by the gate
-   - 10.42.0.71:42194 -> 10.128.0.8:6443: UNEXPLAINED (chain policy accept, no accepting or dropping rule); probe pods that had this address: [('b-exec-kg-03', 'gate')]
-   - 10.42.0.74:46074 -> 10.128.0.8:10250: UNEXPLAINED (chain policy accept, no accepting or dropping rule); probe pods that had this address: [('b-agent-kg-03', 'gate')]; port 10250 is tried only by the gate
-   - 10.42.0.78:49828 -> 10.128.0.8:10250: UNEXPLAINED (chain policy accept, no accepting or dropping rule); probe pods that had this address: [('b-prep-kg-03', 'gate')]; port 10250 is tried only by the gate
-     trace summary at 1794560764895: passed in INPUT (19 lines); pod b-prep-kg-03 gate=True; -10089 ms relative to the main process start, first blocked try of the main container at +13 ms
-   - 10.42.0.162:45902 -> 10.128.0.8:6443: UNEXPLAINED (chain policy accept, no accepting or dropping rule); probe pods that had this address: [('b-agent-kg-10', 'gate')]
+2. accepted SYNs in the nft trace by class (nft-verdicts.py version 2):
+   - allowed: 7385
+   - allowed (no packet time; matched on address, port and destination): 4
+   - gate canary (before the main process started): 84
+   - guest port 4460 (before the container's process started): 78
+   - guest port 4460 (inside the start-up window): 39
+   - pre-policy: 11751
+   - pre-policy (no packet time; matched on address, port and destination): 2
+   - start-up: 3298
+   - start-up (no packet time; matched on address, port and destination): 3
+   unexplained or ambiguous, examined one by one: 0

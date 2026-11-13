@@ -5,11 +5,15 @@
   "chain policy accept": 48,
   "drop": 60812
  },
- "accepted_from_probe_pods": {
-  "start-up (rule accept)": 48,
-  "start-up (chain policy accept, no accepting or dropping rule)": 48,
-  "allowed (rule accept)": 12
+ "accepted_by_class": {
+  "start-up": 96,
+  "allowed": 12,
+  "not a probe pod's address": 5
  },
- "unexplained": [],
- "no_verdict_from_probe_pods": 0
+ "accepted_time_source": {
+  "conntrack": 113
+ },
+ "examined": 0,
+ "no_verdict_from_probe_pods": 0,
+ "tolerance_ms": 1000
 }

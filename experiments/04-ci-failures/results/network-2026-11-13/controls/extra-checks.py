@@ -14,11 +14,14 @@ for f in (f"{D}/t3-steady-apply.jsonl", f"{D}/t3lat/apply-times.jsonl"):
         for l in open(f):
             r = json.loads(l)
             for p in r.get("pods", "").split(): t3[p] = r["apply_end_ms"]
+lopen = lambda p: gzip.open(p, "rt", errors="replace") if p.endswith(".gz") else open(p, errors="replace")   # probe logs may be stored compressed
+logs = lambda pat: sorted(glob.glob(pat) + glob.glob(pat + ".gz"))
+base = lambda p: p[:-7] if p.endswith(".gz") else p[:-4]
 pods = []
-for p in sorted(glob.glob(f"{D}/steady*/*.log") + glob.glob(f"{D}/batch/*.log") + glob.glob(f"{D}/t3lat/t3lat-*.log")):
+for p in sorted(logs(f"{D}/steady*/*.log") + logs(f"{D}/batch/*.log") + logs(f"{D}/t3lat/t3lat-*.log")):
     if ".init-" in p: continue
     h = None; fb = None; last = None; we = None
-    for l in open(p, errors="replace"):
+    for l in lopen(p):
         if l.startswith("H "): h = json.loads(l[2:]); allowed = set(h.get("allowed", []))
         elif l.startswith("A ") and h:
             f = l.split(); last = int(f[1])
@@ -57,18 +60,12 @@ for t, ip, v in rows:
 for k, n in sorted(tally.items()): print(f"   - {k[0]}: {k[1]}: {n}")
 for x in late_pass: print("   passed after the reference time:", x)
 print("   source addresses by runtime of the owning probe pod:", {rt: len({ip for t, ip, v in rows if (owner(ip, t) or {}).get('rt') == rt}) for rt in ("kata", "runc")}, "pods")
+# Version 2 (review follow-up): the accepted SYNs are classified by nft-verdicts.py version 2 (address, port, destination and
+# time); every unexplained or ambiguous one is in nft-verdicts-examined.jsonl. Version 1 of this part is in extra-checks-v1.py.
 s = json.load(open(f"{D}/nft-verdicts-summary.json"))
-un = [u for u in s["unexplained"] if u[3].startswith("UNEXPLAINED") and not u[2].endswith(":4460")]
-print(f"2. accepted in the nft trace, not matched to an allowed or start-up probe try, not port 4460: {len(un)}")
-idx = {}
-for l in zo(f"{D}/cap/trace/packets.log"):
-    f = l.split()
-    if len(f) >= 8: idx.setdefault(f[2], []).append(f)
-for ip, sp, dst, c in un:
-    cand = sorted({q["pod"] for q in pods if q["ip"] == ip})
-    print(f"   - {ip}:{sp} -> {dst}: {c}; probe pods that had this address: {[(p, 'gate' if gate.get(p) else 'no gate') for p in cand]}" + ("; port 10250 is tried only by the gate" if dst.endswith(":10250") else ""))
-    for f in idx.get(f"{ip}:{sp}", []):
-        if f[4] != dst and f[3] != dst: continue
-        t = int(f[1]); q = owner(ip, t)
-        print(f"     trace summary at {t}: {f[5]} in {f[6]} ({f[7]} lines); pod {q['pod'] if q else '?'} gate={gate.get(q['pod']) if q else '?'}; "
-              + (f"{t - q['t0']} ms relative to the main process start, first blocked try of the main container at +{(q['first_block'] or 0) - q['t0']} ms" if q else ""))
+print("2. accepted SYNs in the nft trace by class (nft-verdicts.py version 2):")
+for k, v in sorted(s["accepted_by_class"].items()): print(f"   - {k}: {v}")
+print(f"   unexplained or ambiguous, examined one by one: {s['examined']}")
+ex = f"{D}/nft-verdicts-examined.jsonl"
+if os.path.exists(ex):
+    for l in open(ex): j = json.loads(l); print("   -", j["src"], j["sport"], "->", j["dst"] or j["dst_after_translation"], "|", j["class"], "| SYN-ACK in pcap:", j.get("pcap_synack_to_the_pod"))

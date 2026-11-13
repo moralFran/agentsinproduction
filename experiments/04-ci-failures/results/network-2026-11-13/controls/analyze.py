@@ -7,9 +7,12 @@ A try is "forbidden" when its target is not in the pod's allowed list. For a pod
 forbidden try that connects is "start-up" when the target had not been blocked yet in that pod, and "late" when it had."""
 import bisect, datetime, glob, gzip, json, os, re, statistics, sys
 D = sys.argv[1]; W = {"no churn": [int(x) for x in sys.argv[2].split(",")], "churn": [int(x) for x in sys.argv[3].split(",")]}
+lopen = lambda p: gzip.open(p, "rt", errors="replace") if p.endswith(".gz") else open(p, errors="replace")   # probe logs may be stored compressed
+logs = lambda pat: sorted(glob.glob(pat) + glob.glob(pat + ".gz"))
+base = lambda p: p[:-7] if p.endswith(".gz") else p[:-4]
 def load(path):
     h = None; rows = []; s = None
-    for l in open(path, errors="replace"):
+    for l in lopen(path):
         if l.startswith("A "):
             f = l.split()
             if len(f) >= 6:   # st: the socket's TCP state after a connect() that returned no error (probe v2); None = not recorded (v1)
@@ -39,7 +42,7 @@ def sync_context(t):
     prev = f"{t - syncs[i]['end']} ms after the end of the previous sync" if i >= 0 else "no earlier sync"
     nxt = f"{syncs[i + 1]['start'] - t} ms before the next sync" if i + 1 < len(syncs) else "no later sync"
     return prev + ", " + nxt
-events = [json.loads(l) for l in open(f"{D}/cap/pod-events.jsonl")] if os.path.exists(f"{D}/cap/pod-events.jsonl") else []
+events = [json.loads(l) for l in zopen(f"{D}/cap/pod-events.jsonl")] if os.path.exists(zp(f"{D}/cap/pod-events.jsonl")) else []
 ev_t = [e["t_ms"] for e in events]
 def pod_events_near(t, span=1000):
     a, b = bisect.bisect_left(ev_t, t - span), bisect.bisect_right(ev_t, t + span)
@@ -47,17 +50,28 @@ def pod_events_near(t, span=1000):
 ip_hist = {}
 for e in events:
     if e.get("pod_ip"): ip_hist.setdefault(e["pod_ip"], {}).setdefault(f"{e['ns']}/{e['name']}", [e["t_ms"], e["t_ms"]])[1] = e["t_ms"]
+# Version 2 (review follow-up; version 1 is analyze-v1.py): the trace lines and conntrack events quoted for a late try must
+# have its DESTINATION and lie within 3 s of it, not only its source address and port (ports are reused).
+wanted = set()
+for p in logs(f"{D}/steady*/*.log") + logs(f"{D}/batch/*.log"):
+    if ".init-" in p: continue
+    ip = None
+    for l in lopen(p):
+        if l.startswith("H "): ip = json.loads(l[2:])["pod_ip"]
+        elif l.startswith("A ") and ip:
+            f = l.split()
+            if len(f) >= 6 and f[3] == "o": wanted.add(f"{ip}:{f[5]}")
 trace = {}
 if os.path.exists(zp(f"{D}/cap/trace/packets.log")):
     for l in zopen(f"{D}/cap/trace/packets.log"):
         f = l.split()
-        if len(f) >= 8 and f[5] == "passed": trace.setdefault(f[2], []).append(l.strip())
+        if len(f) >= 8 and f[2] in wanted: trace.setdefault(f[2], []).append((int(f[1]), f[3], " ".join(f[1:])))
 ct = {}
 if os.path.exists(zp(f"{D}/cap/conntrack-events.log")):
     for l in zopen(f"{D}/cap/conntrack-events.log"):
         if "[NEW]" in l:
-            m = re.search(r"src=(\S+) dst=(\S+) sport=(\d+) dport=(\d+) (?:\[UNREPLIED\] )?src=(\S+)", l)
-            if m: ct.setdefault(f"{m.group(1)}:{m.group(3)}", []).append(f"{l.split(']')[0].strip('[')} NEW {m.group(2)}:{m.group(4)} reply-src {m.group(5)}")
+            m = re.search(r"\[(\d+\.\d+)\].*?src=(\S+) dst=(\S+) sport=(\d+) dport=(\d+) (?:\[UNREPLIED\] )?src=(\S+)", l)
+            if m and f"{m.group(2)}:{m.group(4)}" in wanted: ct.setdefault(f"{m.group(2)}:{m.group(4)}", []).append((float(m.group(1)) * 1000, f"{m.group(3)}:{m.group(5)}", f"{m.group(1)} NEW {m.group(3)}:{m.group(5)} reply-src {m.group(6)}"))
 t3apply = {}
 if os.path.exists(f"{D}/t3-steady-apply.jsonl"):
     for l in open(f"{D}/t3-steady-apply.jsonl"):
@@ -85,14 +99,15 @@ def describe(res, t, lab, sp):
     reuse = f"address used before by {prev[-1][0]} (last seen {(h['t0_epoch_ms'] - prev[-1][1][1]) / 1000:.1f} s before this pod's process started)" if prev else "address not used by an earlier pod in this capture"
     return (f"- {fmt_t(t)} `{h['pod']}` ({h['role']}, {h['runtime']}, {h['pod_ip']}) -> `{lab}` {h['targets'][lab][0]} ({CLASS[lab]}), source port {sp}, {(t - h['t0_epoch_ms']) / 1000:.2f} s after the process started\n"
             f"  - controller: {sync_context(t)}\n  - pod events within 1 s: {n} pod(s) {names}\n  - {reuse}\n"
-            f"  - trace: {trace.get(key, ['no trace line for this source port (trace reader lost it or was restarting)'])}\n  - conntrack: {ct.get(key, ['no NEW event recorded'])}")
+            f"  - trace (same destination, within 3 s): {[x for tt, d, x in trace.get(key, []) if d == h['targets'][lab][0] and abs(tt - t) < 3000] or ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']}\n"
+            f"  - conntrack (same destination, within 3 s): {[x for tt, d, x in ct.get(key, []) if d == h['targets'][lab][0] and abs(tt - t) < 3000] or ['no NEW event']}")
 print(f"controller syncs in the journal: {len(syncs)}; duration ms min/median/max: " + (f"{min(s['end'] - s['start'] for s in syncs)}/{statistics.median(s['end'] - s['start'] for s in syncs):.0f}/{max(s['end'] - s['start'] for s in syncs)}" if syncs else "-"))
 for wn, (a, b) in W.items():
     inw = [s for s in syncs if a <= s["start"] <= b]; evw = [e for e in events if a <= e["t_ms"] <= b and e.get("ns") not in ("kube-system",)]
     print(f"window '{wn}' {fmt_t(a)} to {fmt_t(b)}: {len(inw)} syncs, {len(evw)} pod events outside kube-system, {len({e['name'] for e in evw})} distinct pods")
 # ---- steady state
 print("\n## Steady state\n")
-steady = [r for r in (analyse_pod(p) for p in sorted(glob.glob(f"{D}/steady*/*.log"))) if r]
+steady = [r for r in (analyse_pod(p) for p in logs(f"{D}/steady*/*.log")) if r]
 print("Probe v1 (the eight pods named steady-*) recorded only that connect() returned without an error; probe v2 (steady2-*) also read the")
 print("socket: 'established' = TCP state ESTABLISHED with a peer, 'false success' = connect() returned no error but the socket was CLOSE with ECONNREFUSED pending.\n")
 print("| Window | Pod | Probe | Runtime | Target class | Forbidden tries | connect() returned no error, socket not read (v1) | established (v2) | false success (v2) |"); print("|---|---|---|---|---|---|---|---|---|")
@@ -168,14 +183,14 @@ for res in steady:
 # ---- start-up batch
 print("\n## Start-up batch\n")
 batch = {}
-for p in sorted(glob.glob(f"{D}/batch/*.log")):
+for p in logs(f"{D}/batch/*.log"):
     if ".init-" in p: continue
     res = analyse_pod(p)
     if not res: continue
     m = re.match(r"b-(\w+)-(kn|kg|rn)-\d+", res["name"])
     if not m: continue
-    pj = json.load(open(p[:-4] + ".pod.json")) if os.path.exists(p[:-4] + ".pod.json") else {}
-    res["apply_end"] = pj.get("apply_end_ms"); g = p[:-4] + ".init-netgate.log"; res["gate"] = None
+    pj = json.load(open(base(p) + ".pod.json")) if os.path.exists(base(p) + ".pod.json") else {}
+    res["apply_end"] = pj.get("apply_end_ms"); g = base(p) + ".init-netgate.log"; res["gate"] = None
     if os.path.exists(g):
         mm = re.search(r"NETGATE (\{.*\})", open(g).read()); res["gate"] = json.loads(mm.group(1)) if mm else None
     batch.setdefault((m.group(2), m.group(1)), []).append(res)
@@ -238,7 +253,7 @@ if os.path.exists(f"{D}/t3lat/apply-times.jsonl"):
         r = json.loads(l)
         if "pods" in r: ap[r["pods"].strip()] = r
 print("| Pod | Runtime | apply took, ms | Last forbidden connection, ms after `kubectl apply` returned (after it started) | Targets open before the apply | connect() without error after the first block (v1 probe: socket not read; v2: ESTABLISHED only) |"); print("|---|---|---|---|---|---|")
-for p in sorted(glob.glob(f"{D}/t3lat/t3lat-*.log")) + sorted(glob.glob(f"{D}/steady/steady-t3-*.log")):
+for p in logs(f"{D}/t3lat/t3lat-*.log") + logs(f"{D}/steady/steady-t3-*.log"):
     h, rows, s = load(p)
     if not h or h["pod"] not in {**ap, **t3apply}: continue
     a = {**ap, **t3apply}[h["pod"]]; before = sorted({lab for t, lab, r, d, sp, st in rows if t < a["apply_start_ms"] and r == "o"})

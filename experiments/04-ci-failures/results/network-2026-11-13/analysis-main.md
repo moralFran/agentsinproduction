@@ -93,518 +93,518 @@ Per target, both windows, all steady pods (forbidden tries / connected):
   - controller: 232812 ms after the end of the previous sync, 67092 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560128739 10.42.0.29:51052 10.128.0.8:22 10.128.0.8:22 blocked KUBE-POD-FW-TPYT7VYCS6EX6WNU 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:55:57.740Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `pub` 1.1.1.1:443 (external), source port 43404, 292.10 s after the process started
   - controller: 261813 ms after the end of the previous sync, 38091 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560157741 10.42.0.29:43404 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-TPYT7VYCS6EX6WNU 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:58:20.848Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `dns` 10.42.0.8:53 (internal), source port 58198, 435.20 s after the process started
   - controller: 104920 ms after the end of the previous sync, 194982 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560300848 10.42.0.29:58198 10.42.0.8:53 10.42.0.8:53 blocked KUBE-POD-FW-ZY7JNU4OKRIDF2AV 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:59:29.739Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `node22` 10.128.0.8:22 (external), source port 41366, 504.09 s after the process started
   - controller: 173811 ms after the end of the previous sync, 126091 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560369747 10.42.0.29:41366 10.128.0.8:22 10.128.0.8:22 blocked KUBE-POD-FW-ZY7JNU4OKRIDF2AV 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:02:12.739Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `node6443` 10.128.0.8:6443 (external), source port 58464, 667.09 s after the process started
   - controller: 36803 ms after the end of the previous sync, 60094 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560532739 10.42.0.29:58464 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-7IE7P6H3AC4WHAHL 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:02:14.848Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `node22` 10.128.0.8:22 (external), source port 36246, 669.20 s after the process started
   - controller: 38912 ms after the end of the previous sync, 57985 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560534849 10.42.0.29:36246 10.128.0.8:22 10.128.0.8:22 blocked KUBE-POD-FW-7IE7P6H3AC4WHAHL 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:02:18.746Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `gwa` 10.43.210.10:8081 (internal), source port 56312, 673.10 s after the process started
   - controller: 42810 ms after the end of the previous sync, 54087 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560538746 10.42.0.29:56312 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-NWPLCY-COMMON 19']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:02:47.739Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `node6443` 10.128.0.8:6443 (external), source port 51846, 702.09 s after the process started
   - controller: 71803 ms after the end of the previous sync, 25094 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['P 1794560751534 10.42.0.29:51846 10.128.0.8:6443 10.128.0.8:6443 passed - 7']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560567739 10.42.0.29:51846 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-7IE7P6H3AC4WHAHL 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:05:51.850Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `meta` 169.254.169.254:80 (external), source port 39132, 886.21 s after the process started
   - controller: inside a sync (243 ms after its start, 199 ms before its end)
   - pod events within 1 s: 3 pod(s) ['ci-agent/b-agent-kg-03', 'ci-agent/b-agent-rn-03', 'ci-exec/b-exec-rn-03']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:07:36.742Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `meta` 169.254.169.254:80 (external), source port 47090, 991.10 s after the process started
   - controller: 1018 ms after the end of the previous sync, 3283 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-exec/b-exec-kg-05']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560856750 10.42.0.29:47090 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-ASHC56Y7IVBRRNI5 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:08:45.849Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `meta` 169.254.169.254:80 (external), source port 40034, 1060.20 s after the process started
   - controller: 194 ms after the end of the previous sync, 1583 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-prep/b-prep-kg-05']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560925849 10.42.0.29:40034 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-4CXRFGL7DYMIE2SI 13']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:09:32.852Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `pub` 1.1.1.1:443 (external), source port 60514, 1107.21 s after the process started
   - controller: inside a sync (197 ms after its start, 41 ms before its end)
   - pod events within 1 s: 5 pod(s) ['ci-exec/b-exec-kg-07', 'ci-exec/b-exec-kn-07', 'ci-exec/b-val-kg-06', 'ci-prep/b-prep-kn-06']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560972853 10.42.0.29:60514 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-YRL5QGOWMIGL55YV 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:11:12.741Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `gwpa` 10.42.0.13:8081 (internal), source port 55422, 1207.10 s after the process started
   - controller: 1996 ms after the end of the previous sync, 2803 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561072741 10.42.0.29:55422 10.42.0.13:8081 10.42.0.13:8081 blocked KUBE-POD-FW-2732J2673YUKZLGV 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:12:38.739Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `pub` 1.1.1.1:443 (external), source port 50270, 1293.09 s after the process started
   - controller: 1463 ms after the end of the previous sync, 2105 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561158740 10.42.0.29:50270 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-7ZEFJ3HM7TQF7IEJ 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:12:46.848Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `pub` 1.1.1.1:443 (external), source port 48672, 1301.20 s after the process started
   - controller: 1793 ms after the end of the previous sync, 970 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-exec/b-val-rn-09']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561166849 10.42.0.29:48672 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-5ZUYSXHWIDJHJXOQ 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:14:47.848Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `meta` 169.254.169.254:80 (external), source port 56562, 1422.20 s after the process started
   - controller: 4019 ms after the end of the previous sync, 888 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-exec/b-val-kn-11', 'ci-exec/b-val-rn-11']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561287886 10.42.0.29:56562 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-OMHDI27UVDEPDRQ7 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:14:57.851Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `node6443` 10.128.0.8:6443 (external), source port 41716, 1432.21 s after the process started
   - controller: 477 ms after the end of the previous sync, 1 ms before the next sync
   - pod events within 1 s: 4 pod(s) ['ci-agent/b-agent-kg-12', 'ci-agent/b-agent-rn-12', 'ci-exec/b-exec-rn-12', 'ci-exec/b-val-kg-11']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561297853 10.42.0.29:41716 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-J4OQK3T4HLBVFC5F 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:17:52.849Z `steady-agent-kata` (agent, kata, 10.42.0.29) -> `meta` 169.254.169.254:80 (external), source port 45616, 1607.20 s after the process started
   - controller: 485 ms after the end of the previous sync, 1336 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-agent/b-agent-kg-15', 'ci-exec/b-exec-kn-15']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561472850 10.42.0.29:45616 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-LB3KX4BHIKXCAZS3 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:51:33.114Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwm` 10.43.210.10:8080 (internal), source port 53524, 28.03 s after the process started
   - controller: 3749 ms after the end of the previous sync, 2715 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:52:02.114Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `meta` 169.254.169.254:80 (external), source port 54298, 57.03 s after the process started
   - controller: 26187 ms after the end of the previous sync, 273717 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:52:13.110Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwpm` 10.42.0.13:8080 (internal), source port 45328, 68.03 s after the process started
   - controller: 37183 ms after the end of the previous sync, 262721 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-agent/steady-agent-runc']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:52:48.118Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `node22` 10.128.0.8:22 (external), source port 44986, 103.04 s after the process started
   - controller: 72191 ms after the end of the previous sync, 227713 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:53:04.127Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwa` 10.43.210.10:8081 (internal), source port 46254, 119.05 s after the process started
   - controller: 88200 ms after the end of the previous sync, 211704 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794559984206 10.42.0.28:46254 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-POD-FW-HE2CN3UQHPXKTFIL 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:53:28.104Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwpm` 10.42.0.13:8080 (internal), source port 52206, 143.02 s after the process started
   - controller: 112177 ms after the end of the previous sync, 187727 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560008185 10.42.0.28:52206 10.42.0.13:8080 10.42.0.13:8080 blocked KUBE-POD-FW-HE2CN3UQHPXKTFIL 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:53:35.102Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `dns` 10.42.0.8:53 (internal), source port 54028, 150.02 s after the process started
   - controller: 119175 ms after the end of the previous sync, 180729 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560015183 10.42.0.28:54028 10.42.0.8:53 10.42.0.8:53 blocked KUBE-POD-FW-HE2CN3UQHPXKTFIL 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:53:48.103Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwa` 10.43.210.10:8081 (internal), source port 47130, 163.02 s after the process started
   - controller: 132176 ms after the end of the previous sync, 167728 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560028186 10.42.0.28:47130 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-POD-FW-HE2CN3UQHPXKTFIL 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:56:11.282Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwa` 10.43.210.10:8081 (internal), source port 32850, 306.20 s after the process started
   - controller: 275355 ms after the end of the previous sync, 24549 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560171284 10.42.0.28:32850 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-POD-FW-HE2CN3UQHPXKTFIL 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:56:12.282Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwa` 10.43.210.10:8081 (internal), source port 32900, 307.20 s after the process started
   - controller: 276355 ms after the end of the previous sync, 23549 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560172283 10.42.0.28:32900 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-POD-FW-HE2CN3UQHPXKTFIL 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:58:38.283Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `pub` 1.1.1.1:443 (external), source port 39488, 453.20 s after the process started
   - controller: 122355 ms after the end of the previous sync, 177547 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560318283 10.42.0.28:39488 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-KPEIEUS66JGQ6TT5 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:03:34.287Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwpa` 10.42.0.13:8081 (internal), source port 38490, 749.21 s after the process started
   - controller: 62 ms after the end of the previous sync, 2829 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['t3k/t3lat-kata-1']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:06:19.184Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `pub` 1.1.1.1:443 (external), source port 53512, 914.10 s after the process started
   - controller: 1343 ms after the end of the previous sync, 18 ms before the next sync
   - pod events within 1 s: 4 pod(s) ['ci-agent/b-agent-kg-03', 'ci-exec/b-val-kg-03', 'ci-prep/b-prep-kn-03', 't3r/t3lat-runc-4']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:08:36.283Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `api` 10.43.0.1:443 (internal), source port 45490, 1051.20 s after the process started
   - controller: 29 ms after the end of the previous sync, 168 ms before the next sync
   - pod events within 1 s: 4 pod(s) ['ci-exec/b-exec-kg-06', 'ci-exec/b-exec-kn-06', 'ci-prep/b-prep-kn-05', 'ci-prep/b-prep-rn-05']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:10:14.183Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `meta` 169.254.169.254:80 (external), source port 57066, 1149.10 s after the process started
   - controller: 527 ms after the end of the previous sync, 1563 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-agent/b-agent-kn-07', 'ci-prep/b-prep-kg-07']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561014183 10.42.0.28:57066 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-UMELWN5ZQDTE42MM 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:11:28.183Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwa` 10.43.210.10:8081 (internal), source port 54372, 1223.10 s after the process started
   - controller: 92 ms after the end of the previous sync, 665 ms before the next sync
   - pod events within 1 s: 4 pod(s) ['ci-exec/b-val-kn-08', 'ci-exec/b-val-rn-08', 'ci-prep/b-prep-kn-08', 'ci-prep/b-prep-rn-08']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561088185 10.42.0.28:54372 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-NWPLCY-COMMON 20']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:11:33.212Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwm` 10.43.210.10:8080 (internal), source port 40276, 1228.13 s after the process started
   - controller: 1821 ms after the end of the previous sync, 2618 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:13:13.284Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwpm` 10.42.0.13:8080 (internal), source port 50146, 1328.20 s after the process started
   - controller: 4184 ms after the end of the previous sync, 1206 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-agent/b-agent-kn-10']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561193284 10.42.0.28:50146 10.42.0.13:8080 10.42.0.13:8080 blocked KUBE-POD-FW-LWGEKWZLZA2KDOGD 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:14:36.214Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwa` 10.43.210.10:8081 (internal), source port 51822, 1411.13 s after the process started
   - controller: 984 ms after the end of the previous sync, 583 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-prep/b-prep-kg-11']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561276220 10.42.0.28:51822 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-NWPLCY-COMMON 19']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:16:20.287Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `gwpm` 10.42.0.13:8080 (internal), source port 41072, 1515.21 s after the process started
   - controller: 22 ms after the end of the previous sync, 647 ms before the next sync
   - pod events within 1 s: 3 pod(s) ['ci-agent/b-agent-kn-13', 'ci-exec/b-val-kg-13', 'ci-prep/b-prep-kg-13']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:18:58.283Z `steady-exec-kata` (exec-repro, kata, 10.42.0.28) -> `api` 10.43.0.1:443 (internal), source port 47818, 1673.20 s after the process started
   - controller: 2526 ms after the end of the previous sync, 6127 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561538283 10.42.0.28:47818 10.43.0.1:443 10.128.0.8:6443 blocked KUBE-POD-FW-6ANA3KT7EVC23SPI 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:51:48.336Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node22` 10.128.0.8:22 (external), source port 35116, 42.01 s after the process started
   - controller: 12409 ms after the end of the previous sync, 287495 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:52:11.432Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node22` 10.128.0.8:22 (external), source port 41826, 65.10 s after the process started
   - controller: 35505 ms after the end of the previous sync, 264399 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:53:22.434Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node22` 10.128.0.8:22 (external), source port 53550, 136.10 s after the process started
   - controller: 106507 ms after the end of the previous sync, 193397 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560002434 10.42.0.30:53550 10.128.0.8:22 10.128.0.8:22 blocked KUBE-POD-FW-VTRIV5CHYOZPRN2M 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:55:09.427Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwpa` 10.42.0.13:8081 (internal), source port 60736, 243.10 s after the process started
   - controller: 213500 ms after the end of the previous sync, 86404 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560109427 10.42.0.30:60736 10.42.0.13:8081 10.42.0.13:8081 blocked KUBE-POD-FW-VTRIV5CHYOZPRN2M 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:57:37.532Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `meta` 169.254.169.254:80 (external), source port 36566, 391.20 s after the process started
   - controller: 61604 ms after the end of the previous sync, 238298 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560257532 10.42.0.30:36566 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-WQHTHCN7WXSB5G46 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:58:30.427Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node6443` 10.128.0.8:6443 (external), source port 53222, 444.10 s after the process started
   - controller: 114499 ms after the end of the previous sync, 185403 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560310428 10.42.0.30:53222 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-WQHTHCN7WXSB5G46 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:58:43.531Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwa` 10.43.210.10:8081 (internal), source port 33500, 457.20 s after the process started
   - controller: 127603 ms after the end of the previous sync, 172299 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560323532 10.42.0.30:33500 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-POD-FW-WQHTHCN7WXSB5G46 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:59:42.427Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node6443` 10.128.0.8:6443 (external), source port 35148, 516.10 s after the process started
   - controller: 186499 ms after the end of the previous sync, 113403 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560382428 10.42.0.30:35148 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-WQHTHCN7WXSB5G46 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:01:33.441Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwpa` 10.42.0.13:8081 (internal), source port 44902, 627.11 s after the process started
   - controller: 297513 ms after the end of the previous sync, 2389 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560493442 10.42.0.30:44902 10.42.0.13:8081 10.42.0.13:8081 blocked KUBE-POD-FW-WQHTHCN7WXSB5G46 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:02:41.427Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node6443` 10.128.0.8:6443 (external), source port 60538, 695.10 s after the process started
   - controller: 65491 ms after the end of the previous sync, 31406 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560561427 10.42.0.30:60538 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-R6OEMPWL2LMZCL4Q 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:02:45.439Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwm` 10.43.210.10:8080 (internal), source port 56364, 699.11 s after the process started
   - controller: 69503 ms after the end of the previous sync, 27394 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['1794560688.334438 NEW 1.1.1.1:443 reply-src 1.1.1.1']
+  - trace (same destination, within 3 s): ['1794560565439 10.42.0.30:56364 10.43.210.10:8080 10.42.0.13:8080 blocked KUBE-NWPLCY-COMMON 19']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:04:53.535Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `meta` 169.254.169.254:80 (external), source port 43780, 827.21 s after the process started
   - controller: 473 ms after the end of the previous sync, 544 ms before the next sync
   - pod events within 1 s: 5 pod(s) ['ci-agent/b-agent-kg-02', 'ci-exec/b-exec-rn-02', 'ci-prep/b-prep-kn-02', 'ci-prep/b-prep-rn-02']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:06:26.455Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `api` 10.43.0.1:443 (internal), source port 58432, 920.13 s after the process started
   - controller: inside a sync (381 ms after its start, 294 ms before its end)
   - pod events within 1 s: 4 pod(s) ['ci-exec/b-exec-kg-04', 'ci-exec/b-exec-kn-04', 'ci-exec/b-val-rn-03', 'ci-prep/b-prep-rn-03']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:06:31.426Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `meta` 169.254.169.254:80 (external), source port 34598, 925.10 s after the process started
   - controller: 3468 ms after the end of the previous sync, 1802 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-exec/b-exec-kn-04']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:07:58.532Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node22` 10.128.0.8:22 (external), source port 44368, 1012.20 s after the process started
   - controller: 171 ms after the end of the previous sync, 1873 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-agent/b-agent-kg-05', 'ci-exec/b-exec-kn-05']
   - address not used by an earlier pod in this capture
-  - trace: ['P 1794560848336 10.42.0.30:44368 10.42.0.8:53 10.42.0.8:53 passed KUBE-NWPLCY-TAIL 43']
-  - conntrack: ['1794560848.332732 NEW 10.42.0.8:53 reply-src 10.42.0.8']
+  - trace (same destination, within 3 s): ['1794560878533 10.42.0.30:44368 10.128.0.8:22 10.128.0.8:22 blocked KUBE-POD-FW-LYARYUI6C56LKFLO 17']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:08:03.532Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `api` 10.43.0.1:443 (internal), source port 40930, 1017.20 s after the process started
   - controller: 1307 ms after the end of the previous sync, 1604 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-exec/b-exec-rn-05']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560883532 10.42.0.30:40930 10.43.0.1:443 10.128.0.8:6443 blocked KUBE-POD-FW-ZNFXEAU5CYGITLKI 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:08:10.431Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwa` 10.43.210.10:8081 (internal), source port 54308, 1024.10 s after the process started
   - controller: 497 ms after the end of the previous sync, 19 ms before the next sync
   - pod events within 1 s: 3 pod(s) ['ci-exec/b-exec-kg-05', 'ci-exec/b-val-kg-04', 'ci-prep/b-prep-kg-05']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:08:58.442Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `api` 10.43.0.1:443 (internal), source port 46594, 1072.11 s after the process started
   - controller: 51 ms after the end of the previous sync, 4296 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-agent/b-agent-kg-06', 'ci-agent/b-agent-kn-06']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560938444 10.42.0.30:46594 10.43.0.1:443 10.128.0.8:6443 blocked KUBE-POD-FW-XVZZOJQH4QP766HN 16']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:09:02.540Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwm` 10.43.210.10:8080 (internal), source port 50510, 1076.21 s after the process started
   - controller: 4149 ms after the end of the previous sync, 198 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-exec/b-exec-kn-06', 'ci-exec/b-val-kg-05']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:09:16.532Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwa` 10.43.210.10:8081 (internal), source port 60146, 1090.20 s after the process started
   - controller: 2489 ms after the end of the previous sync, 410 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-agent/b-agent-kn-06']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560956533 10.42.0.30:60146 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-NWPLCY-COMMON 19']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:11:18.430Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwm` 10.43.210.10:8080 (internal), source port 51922, 1212.10 s after the process started
   - controller: 225 ms after the end of the previous sync, 426 ms before the next sync
   - pod events within 1 s: 3 pod(s) ['ci-agent/b-agent-rn-08', 'ci-exec/b-val-kn-08', 'ci-prep/b-prep-kg-08']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561078430 10.42.0.30:51922 10.43.210.10:8080 10.42.0.13:8080 blocked KUBE-NWPLCY-COMMON 20']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:11:26.537Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node22` 10.128.0.8:22 (external), source port 41324, 1220.21 s after the process started
   - controller: 1357 ms after the end of the previous sync, 112 ms before the next sync
   - pod events within 1 s: 4 pod(s) ['ci-agent/b-agent-kg-08', 'ci-exec/b-val-kg-08', 'ci-prep/b-prep-kn-08', 'ci-prep/b-prep-rn-08']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:12:22.532Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `gwpa` 10.42.0.13:8081 (internal), source port 45658, 1276.20 s after the process started
   - controller: 3074 ms after the end of the previous sync, 1120 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-exec/b-val-kn-09', 'ci-prep/b-prep-kn-09']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561142532 10.42.0.30:45658 10.42.0.13:8081 10.42.0.13:8081 blocked KUBE-POD-FW-OHNKYTQSD4GTT7A5 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:18:23.535Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `api` 10.43.0.1:443 (internal), source port 47496, 1637.21 s after the process started
   - controller: 19 ms after the end of the previous sync, 1789 ms before the next sync
   - pod events within 1 s: 4 pod(s) ['ci-agent/b-agent-kg-15', 'ci-exec/b-val-kg-15', 'ci-prep/b-prep-kn-15', 'ci-prep/b-prep-rn-15']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:18:53.532Z `steady-prep-kata` (prep, kata, 10.42.0.30) -> `node6443` 10.128.0.8:6443 (external), source port 44294, 1667.20 s after the process started
   - controller: 5102 ms after the end of the previous sync, 1053 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-exec/b-val-kg-15']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561533533 10.42.0.30:44294 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-XMTTKEBJ3KW5YTQU 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:51:38.182Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `api` 10.43.0.1:443 (internal), source port 43184, 30.20 s after the process started
   - controller: 2255 ms after the end of the previous sync, 297649 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:53:05.182Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `gwm` 10.43.210.10:8080 (internal), source port 42420, 117.20 s after the process started
   - controller: 89255 ms after the end of the previous sync, 210649 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['P 1794560780277 10.42.0.34:42420 10.128.0.8:22 10.128.0.8:22 passed - 2']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794559985192 10.42.0.34:42420 10.43.210.10:8080 10.42.0.13:8080 blocked KUBE-POD-FW-HBNQUIHYX6MPMKRZ 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:53:58.061Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `gwpm` 10.42.0.13:8080 (internal), source port 48490, 170.08 s after the process started
   - controller: 142134 ms after the end of the previous sync, 157770 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560038076 10.42.0.34:48490 10.42.0.13:8080 10.42.0.13:8080 blocked KUBE-POD-FW-HBNQUIHYX6MPMKRZ 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:54:24.182Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `dns` 10.42.0.8:53 (internal), source port 58268, 196.20 s after the process started
   - controller: 168255 ms after the end of the previous sync, 131649 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560064200 10.42.0.34:58268 10.42.0.8:53 10.42.0.8:53 blocked KUBE-POD-FW-BKFQKOCPSL2DSLYD 24']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:54:59.073Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `dns` 10.42.0.8:53 (internal), source port 55388, 231.09 s after the process started
   - controller: 203146 ms after the end of the previous sync, 96758 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560099098 10.42.0.34:55388 10.42.0.8:53 10.42.0.8:53 blocked KUBE-POD-FW-BKFQKOCPSL2DSLYD 24']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:55:47.051Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `api` 10.43.0.1:443 (internal), source port 54040, 279.07 s after the process started
   - controller: 251124 ms after the end of the previous sync, 48780 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560147077 10.42.0.34:54040 10.43.0.1:443 10.128.0.8:6443 blocked KUBE-POD-FW-BKFQKOCPSL2DSLYD 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:57:13.182Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `gwm` 10.43.210.10:8080 (internal), source port 34356, 365.20 s after the process started
   - controller: 37254 ms after the end of the previous sync, 262648 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560233217 10.42.0.34:34356 10.43.210.10:8080 10.42.0.13:8080 blocked KUBE-POD-FW-PH6R5KBCLJ6UNVVO 28']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:58:39.036Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `gwa` 10.43.210.10:8081 (internal), source port 42792, 451.06 s after the process started
   - controller: 123108 ms after the end of the previous sync, 176794 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['1794559869.866975 NEW 10.128.0.8:6443 reply-src 10.128.0.8']
+  - trace (same destination, within 3 s): ['1794560319080 10.42.0.34:42792 10.43.210.10:8081 10.42.0.13:8081 blocked KUBE-POD-FW-YX2HZ2XJTM4KVDZT 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 08:59:39.027Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `node6443` 10.128.0.8:6443 (external), source port 54246, 511.05 s after the process started
   - controller: 183099 ms after the end of the previous sync, 116803 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560379077 10.42.0.34:54246 10.128.0.8:6443 10.128.0.8:6443 blocked KUBE-POD-FW-YX2HZ2XJTM4KVDZT 15']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:00:52.042Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `pub` 1.1.1.1:443 (external), source port 42240, 584.06 s after the process started
   - controller: 256114 ms after the end of the previous sync, 43788 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560452099 10.42.0.34:42240 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-YX2HZ2XJTM4KVDZT 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:03:00.007Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `meta` 169.254.169.254:80 (external), source port 32962, 712.03 s after the process started
   - controller: 84071 ms after the end of the previous sync, 12826 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560580076 10.42.0.34:32962 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-WSXJNUIIUUYTENDW 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:03:04.016Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `dns` 10.42.0.8:53 (internal), source port 52056, 716.04 s after the process started
   - controller: 88080 ms after the end of the previous sync, 8817 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560584086 10.42.0.34:52056 10.42.0.8:53 10.42.0.8:53 blocked KUBE-POD-FW-WSXJNUIIUUYTENDW 24']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:03:13.005Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `pub` 1.1.1.1:443 (external), source port 44632, 725.02 s after the process started
   - controller: 59 ms after the end of the previous sync, 283 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-agent/steady2-agent-kata', 'ci-exec/steady2-exec-kata']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560593077 10.42.0.34:44632 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-K2N2VR2I4YZDXHIY 13']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:05:34.158Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `node6443` 10.128.0.8:6443 (external), source port 34676, 866.18 s after the process started
   - controller: inside a sync (54 ms after its start, 360 ms before its end)
   - pod events within 1 s: 4 pod(s) ['ci-exec/b-exec-kg-03', 'ci-exec/b-exec-rn-03', 'ci-exec/b-val-kn-02', 't3r/t3lat-runc-3']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:07:37.102Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `pub` 1.1.1.1:443 (external), source port 57228, 989.12 s after the process started
   - controller: 1378 ms after the end of the previous sync, 2923 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560857102 10.42.0.34:57228 1.1.1.1:443 1.1.1.1:443 blocked KUBE-POD-FW-AAAILADXNMSJI5CJ 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:07:48.080Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `gwpa` 10.42.0.13:8081 (internal), source port 40554, 1000.10 s after the process started
   - controller: 265 ms after the end of the previous sync, 637 ms before the next sync
   - pod events within 1 s: 3 pod(s) ['ci-exec/b-exec-rn-05', 'ci-exec/b-val-kg-04', 'ci-exec/b-val-kn-04']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794560868084 10.42.0.34:40554 10.42.0.13:8081 10.42.0.13:8081 blocked KUBE-POD-FW-PD25OMRPCEYZYB5H 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:10:19.080Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `meta` 169.254.169.254:80 (external), source port 50474, 1151.10 s after the process started
   - controller: 295 ms after the end of the previous sync, 1032 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-agent/b-agent-rn-07', 'ci-prep/b-prep-kg-07']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561019082 10.42.0.34:50474 169.254.169.254:80 169.254.169.254:80 blocked KUBE-POD-FW-HDR7PICFWDGJDCEC 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:10:52.185Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `api` 10.43.0.1:443 (internal), source port 55774, 1184.20 s after the process started
   - controller: 986 ms after the end of the previous sync, 3859 ms before the next sync
   - pod events within 1 s: 0 pod(s) []
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561052186 10.42.0.34:55774 10.43.0.1:443 10.128.0.8:6443 blocked KUBE-POD-FW-7WYCTNWLXSSV3UWC 14']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:12:41.183Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `gwpa` 10.42.0.13:8081 (internal), source port 60420, 1293.20 s after the process started
   - controller: 140 ms after the end of the previous sync, 3703 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-exec/b-val-kg-09']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561161190 10.42.0.34:60420 10.42.0.13:8081 10.42.0.13:8081 blocked KUBE-POD-FW-OIBZYUX53FXJ3HMC 12']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:13:21.183Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `gwa` 10.43.210.10:8081 (internal), source port 56416, 1333.20 s after the process started
   - controller: 1537 ms after the end of the previous sync, 1752 ms before the next sync
   - pod events within 1 s: 2 pod(s) ['ci-exec/b-val-kn-10', 'ci-prep/b-prep-kn-10']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:16:25.188Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `node6443` 10.128.0.8:6443 (external), source port 56640, 1517.21 s after the process started
   - controller: 345 ms after the end of the previous sync, 212 ms before the next sync
   - pod events within 1 s: 4 pod(s) ['ci-agent/b-agent-kg-13', 'ci-exec/b-val-kg-13', 'ci-prep/b-prep-kn-13', 'ci-prep/b-prep-rn-13']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['no xtables-monitor line for this try (reader restarting); see late-events.jsonl for the nft trace']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 - 09:17:44.076Z `steady-t3-kata` (agent, kata, 10.42.0.34) -> `node22` 10.128.0.8:22 (external), source port 47348, 1596.10 s after the process started
   - controller: 204 ms after the end of the previous sync, 4635 ms before the next sync
   - pod events within 1 s: 1 pod(s) ['ci-exec/b-exec-kg-15']
   - address not used by an earlier pod in this capture
-  - trace: ['no trace line for this source port (trace reader lost it or was restarting)']
-  - conntrack: ['no NEW event recorded']
+  - trace (same destination, within 3 s): ['1794561464076 10.42.0.34:47348 10.128.0.8:22 10.128.0.8:22 blocked KUBE-POD-FW-PHDC2LOFNQS335P7 16']
+  - conntrack (same destination, within 3 s): ['no NEW event']
 
 total late connections in steady pods: 86
 socket state right after connect() returned, late connections: {'not recorded (probe v1)': 86} | start-up connections: {'not recorded (probe v1)': 80, 'ESTABLISHED': 136}

@@ -435,8 +435,9 @@ above.
 
 **Late connections through an applied policy: none found; the earlier reports were a probe artifact.** The probe
 reported them again, in Kata pods only (76 in 276,318 forbidden tries, with and without churn, internal and external
-targets alike). Every one that could be looked up was rejected by the node: the packet trace shows the reject rule
-of the pod's chain, no connection-tracking entry, no SYN-ACK, and the socket was not connected. Inside the Kata guest
+targets alike). Of the 133 such events in the main block, 128 have a packet trace and every one shows the reject
+rule of the pod's chain; the other 5 fell in a minute when no trace reader was running. None of the 133 has a
+connection-tracking entry, none has a SYN-ACK, and the socket was not connected. Inside the Kata guest
 `connect()` can return without error for a refused connection (the first `SO_ERROR` reads 0, the next reads 111). Of
 928,346 traced SYNs none was accepted outside a start-up window, with 834 controller syncs and 194 pods coming and
 going; about 774,000 forbidden tries from long-running pods, none passed. The single late connections recorded on
@@ -452,18 +453,28 @@ volume and no secret: it tries the forbidden canaries (public address, metadata 
 none connects in 8 consecutive rounds over at least 2 s, and for agent pods until the gateway's model port answers;
 after 60 s it fails the pod, which is an infrastructure error. With it, 0 of 60 pods had an established forbidden
 connection in the main container, against 39 of 60 Kata pods without it in the same minutes. Cost: about 8 s per pod
-as configured. `NETGATE=0` builds pods without it. It shows the rules were in force when it looked; it cannot
-prevent a later lapse. Not run on the cluster: its timeout path, and a complete round with it.
+as configured. `NETGATE=0` builds pods without it. It checks canaries and shows the rules were in force when it
+looked; it does not make the policy apply from the pod's first instant and cannot prevent a later lapse. A gate that
+fails is an infrastructure error: `attempt.sh` keeps the try in the infra file and redoes it under a new run id
+(forced on the cluster: exit 1, no journal row, `-t2` on the rerun). Not run on the cluster: a complete round with it.
 
 **Guest seccomp.** `infra/install-k3s-kata.sh` now sets `disable_guest_seccomp = false` through the chart's drop-in:
 `Seccomp: 2` in 8 of 8 new Kata pods, where all pods of the earlier rounds showed 0; the Go case still reproduced
-(3/3 and 3/3). Applied to a running lab with `helm upgrade`; the new install line was not run from an empty machine.
+(3/3 and 3/3). First applied to a running lab with `helm upgrade`; then the install script as it is was run on the
+same VM after uninstalling k3s and removing `/opt/kata` (not an empty machine): the drop-in was written, and 4 of 4
+gated Kata pods showed `Seccomp: 2` and a passing gate. No case code ran after that reinstall.
 
-**Review points changed in the harness** (local tests 45 + 31 + 9 + 23; `criteria.md`, amendment 28):
-- `gateway_unavailable` is the pod's own word. The gateway now counts, per run, the model calls it answered with a
-  failure outside the agent's work (`model_path_failures`), and `attempt.sh` accepts the claim only with that count
-  above zero or when its own close was never confirmed. Otherwise the try is an attempt: an error, no patch, not
-  redone. Checked live both ways (confirmed: not recorded, redone under `-t2`; unconfirmed: one journal row).
+**Review points changed in the harness** (local tests 46 + 31 + 9 + 24; `criteria.md`, amendment 28):
+- `gateway_unavailable` is the pod's own word. The gateway now counts, per run, the model calls that failed for a
+  reason the sender cannot cause (`model_path_failures`, with a reason code each: the run was closed, the gateway
+  halted or could not write its state, the total cap, an upstream error, a 403/429/5xx from the provider), and
+  `attempt.sh` accepts the claim only with that count above zero or when its own close was never confirmed.
+  Otherwise the try is an attempt: an error, no patch, not redone. A request the gateway refuses for its own content
+  (format, model, size) is never counted, even with a valid token, and the run's cap is checked before the total
+  cap, so an oversized request cannot reach the total one (both from a later review the same day). Checked live:
+  confirmed claim (not recorded, redone under `-t2`, reason `run_closed`), unconfirmed claim (one journal row), a
+  valid token with a forbidden body (count stays 0). Limit: a pod could try to provoke the provider's rate limit
+  with a burst of small calls; the reason code is in the infra record and the runner stops after three such tries.
 - The meaning of the version's total cap changed with `d5e1195` and is now written down: reaching it stops the round
   and asks for a person, instead of recording the remaining attempts as budget stops. No archived attempt met it.
 - The agent's shell is `bash -c`, not `bash -lc`: the image's `/etc/profile` resets `PATH` for login shells, which
@@ -479,4 +490,11 @@ do not depend on it: the two cluster rounds re-validated all 56 patches with the
 there showed none); whether another policy enforcer has the window (not run); whether the trace instruments change
 the window (no block ran without them); how long before a pod starts the controller learns its address.
 
-The VM ran 1.25 h and was stopped after the round.
+**Corrected after review (same day).** The script that explained each accepted SYN matched packets to probe tries by
+source address and port only, so a reused port could lend an "allowed" label to a forbidden destination. It now
+matches on destination and time as well and never resolves doubt towards "allowed"; recomputed from the raw trace:
+still 0 unexplained and 0 ambiguous accepted SYNs among 928,346. Five moved from "allowed" to "start-up window";
+the count of late events with a rejecting trace went from 132 to 128 of 133 (above). Details in the folder's README,
+"Correction after review".
+
+The VM ran 1.54 h in two sessions (1.25 h and 0.29 h) and was stopped after each.

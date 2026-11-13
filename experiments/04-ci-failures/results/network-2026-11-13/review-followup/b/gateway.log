@@ -1,0 +1,15 @@
+{"ts": 1794570870.418, "event": "start", "models": ["claude-sonnet-5-5"], "budget_usd": 2.0, "spent_usd": 0.0, "halted": null}
+{"ts": 1794570873.721, "event": "run_opened", "run": "smoke-gatefail-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570891.467, "event": "run_closed", "run": "smoke-gatefail-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570891.647, "event": "run_opened", "run": "smoke-gatefail-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570907.233, "event": "run_closed", "run": "smoke-gatefail-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570907.645, "event": "run_opened", "run": "smoke-gwconf2-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570907.726, "event": "run_closed", "run": "smoke-gwconf2-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570917.042, "src": "10.42.0.10", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "unknown or closed run token", "status": 403, "run": null, "infra": "run_closed"}
+{"ts": 1794570921.074, "event": "run_closed", "run": "smoke-gwconf2-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570921.206, "event": "run_closed", "run": "smoke-gwconf2-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570921.446, "event": "run_opened", "run": "smoke-b3-1794570921", "cap_usd": 0.01, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570921.508, "src": "10.42.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "field not allowed: aip_field_not_allowed, stream", "status": 403, "run": null}
+{"ts": 1794570921.517, "src": "10.42.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "model not allowed", "status": 403, "run": null}
+{"ts": 1794570921.537, "event": "run_closed", "run": "smoke-b3-1794570921", "cap_usd": 0.01, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794570921.545, "src": "10.42.0.1", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "unknown or closed run token", "status": 403, "run": null, "infra": "run_closed"}
