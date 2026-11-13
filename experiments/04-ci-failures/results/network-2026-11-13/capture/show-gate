@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""Capture helper: reads the network gate's log (kubectl logs <pod> -c netgate) on stdin and prints the fields of its
+NETGATE result line on two short lines. Values are printed as they are in the JSON; nothing is added."""
+import json, sys
+for l in sys.stdin:
+    if l.startswith("NETGATE "):
+        d = json.loads(l[8:]); before = d.get("reachable_before", d.get("reachable"))
+        print(f"NETGATE ok: {json.dumps(d['ok'])} | why: {d['why']} | waited_s: {d['waited_s']}")
+        print(f"        rounds: {d.get('rounds')} | reachable_before: {json.dumps(before)}")

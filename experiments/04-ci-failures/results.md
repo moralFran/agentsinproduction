@@ -244,7 +244,7 @@ treats its fixture as a hidden test). The main-analysis numbers computed from th
 48 attempts, 30 green, 4 failing the hidden tests. This is not a re-classification; the archived outcomes stand. The second run found
 one defect no local test could show (the integrity checker could not run in the pods), fixed since, and both found that the
 NetworkPolicy is not yet in force when a pod starts on this cluster software, which also applies to the archived
-collection. A third round (2026-11-13) measured it at rule level: the window lasted 0.1 to 1.6 s there, for Kata and runc
+collection. A third round (2026-11-13) measured it at rule level: the window lasted from 0.1 s up to 1.8 s there (the longest seen), for Kata and runc
 pods alike, until the policy controller wrote the pod's rules; the single later connections the first two rounds reported
 turned out to be a probe artifact inside the Kata guest (the node rejected every one that could be traced); and an init
 container that waits for the policy, now on by default, closed the window (0 of 60 pods). See [the addendum](FUTURE-RUNS.md),

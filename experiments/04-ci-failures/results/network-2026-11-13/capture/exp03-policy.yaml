@@ -1,0 +1,13 @@
+# The policy of experiment 03 (its k8s/30-agent-netpol.yaml), for the namespace cap-open of capture c26:
+# egress only to the gateway pod on 8080, applied AFTER the pod is running.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: agent-egress-gateway-only, namespace: cap-open}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  egress:
+  - to:
+    - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: ci-gateway}}
+      podSelector: {matchLabels: {app: gateway}}
+    ports: [{protocol: TCP, port: 8080}]

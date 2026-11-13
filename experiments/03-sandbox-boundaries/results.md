@@ -529,7 +529,7 @@ Not measured in this experiment; measured on the same cluster software (k3s with
 flannel, Kata 4.3.1) in a later lab, `../04-ci-failures/results/network-2026-11-13/`.
 
 - **A new pod can reach what its NetworkPolicy forbids until the policy controller has written the pod's rules.**
-  There that took 0.1 to 1.6 s (Kata and runc pods alike; shorter on a quiet node), and 84 of 90 pods without an init
+  There that took from 0.1 s up to 1.8 s, the longest window seen (Kata and runc pods alike; shorter on a quiet node), and 84 of 90 pods without an init
   container had an established forbidden connection in that time. The packet trace shows the cause: the pod's
   network works before the controller's next sync adds the pod's chain.
 - **What this experiment's network result covers.** The probes of sections 1 and 6 ran in a pod that was already
@@ -539,8 +539,8 @@ flannel, Kata 4.3.1) in a later lab, `../04-ci-failures/results/network-2026-11-
 - **What it does not cover.** The agent's pods of the task runs were created with the policy already in the
   namespace, so each of them started inside that window. Nothing in this experiment measured the first second of a
   pod, and the statement about the network is not a statement about it.
-- **After the window, nothing got through there:** about 774,000 forbidden tries from long-running pods (Kata and
-  runc), none passed, with pods being created and deleted around them.
+- **In steady state, nothing got through there:** about 774,000 forbidden tries from long-running pods (Kata and
+  runc, counted after each pod's first seconds), none passed, with pods being created and deleted around them.
 - **The fix tried there:** an init container that waits until the forbidden destinations are refused before the
   main container starts; 0 of 60 pods saw the window with it. This experiment's manifests do not have it.
 - Also seen there: the Kata guest's own time service opens connections to public time servers from the pod's address

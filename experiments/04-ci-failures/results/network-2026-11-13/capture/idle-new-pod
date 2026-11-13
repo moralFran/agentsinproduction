@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Capture helper: one new pod in ci-exec that only sleeps, for kubectl exec (see newpod.py). usage: idle-new-pod kata|runc <name>
+exec python3 "$(dirname "$0")/newpod.py" idle "$@"

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Capture helper (c26), run once before each take, NOT on screen: the namespace cap-open with what a harness pod needs
+# (service account runner, the code ConfigMap) and NO NetworkPolicy; a policy left by an earlier take is deleted.
+export KUBECONFIG=~/.kube/config; ns=cap-open
+kubectl create namespace $ns --dry-run=client -o yaml | kubectl apply -f - >/dev/null
+printf 'apiVersion: v1\nkind: ServiceAccount\nmetadata: {name: runner, namespace: %s}\nautomountServiceAccountToken: false\n' $ns | kubectl apply -f - >/dev/null
+kubectl -n ci-exec get configmap ci-code -o json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({"apiVersion":"v1","kind":"ConfigMap","metadata":{"name":"ci-code","namespace":"cap-open"},"data":d["data"]}))' | kubectl apply -f - >/dev/null
+kubectl -n $ns delete networkpolicy --all >/dev/null 2>&1; kubectl -n $ns delete pod --all --wait=true >/dev/null 2>&1
+kubectl -n $ns get networkpolicy,pods 2>&1 | head -3

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Capture helper (c26): one new pod in the namespace cap-open (no NetworkPolicy yet) that probes for 15 s and prints its clock (see newpod.py). usage: watch-new-pod kata|runc <name>
+exec python3 "$(dirname "$0")/newpod.py" watch "$@"

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Capture helper: one new pod in ci-exec that probes from its first instant (see newpod.py). usage: probe-new-pod kata|runc <name>
+exec python3 "$(dirname "$0")/newpod.py" probe "$@"

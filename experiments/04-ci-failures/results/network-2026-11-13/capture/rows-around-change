@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+"""Capture helper (c26): reads the probe's rows on stdin and prints the header, the 3 rows before the first row in which
+a destination is no longer OPEN, and the 5 rows from there on. It only selects rows; it does not change them."""
+import sys
+rows = [l.rstrip("\n") for l in sys.stdin if l.strip()]
+head, body = rows[0], rows[1:]
+i = next((k for k, r in enumerate(body) if any(w in r for w in ("refused", "no answer", "error"))), len(body))
+print(head); print("\n".join(body[max(0, i - 3):i + 5]))

@@ -430,8 +430,8 @@ next sync has written the pod's chain; until then its packets match no pod rule 
 traces of passed SYNs have no jump into a pod chain). It is not "0.3 to 0.7 s" and not specific to Kata: 0.6 to 0.8 s
 for Kata pods on a quiet node, 0.4 to 1.6 s for Kata and 0.1 to 1.1 s for runc pods on a busy one, under 20 ms for
 quiet runc pods. 39 of 45 Kata pods and 45 of 45 runc pods without an init container had an established forbidden
-connection; 0 of 30 validation test containers (they start after an init container). Nothing bounds the window from
-above.
+connection; 0 of 30 validation test containers (they start after an init container). The longest window seen in the
+round was 1.8 s (Kata pods started in the first seconds of a batch); nothing bounds it from above.
 
 **Late connections through an applied policy: none found; the earlier reports were a probe artifact.** The probe
 reported them again, in Kata pods only (76 in 276,318 forbidden tries, with and without churn, internal and external

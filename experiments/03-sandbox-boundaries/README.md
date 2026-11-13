@@ -100,7 +100,7 @@ No manual edit of containerd or k3s was needed. What was specific, and what trip
 - **NetworkPolicy works the same.** With flannel and k3s's embedded policy controller, the policy gave the same result
   for Kata and runc pods (10 repetitions each), so moving to Kata does not change how the policy is written.
 - **A new pod starts before its policy applies.** Found later on the same software (experiment 04's lab, 2026-11-13):
-  until the policy controller has written a new pod's rules (0.1 to 1.6 s there, Kata and runc alike) the pod can
+  until the policy controller has written a new pod's rules (from 0.1 s to 1.8 s, the longest seen there, Kata and runc alike) the pod can
   reach what the policy forbids. This experiment probed a pod that was already running, so it did not see it; an
   init container that waits for the policy closes it (`results.md`, "Found later, in experiment 04's lab").
 - **Verified on 2026-11-12 (r4):** the pinned procedure ran from two empty VMs to the end (`results.md`, "Fourth

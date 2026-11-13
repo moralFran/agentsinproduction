@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Capture helper: the Kata setting behind guest seccomp. Prints the line of the base configuration and the drop-in file.
+cd /opt/kata/share/defaults/kata-containers/runtimes/qemu || exit 1
+echo "$(pwd | sed 's#^/opt/kata/share/defaults#...#')"
+echo "configuration-qemu.toml:  $(sudo grep disable_guest_seccomp configuration-qemu.toml)"
+echo "config.d/50-user-overrides.toml:"; sudo cat config.d/50-user-overrides.toml | sed 's/^/    /'
