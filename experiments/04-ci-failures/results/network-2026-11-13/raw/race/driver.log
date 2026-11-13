@@ -1,0 +1,6 @@
+09:24:46 race-exec-runc-2 ci-exec runc nogate Succeeded 15002 lines
+09:24:46 race-exec-runc-1 ci-exec runc nogate Succeeded 14997 lines
+09:24:49 race-exec-kata-2 ci-exec kata nogate Succeeded 15002 lines
+09:24:50 race-exec-kata-1 ci-exec kata nogate Succeeded 15002 lines
+09:24:51 race-agent-kata ci-agent kata nogate Succeeded 12302 lines
+09:24:51 PLAN_DONE

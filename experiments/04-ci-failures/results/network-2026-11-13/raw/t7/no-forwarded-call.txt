@@ -1,0 +1,3 @@
+lines with "verdict": "forwarded" in the gateway log: 0
+distinct verdicts in the gateway log:       2 "verdict": "refused";
+gateway state at the end: {"spent_usd": 0.0, "requests": 0, "in_tok": 0, "out_tok": 0, "halted": null, "reserved_usd": 0, "budget_usd": 2.0}

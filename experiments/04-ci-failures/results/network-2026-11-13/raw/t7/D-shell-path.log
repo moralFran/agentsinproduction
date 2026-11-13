@@ -1,0 +1,43 @@
+== 2026-11-13T09:21:33Z agent pod built by cases/pod.py (harness spec), command replaced by the two shell forms
+POD {"pod": "t7d-shell", "phase": "Succeeded/", "wall_s": 11.2}
+pod log:
+--- PATH given to the container: /srv/ci/cases/gobwas-ws-a567dfd6/venv/bin:/usr/local/go/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+--- new form: bash -o pipefail -c
+/usr/local/go/bin/go
+/usr/bin/python3
+/usr/bin/git
+go version go1.27.4 linux/amd64
+PATH=/srv/ci/cases/gobwas-ws-a567dfd6/venv/bin:/usr/local/go/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+exit status 0
+--- old form: bash -lc
+/usr/bin/python3
+/usr/bin/git
+bash: line 1: go: command not found
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+exit status 0
+--- which file sets PATH for a login shell (uid 1000, HOME=/tmp)
+/etc/profile:5:  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+/etc/profile:7:  PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+/etc/profile:9:export PATH
+grep: /etc/profile.d/*: No such file or directory
+grep: /tmp/.profile: No such file or directory
+grep: /tmp/.bash_profile: No such file or directory
+grep: /tmp/.bash_login: No such file or directory
+--- bash -lxc trace of the PATH assignment
+1:++ id -u
+3:+ PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+4:+ export PATH
+--- /etc/profile, first lines
+# /etc/profile: system-wide .profile file for the Bourne shell (sh(1))
+# and Bourne compatible shells (bash(1), ksh(1), ash(1), ...).
+
+if [ "$(id -u)" -eq 0 ]; then
+  PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+else
+  PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"
+fi
+export PATH
+
+if [ "${PS1-}" ]; then
+  if [ "${BASH-}" ] && [ "$BASH" != "/bin/sh" ]; then
+== 2026-11-13T09:21:45Z done

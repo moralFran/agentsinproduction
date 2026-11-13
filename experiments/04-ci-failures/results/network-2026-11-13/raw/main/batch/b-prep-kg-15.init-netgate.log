@@ -1,0 +1,1 @@
+2026-11-13T09:18:11.875071795Z NETGATE {"ok": true, "why": "policy in force", "waited_s": 5.06, "rounds": 9, "reachable_before": {"10.43.0.1:443": 1, "10.128.0.8:10250": 1, "169.254.169.254:80": 1}}

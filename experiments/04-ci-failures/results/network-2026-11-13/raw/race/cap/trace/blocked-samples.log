@@ -1,0 +1,419 @@
+### 1794561583551 10.42.0.233:36340 10.43.210.10:8080 10.42.0.13:8080
+PACKET: 2 6d4496af IN=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.233 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=31211 DF SPORT=36340 DPORT=8080 SYN
+TRACE: 2 6d4496af raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 6d4496af raw:PREROUTING:policy:ACCEPT
+PACKET: 2 6d4496af IN=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.233 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=31211 DF SPORT=36340 DPORT=8080 SYN
+TRACE: 2 6d4496af nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 6d4496af nat:KUBE-SERVICES:rule:0x203:JUMP:KUBE-SVC-O4PVTUXHCS6EWXQF  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:model cluster IP" -m tcp --dport 8080 -j KUBE-SVC-O4PVTUXHCS6EWXQF
+TRACE: 2 6d4496af nat:KUBE-SVC-O4PVTUXHCS6EWXQF:rule:0x205:JUMP:KUBE-SEP-IWQM3JKTASIMJ5QW  -4 -t nat -A KUBE-SVC-O4PVTUXHCS6EWXQF -m comment --comment "ci-gateway/gateway:model -> 10.42.0.13:8080" -j KUBE-SEP-IWQM3JKTASIMJ5QW
+TRACE: 2 6d4496af nat:KUBE-SEP-IWQM3JKTASIMJ5QW:rule:0x207:ACCEPT  -4 -t nat -A KUBE-SEP-IWQM3JKTASIMJ5QW -p tcp -m comment --comment "ci-gateway/gateway:model" -m tcp -j DNAT --to-destination 10.42.0.13:8080
+PACKET: 2 93bf594b IN=cni0 OUT=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.233 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=31211 DF SPORT=36340 DPORT=8080 SYN
+TRACE: 2 93bf594b filter:FORWARD:rule:0x29:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 93bf594b filter:KUBE-ROUTER-FORWARD:rule:0x8f:JUMP:KUBE-POD-FW-3GXMXM7RPEW5PPPA  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-3GXMXM7RPEW5PPPA
+TRACE: 2 93bf594b filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8e:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 93bf594b filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8b:JUMP:KUBE-NWPLCY-UHKPDMYSZPXLI5MP  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-UHKPDMYSZPXLI5MP
+TRACE: 2 93bf594b filter:KUBE-NWPLCY-UHKPDMYSZPXLI5MP:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-UHKPDMYSZPXLI5MP -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 93bf594b filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x96:CONTINUE  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 93bf594b filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x97:DROP  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 037dac92 IN=cni0 OUT=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.233 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=31211 DF SPORT=36340 DPORT=8080 SYN
+TRACE: 2 037dac92 filter:FORWARD:rule:0x29:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 037dac92 filter:KUBE-ROUTER-FORWARD:rule:0x8f:JUMP:KUBE-POD-FW-3GXMXM7RPEW5PPPA  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-3GXMXM7RPEW5PPPA
+TRACE: 2 037dac92 filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8e:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 037dac92 filter:KUBE-NWPLCY-COMMON:rule:0x42:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561583551 10.42.0.233:42660 10.43.210.10:8081 10.42.0.13:8081
+PACKET: 2 65bb343b IN=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.233 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=22129 DF SPORT=42660 DPORT=8081 SYN
+TRACE: 2 65bb343b raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 65bb343b raw:PREROUTING:policy:ACCEPT
+PACKET: 2 65bb343b IN=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.233 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=22129 DF SPORT=42660 DPORT=8081 SYN
+TRACE: 2 65bb343b nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 65bb343b nat:KUBE-SERVICES:rule:0x1fe:JUMP:KUBE-SVC-VLRBRKZC64V6BMJ3  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:admin cluster IP" -m tcp --dport 8081 -j KUBE-SVC-VLRBRKZC64V6BMJ3
+TRACE: 2 65bb343b nat:KUBE-SVC-VLRBRKZC64V6BMJ3:rule:0x200:JUMP:KUBE-SEP-O2NZM6IHTBG5HUDJ  -4 -t nat -A KUBE-SVC-VLRBRKZC64V6BMJ3 -m comment --comment "ci-gateway/gateway:admin -> 10.42.0.13:8081" -j KUBE-SEP-O2NZM6IHTBG5HUDJ
+TRACE: 2 65bb343b nat:KUBE-SEP-O2NZM6IHTBG5HUDJ:rule:0x202:ACCEPT  -4 -t nat -A KUBE-SEP-O2NZM6IHTBG5HUDJ -p tcp -m comment --comment "ci-gateway/gateway:admin" -m tcp -j DNAT --to-destination 10.42.0.13:8081
+PACKET: 2 b10a40fc IN=cni0 OUT=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.233 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=22129 DF SPORT=42660 DPORT=8081 SYN
+TRACE: 2 b10a40fc filter:FORWARD:rule:0x29:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 b10a40fc filter:KUBE-ROUTER-FORWARD:rule:0x8f:JUMP:KUBE-POD-FW-3GXMXM7RPEW5PPPA  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-3GXMXM7RPEW5PPPA
+TRACE: 2 b10a40fc filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8e:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 b10a40fc filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8b:JUMP:KUBE-NWPLCY-UHKPDMYSZPXLI5MP  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-UHKPDMYSZPXLI5MP
+TRACE: 2 b10a40fc filter:KUBE-NWPLCY-UHKPDMYSZPXLI5MP:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-UHKPDMYSZPXLI5MP -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 b10a40fc filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x96:CONTINUE  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 b10a40fc filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x97:DROP  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 8bc76ea9 IN=cni0 OUT=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.233 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=22129 DF SPORT=42660 DPORT=8081 SYN
+TRACE: 2 8bc76ea9 filter:FORWARD:rule:0x29:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 8bc76ea9 filter:KUBE-ROUTER-FORWARD:rule:0x8f:JUMP:KUBE-POD-FW-3GXMXM7RPEW5PPPA  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-3GXMXM7RPEW5PPPA
+TRACE: 2 8bc76ea9 filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8e:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 8bc76ea9 filter:KUBE-NWPLCY-COMMON:rule:0x42:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561583552 10.42.0.233:48664 10.42.0.13:8080 10.42.0.13:8080
+PACKET: 2 4faa92d7 IN=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.233 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=45217 DF SPORT=48664 DPORT=8080 SYN
+TRACE: 2 4faa92d7 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 4faa92d7 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 4faa92d7 IN=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.233 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=45217 DF SPORT=48664 DPORT=8080 SYN
+TRACE: 2 4faa92d7 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 4faa92d7 nat:PREROUTING:policy:ACCEPT
+PACKET: 2 34186555 IN=cni0 OUT=cni0 MACSRC=9e:9b:d3:48:e9:9e MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.233 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=45217 DF SPORT=48664 DPORT=8080 SYN
+TRACE: 2 34186555 filter:FORWARD:rule:0x29:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 34186555 filter:KUBE-ROUTER-FORWARD:rule:0x8f:JUMP:KUBE-POD-FW-3GXMXM7RPEW5PPPA  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-3GXMXM7RPEW5PPPA
+TRACE: 2 34186555 filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8e:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 34186555 filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x8b:JUMP:KUBE-NWPLCY-UHKPDMYSZPXLI5MP  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-UHKPDMYSZPXLI5MP
+TRACE: 2 34186555 filter:KUBE-NWPLCY-UHKPDMYSZPXLI5MP:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-UHKPDMYSZPXLI5MP -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 34186555 filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x96:CONTINUE  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 34186555 filter:KUBE-POD-FW-3GXMXM7RPEW5PPPA:rule:0x97:DROP  -4 -t filter -A KUBE-POD-FW-3GXMXM7RPEW5PPPA -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+### 1794561583558 10.42.0.234:36474 10.43.210.10:8080 10.42.0.13:8080
+PACKET: 2 605ac72c IN=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.234 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=8159 DF SPORT=36474 DPORT=8080 SYN
+TRACE: 2 605ac72c raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 605ac72c raw:PREROUTING:policy:ACCEPT
+PACKET: 2 605ac72c IN=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.234 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=8159 DF SPORT=36474 DPORT=8080 SYN
+TRACE: 2 605ac72c nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 605ac72c nat:KUBE-SERVICES:rule:0x203:JUMP:KUBE-SVC-O4PVTUXHCS6EWXQF  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:model cluster IP" -m tcp --dport 8080 -j KUBE-SVC-O4PVTUXHCS6EWXQF
+TRACE: 2 605ac72c nat:KUBE-SVC-O4PVTUXHCS6EWXQF:rule:0x205:JUMP:KUBE-SEP-IWQM3JKTASIMJ5QW  -4 -t nat -A KUBE-SVC-O4PVTUXHCS6EWXQF -m comment --comment "ci-gateway/gateway:model -> 10.42.0.13:8080" -j KUBE-SEP-IWQM3JKTASIMJ5QW
+TRACE: 2 605ac72c nat:KUBE-SEP-IWQM3JKTASIMJ5QW:rule:0x207:ACCEPT  -4 -t nat -A KUBE-SEP-IWQM3JKTASIMJ5QW -p tcp -m comment --comment "ci-gateway/gateway:model" -m tcp -j DNAT --to-destination 10.42.0.13:8080
+PACKET: 2 c13782c1 IN=cni0 OUT=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.234 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=8159 DF SPORT=36474 DPORT=8080 SYN
+TRACE: 2 c13782c1 filter:FORWARD:rule:0x2a:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 c13782c1 filter:KUBE-ROUTER-FORWARD:rule:0x90:JUMP:KUBE-POD-FW-WAVABBDOACFXBUEV  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-WAVABBDOACFXBUEV
+TRACE: 2 c13782c1 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8f:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 c13782c1 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8c:JUMP:KUBE-NWPLCY-UMGGGVEBWBG6THGY  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-UMGGGVEBWBG6THGY
+TRACE: 2 c13782c1 filter:KUBE-NWPLCY-UMGGGVEBWBG6THGY:rule:0x52:CONTINUE  -4 -t filter -A KUBE-NWPLCY-UMGGGVEBWBG6THGY -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 c13782c1 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x97:CONTINUE  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 c13782c1 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x98:DROP  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 2501594d IN=cni0 OUT=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.234 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=8159 DF SPORT=36474 DPORT=8080 SYN
+TRACE: 2 2501594d filter:FORWARD:rule:0x2a:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 2501594d filter:KUBE-ROUTER-FORWARD:rule:0x90:JUMP:KUBE-POD-FW-WAVABBDOACFXBUEV  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-WAVABBDOACFXBUEV
+TRACE: 2 2501594d filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8f:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 2501594d filter:KUBE-NWPLCY-COMMON:rule:0x43:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561583558 10.42.0.234:34546 10.43.210.10:8081 10.42.0.13:8081
+PACKET: 2 2a861bee IN=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.234 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=48361 DF SPORT=34546 DPORT=8081 SYN
+TRACE: 2 2a861bee raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 2a861bee raw:PREROUTING:policy:ACCEPT
+PACKET: 2 2a861bee IN=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.234 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=48361 DF SPORT=34546 DPORT=8081 SYN
+TRACE: 2 2a861bee nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 2a861bee nat:KUBE-SERVICES:rule:0x1fe:JUMP:KUBE-SVC-VLRBRKZC64V6BMJ3  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:admin cluster IP" -m tcp --dport 8081 -j KUBE-SVC-VLRBRKZC64V6BMJ3
+TRACE: 2 2a861bee nat:KUBE-SVC-VLRBRKZC64V6BMJ3:rule:0x200:JUMP:KUBE-SEP-O2NZM6IHTBG5HUDJ  -4 -t nat -A KUBE-SVC-VLRBRKZC64V6BMJ3 -m comment --comment "ci-gateway/gateway:admin -> 10.42.0.13:8081" -j KUBE-SEP-O2NZM6IHTBG5HUDJ
+TRACE: 2 2a861bee nat:KUBE-SEP-O2NZM6IHTBG5HUDJ:rule:0x202:ACCEPT  -4 -t nat -A KUBE-SEP-O2NZM6IHTBG5HUDJ -p tcp -m comment --comment "ci-gateway/gateway:admin" -m tcp -j DNAT --to-destination 10.42.0.13:8081
+PACKET: 2 12440a13 IN=cni0 OUT=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.234 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=48361 DF SPORT=34546 DPORT=8081 SYN
+TRACE: 2 12440a13 filter:FORWARD:rule:0x2a:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 12440a13 filter:KUBE-ROUTER-FORWARD:rule:0x90:JUMP:KUBE-POD-FW-WAVABBDOACFXBUEV  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-WAVABBDOACFXBUEV
+TRACE: 2 12440a13 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8f:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 12440a13 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8c:JUMP:KUBE-NWPLCY-UMGGGVEBWBG6THGY  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-UMGGGVEBWBG6THGY
+TRACE: 2 12440a13 filter:KUBE-NWPLCY-UMGGGVEBWBG6THGY:rule:0x52:CONTINUE  -4 -t filter -A KUBE-NWPLCY-UMGGGVEBWBG6THGY -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 12440a13 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x97:CONTINUE  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 12440a13 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x98:DROP  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 22f5b444 IN=cni0 OUT=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.234 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=48361 DF SPORT=34546 DPORT=8081 SYN
+TRACE: 2 22f5b444 filter:FORWARD:rule:0x2a:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 22f5b444 filter:KUBE-ROUTER-FORWARD:rule:0x90:JUMP:KUBE-POD-FW-WAVABBDOACFXBUEV  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-WAVABBDOACFXBUEV
+TRACE: 2 22f5b444 filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8f:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 22f5b444 filter:KUBE-NWPLCY-COMMON:rule:0x43:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561583558 10.42.0.234:53812 10.42.0.13:8080 10.42.0.13:8080
+PACKET: 2 2cec5042 IN=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.234 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=7909 DF SPORT=53812 DPORT=8080 SYN
+TRACE: 2 2cec5042 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 2cec5042 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 2cec5042 IN=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.234 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=7909 DF SPORT=53812 DPORT=8080 SYN
+TRACE: 2 2cec5042 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 2cec5042 nat:PREROUTING:policy:ACCEPT
+PACKET: 2 d436e3fa IN=cni0 OUT=cni0 MACSRC=a:6d:b4:24:99:93 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.234 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=7909 DF SPORT=53812 DPORT=8080 SYN
+TRACE: 2 d436e3fa filter:FORWARD:rule:0x2a:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 d436e3fa filter:KUBE-ROUTER-FORWARD:rule:0x90:JUMP:KUBE-POD-FW-WAVABBDOACFXBUEV  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-WAVABBDOACFXBUEV
+TRACE: 2 d436e3fa filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8f:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 d436e3fa filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x8c:JUMP:KUBE-NWPLCY-UMGGGVEBWBG6THGY  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-UMGGGVEBWBG6THGY
+TRACE: 2 d436e3fa filter:KUBE-POD-FW-WAVABBDOACFXBUEV:rule:0x98:DROP  -4 -t filter -A KUBE-POD-FW-WAVABBDOACFXBUEV -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+### 1794561585596 10.42.0.230:41666 10.43.210.10:8081 10.42.0.13:8081
+PACKET: 2 581492df IN=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.230 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=13600 DF SPORT=41666 DPORT=8081 SYN
+TRACE: 2 581492df raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 581492df raw:PREROUTING:policy:ACCEPT
+PACKET: 2 581492df IN=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.230 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=13600 DF SPORT=41666 DPORT=8081 SYN
+TRACE: 2 581492df nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 581492df nat:KUBE-SERVICES:rule:0x1fe:JUMP:KUBE-SVC-VLRBRKZC64V6BMJ3  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:admin cluster IP" -m tcp --dport 8081 -j KUBE-SVC-VLRBRKZC64V6BMJ3
+TRACE: 2 581492df nat:KUBE-SVC-VLRBRKZC64V6BMJ3:rule:0x200:JUMP:KUBE-SEP-O2NZM6IHTBG5HUDJ  -4 -t nat -A KUBE-SVC-VLRBRKZC64V6BMJ3 -m comment --comment "ci-gateway/gateway:admin -> 10.42.0.13:8081" -j KUBE-SEP-O2NZM6IHTBG5HUDJ
+TRACE: 2 581492df nat:KUBE-SEP-O2NZM6IHTBG5HUDJ:rule:0x202:ACCEPT  -4 -t nat -A KUBE-SEP-O2NZM6IHTBG5HUDJ -p tcp -m comment --comment "ci-gateway/gateway:admin" -m tcp -j DNAT --to-destination 10.42.0.13:8081
+PACKET: 2 9f7b8a03 IN=cni0 OUT=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.230 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=13600 DF SPORT=41666 DPORT=8081 SYN
+TRACE: 2 9f7b8a03 filter:FORWARD:rule:0x2b:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 9f7b8a03 filter:KUBE-ROUTER-FORWARD:rule:0x82:JUMP:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-Q2HZ5DBUSDPQLAIK
+TRACE: 2 9f7b8a03 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x81:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 9f7b8a03 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x7e:JUMP:KUBE-NWPLCY-4YVKULD3GJTM33B2  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-4YVKULD3GJTM33B2
+TRACE: 2 9f7b8a03 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x8a:DROP  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 0dfef13c IN=cni0 OUT=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.230 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=13600 DF SPORT=41666 DPORT=8081 SYN
+TRACE: 2 0dfef13c filter:FORWARD:rule:0x2b:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 0dfef13c filter:KUBE-ROUTER-FORWARD:rule:0x82:JUMP:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-Q2HZ5DBUSDPQLAIK
+TRACE: 2 0dfef13c filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x81:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 0dfef13c filter:KUBE-NWPLCY-COMMON:rule:0x44:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561585597 10.42.0.230:43594 10.43.210.10:8080 10.42.0.13:8080
+PACKET: 2 eed2796a IN=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.230 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=47199 DF SPORT=43594 DPORT=8080 SYN
+TRACE: 2 eed2796a raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 eed2796a raw:PREROUTING:policy:ACCEPT
+PACKET: 2 eed2796a IN=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.230 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=47199 DF SPORT=43594 DPORT=8080 SYN
+TRACE: 2 eed2796a nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 eed2796a nat:KUBE-SERVICES:rule:0x203:JUMP:KUBE-SVC-O4PVTUXHCS6EWXQF  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:model cluster IP" -m tcp --dport 8080 -j KUBE-SVC-O4PVTUXHCS6EWXQF
+TRACE: 2 eed2796a nat:KUBE-SVC-O4PVTUXHCS6EWXQF:rule:0x205:JUMP:KUBE-SEP-IWQM3JKTASIMJ5QW  -4 -t nat -A KUBE-SVC-O4PVTUXHCS6EWXQF -m comment --comment "ci-gateway/gateway:model -> 10.42.0.13:8080" -j KUBE-SEP-IWQM3JKTASIMJ5QW
+TRACE: 2 eed2796a nat:KUBE-SEP-IWQM3JKTASIMJ5QW:rule:0x207:ACCEPT  -4 -t nat -A KUBE-SEP-IWQM3JKTASIMJ5QW -p tcp -m comment --comment "ci-gateway/gateway:model" -m tcp -j DNAT --to-destination 10.42.0.13:8080
+PACKET: 2 26997242 IN=cni0 OUT=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.230 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=47199 DF SPORT=43594 DPORT=8080 SYN
+TRACE: 2 26997242 filter:FORWARD:rule:0x2b:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 26997242 filter:KUBE-ROUTER-FORWARD:rule:0x82:JUMP:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-Q2HZ5DBUSDPQLAIK
+TRACE: 2 26997242 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x81:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 26997242 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x7e:JUMP:KUBE-NWPLCY-4YVKULD3GJTM33B2  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-4YVKULD3GJTM33B2
+TRACE: 2 26997242 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x8a:DROP  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 477d5272 IN=cni0 OUT=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.230 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=47199 DF SPORT=43594 DPORT=8080 SYN
+TRACE: 2 477d5272 filter:FORWARD:rule:0x2b:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 477d5272 filter:KUBE-ROUTER-FORWARD:rule:0x82:JUMP:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-Q2HZ5DBUSDPQLAIK
+TRACE: 2 477d5272 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x81:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 477d5272 filter:KUBE-NWPLCY-COMMON:rule:0x44:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561585597 10.42.0.230:35406 10.42.0.13:8081 10.42.0.13:8081
+PACKET: 2 2c1efb1c IN=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.230 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=41912 DF SPORT=35406 DPORT=8081 SYN
+TRACE: 2 2c1efb1c raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 2c1efb1c raw:PREROUTING:policy:ACCEPT
+PACKET: 2 2c1efb1c IN=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.230 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=41912 DF SPORT=35406 DPORT=8081 SYN
+TRACE: 2 2c1efb1c nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 2c1efb1c nat:PREROUTING:policy:ACCEPT
+PACKET: 2 6ee1e473 IN=cni0 OUT=cni0 MACSRC=66:4f:b6:13:6e:1d MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.230 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=41912 DF SPORT=35406 DPORT=8081 SYN
+TRACE: 2 6ee1e473 filter:FORWARD:rule:0x2b:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 6ee1e473 filter:KUBE-ROUTER-FORWARD:rule:0x82:JUMP:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-Q2HZ5DBUSDPQLAIK
+TRACE: 2 6ee1e473 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x81:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 6ee1e473 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x7e:JUMP:KUBE-NWPLCY-4YVKULD3GJTM33B2  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-4YVKULD3GJTM33B2
+TRACE: 2 6ee1e473 filter:KUBE-POD-FW-Q2HZ5DBUSDPQLAIK:rule:0x8a:DROP  -4 -t filter -A KUBE-POD-FW-Q2HZ5DBUSDPQLAIK -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+### 1794561586622 10.42.0.231:58758 10.43.210.10:8080 10.42.0.13:8080
+PACKET: 2 18674049 IN=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.231 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=4623 DF SPORT=58758 DPORT=8080 SYN
+TRACE: 2 18674049 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 18674049 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 18674049 IN=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.231 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=4623 DF SPORT=58758 DPORT=8080 SYN
+TRACE: 2 18674049 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 18674049 nat:KUBE-SERVICES:rule:0x203:JUMP:KUBE-SVC-O4PVTUXHCS6EWXQF  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:model cluster IP" -m tcp --dport 8080 -j KUBE-SVC-O4PVTUXHCS6EWXQF
+TRACE: 2 18674049 nat:KUBE-SVC-O4PVTUXHCS6EWXQF:rule:0x205:JUMP:KUBE-SEP-IWQM3JKTASIMJ5QW  -4 -t nat -A KUBE-SVC-O4PVTUXHCS6EWXQF -m comment --comment "ci-gateway/gateway:model -> 10.42.0.13:8080" -j KUBE-SEP-IWQM3JKTASIMJ5QW
+TRACE: 2 18674049 nat:KUBE-SEP-IWQM3JKTASIMJ5QW:rule:0x207:ACCEPT  -4 -t nat -A KUBE-SEP-IWQM3JKTASIMJ5QW -p tcp -m comment --comment "ci-gateway/gateway:model" -m tcp -j DNAT --to-destination 10.42.0.13:8080
+PACKET: 2 17861fba IN=cni0 OUT=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=4623 DF SPORT=58758 DPORT=8080 SYN
+TRACE: 2 17861fba filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 17861fba filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 17861fba filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 17861fba filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd6:JUMP:KUBE-NWPLCY-5ESHYEIQGMH37STG  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-5ESHYEIQGMH37STG
+TRACE: 2 17861fba filter:KUBE-NWPLCY-5ESHYEIQGMH37STG:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-5ESHYEIQGMH37STG -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 17861fba filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe1:CONTINUE  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 17861fba filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe2:DROP  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 96510472 IN=cni0 OUT=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=4623 DF SPORT=58758 DPORT=8080 SYN
+TRACE: 2 96510472 filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 96510472 filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 96510472 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 96510472 filter:KUBE-NWPLCY-COMMON:rule:0x45:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561586623 10.42.0.231:52304 10.42.0.13:8080 10.42.0.13:8080
+PACKET: 2 480572d3 IN=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=61350 DF SPORT=52304 DPORT=8080 SYN
+TRACE: 2 480572d3 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 480572d3 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 480572d3 IN=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=61350 DF SPORT=52304 DPORT=8080 SYN
+TRACE: 2 480572d3 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 480572d3 nat:PREROUTING:policy:ACCEPT
+PACKET: 2 2ac6ce3d IN=cni0 OUT=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=61350 DF SPORT=52304 DPORT=8080 SYN
+TRACE: 2 2ac6ce3d filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 2ac6ce3d filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 2ac6ce3d filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 2ac6ce3d filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd6:JUMP:KUBE-NWPLCY-5ESHYEIQGMH37STG  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-5ESHYEIQGMH37STG
+TRACE: 2 2ac6ce3d filter:KUBE-NWPLCY-5ESHYEIQGMH37STG:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-5ESHYEIQGMH37STG -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 2ac6ce3d filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe1:CONTINUE  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 2ac6ce3d filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe2:DROP  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+### 1794561586623 10.42.0.231:44834 10.42.0.13:8081 10.42.0.13:8081
+PACKET: 2 e21f7a90 IN=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=32393 DF SPORT=44834 DPORT=8081 SYN
+TRACE: 2 e21f7a90 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 e21f7a90 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 e21f7a90 IN=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=32393 DF SPORT=44834 DPORT=8081 SYN
+TRACE: 2 e21f7a90 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 e21f7a90 nat:PREROUTING:policy:ACCEPT
+PACKET: 2 4e56f120 IN=cni0 OUT=cni0 MACSRC=36:9d:4e:f4:6b:11 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.231 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=32393 DF SPORT=44834 DPORT=8081 SYN
+TRACE: 2 4e56f120 filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 4e56f120 filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 4e56f120 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 4e56f120 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd6:JUMP:KUBE-NWPLCY-5ESHYEIQGMH37STG  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-5ESHYEIQGMH37STG
+TRACE: 2 4e56f120 filter:KUBE-NWPLCY-5ESHYEIQGMH37STG:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-5ESHYEIQGMH37STG -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 4e56f120 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe1:CONTINUE  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 4e56f120 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe2:DROP  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+### 1794561586625 10.42.0.232:36042 10.43.210.10:8080 10.42.0.13:8080
+PACKET: 2 f3ca231d IN=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.232 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=13620 DF SPORT=36042 DPORT=8080 SYN
+TRACE: 2 f3ca231d raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 f3ca231d raw:PREROUTING:policy:ACCEPT
+PACKET: 2 f3ca231d IN=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.232 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=13620 DF SPORT=36042 DPORT=8080 SYN
+TRACE: 2 f3ca231d nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 f3ca231d nat:KUBE-SERVICES:rule:0x203:JUMP:KUBE-SVC-O4PVTUXHCS6EWXQF  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:model cluster IP" -m tcp --dport 8080 -j KUBE-SVC-O4PVTUXHCS6EWXQF
+TRACE: 2 f3ca231d nat:KUBE-SVC-O4PVTUXHCS6EWXQF:rule:0x205:JUMP:KUBE-SEP-IWQM3JKTASIMJ5QW  -4 -t nat -A KUBE-SVC-O4PVTUXHCS6EWXQF -m comment --comment "ci-gateway/gateway:model -> 10.42.0.13:8080" -j KUBE-SEP-IWQM3JKTASIMJ5QW
+TRACE: 2 f3ca231d nat:KUBE-SEP-IWQM3JKTASIMJ5QW:rule:0x207:ACCEPT  -4 -t nat -A KUBE-SEP-IWQM3JKTASIMJ5QW -p tcp -m comment --comment "ci-gateway/gateway:model" -m tcp -j DNAT --to-destination 10.42.0.13:8080
+PACKET: 2 a084716f IN=cni0 OUT=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.232 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=13620 DF SPORT=36042 DPORT=8080 SYN
+TRACE: 2 a084716f filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 a084716f filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 a084716f filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 a084716f filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd6:JUMP:KUBE-NWPLCY-5ESHYEIQGMH37STG  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-5ESHYEIQGMH37STG
+TRACE: 2 a084716f filter:KUBE-NWPLCY-5ESHYEIQGMH37STG:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-5ESHYEIQGMH37STG -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 a084716f filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe1:CONTINUE  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 a084716f filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe2:DROP  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 d3117f40 IN=cni0 OUT=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.232 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=13620 DF SPORT=36042 DPORT=8080 SYN
+TRACE: 2 d3117f40 filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 d3117f40 filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 d3117f40 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 d3117f40 filter:KUBE-NWPLCY-COMMON:rule:0x45:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561586625 10.42.0.232:35298 10.43.210.10:8081 10.42.0.13:8081
+PACKET: 2 b8164b86 IN=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.232 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=53639 DF SPORT=35298 DPORT=8081 SYN
+TRACE: 2 b8164b86 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 b8164b86 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 b8164b86 IN=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.232 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=53639 DF SPORT=35298 DPORT=8081 SYN
+TRACE: 2 b8164b86 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 b8164b86 nat:KUBE-SERVICES:rule:0x1fe:JUMP:KUBE-SVC-VLRBRKZC64V6BMJ3  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:admin cluster IP" -m tcp --dport 8081 -j KUBE-SVC-VLRBRKZC64V6BMJ3
+TRACE: 2 b8164b86 nat:KUBE-SVC-VLRBRKZC64V6BMJ3:rule:0x200:JUMP:KUBE-SEP-O2NZM6IHTBG5HUDJ  -4 -t nat -A KUBE-SVC-VLRBRKZC64V6BMJ3 -m comment --comment "ci-gateway/gateway:admin -> 10.42.0.13:8081" -j KUBE-SEP-O2NZM6IHTBG5HUDJ
+TRACE: 2 b8164b86 nat:KUBE-SEP-O2NZM6IHTBG5HUDJ:rule:0x202:ACCEPT  -4 -t nat -A KUBE-SEP-O2NZM6IHTBG5HUDJ -p tcp -m comment --comment "ci-gateway/gateway:admin" -m tcp -j DNAT --to-destination 10.42.0.13:8081
+PACKET: 2 8014c7e5 IN=cni0 OUT=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.232 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=53639 DF SPORT=35298 DPORT=8081 SYN
+TRACE: 2 8014c7e5 filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 8014c7e5 filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 8014c7e5 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 8014c7e5 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd6:JUMP:KUBE-NWPLCY-5ESHYEIQGMH37STG  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-5ESHYEIQGMH37STG
+TRACE: 2 8014c7e5 filter:KUBE-NWPLCY-5ESHYEIQGMH37STG:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-5ESHYEIQGMH37STG -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+TRACE: 2 8014c7e5 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe1:CONTINUE  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 8014c7e5 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe2:DROP  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 e4dc0f14 IN=cni0 OUT=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.232 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=63 ID=53639 DF SPORT=35298 DPORT=8081 SYN
+TRACE: 2 e4dc0f14 filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 e4dc0f14 filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 e4dc0f14 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 e4dc0f14 filter:KUBE-NWPLCY-COMMON:rule:0x45:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561586625 10.42.0.232:41716 10.42.0.13:8080 10.42.0.13:8080
+PACKET: 2 37e3a62b IN=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.232 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=56436 DF SPORT=41716 DPORT=8080 SYN
+TRACE: 2 37e3a62b raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 37e3a62b raw:PREROUTING:policy:ACCEPT
+PACKET: 2 37e3a62b IN=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.232 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=56436 DF SPORT=41716 DPORT=8080 SYN
+TRACE: 2 37e3a62b nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 37e3a62b nat:PREROUTING:policy:ACCEPT
+PACKET: 2 37afcec2 IN=cni0 OUT=cni0 MACSRC=5e:9c:4e:37:b4:99 MACDST=9e:81:f6:f1:81:8e MACPROTO=0800 SRC=10.42.0.232 DST=10.42.0.13 LEN=60 TOS=0x0 TTL=64 ID=56436 DF SPORT=41716 DPORT=8080 SYN
+TRACE: 2 37afcec2 filter:FORWARD:rule:0x2c:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 37afcec2 filter:KUBE-ROUTER-FORWARD:rule:0xda:JUMP:KUBE-POD-FW-AQ476EIGAO6PPVF2  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-AQ476EIGAO6PPVF2
+TRACE: 2 37afcec2 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd9:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 37afcec2 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xd6:JUMP:KUBE-NWPLCY-5ESHYEIQGMH37STG  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-5ESHYEIQGMH37STG
+TRACE: 2 37afcec2 filter:KUBE-POD-FW-AQ476EIGAO6PPVF2:rule:0xe2:DROP  -4 -t filter -A KUBE-POD-FW-AQ476EIGAO6PPVF2 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+### 1794561630808 10.42.0.237:55548 10.43.210.10:8080 10.42.0.235:8080
+PACKET: 2 27aac790 IN=cni0 MACSRC=de:25:e2:c:96:52 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.237 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=53213 DF SPORT=55548 DPORT=8080 SYN
+TRACE: 2 27aac790 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 27aac790 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 27aac790 IN=cni0 MACSRC=de:25:e2:c:96:52 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.237 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=53213 DF SPORT=55548 DPORT=8080 SYN
+TRACE: 2 27aac790 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 27aac790 nat:KUBE-SERVICES:rule:0x247:JUMP:KUBE-SVC-O4PVTUXHCS6EWXQF  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:model cluster IP" -m tcp --dport 8080 -j KUBE-SVC-O4PVTUXHCS6EWXQF
+TRACE: 2 27aac790 nat:KUBE-SVC-O4PVTUXHCS6EWXQF:rule:0x249:JUMP:KUBE-SEP-5SWRZANYMWKOJUIZ  -4 -t nat -A KUBE-SVC-O4PVTUXHCS6EWXQF -m comment --comment "ci-gateway/gateway:model -> 10.42.0.235:8080" -j KUBE-SEP-5SWRZANYMWKOJUIZ
+TRACE: 2 27aac790 nat:KUBE-SEP-5SWRZANYMWKOJUIZ:rule:0x24b:ACCEPT  -4 -t nat -A KUBE-SEP-5SWRZANYMWKOJUIZ -p tcp -m comment --comment "ci-gateway/gateway:model" -m tcp -j DNAT --to-destination 10.42.0.235:8080
+PACKET: 2 f4c96d4a IN=cni0 OUT=cni0 MACSRC=de:25:e2:c:96:52 MACDST=96:9d:ae:3:43:fd MACPROTO=0800 SRC=10.42.0.237 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=64 ID=53213 DF SPORT=55548 DPORT=8080 SYN
+TRACE: 2 f4c96d4a filter:FORWARD:rule:0x30:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 f4c96d4a filter:KUBE-ROUTER-FORWARD:rule:0x6b:JUMP:KUBE-POD-FW-2SDQ7PJULXRQARHY  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-5488c5b958-sfgmb in" -j KUBE-POD-FW-2SDQ7PJULXRQARHY
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x6a:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x67:JUMP:KUBE-NWPLCY-SP65V2GTJHPDLSM7  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-SP65V2GTJHPDLSM7
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-SP65V2GTJHPDLSM7:rule:0x58:CONTINUE  -4 -t filter -A KUBE-NWPLCY-SP65V2GTJHPDLSM7 -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-SP65V2GTJHPDLSM7:rule:0x59:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-SP65V2GTJHPDLSM7 -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x74:CONTINUE  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x75:CONTINUE  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 f4c96d4a filter:KUBE-ROUTER-FORWARD:rule:0x6d:JUMP:KUBE-POD-FW-2SDQ7PJULXRQARHY  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.235/32 -m physdev --physdev-is-bridged -m comment --comment "ci-gateway/gateway-5488c5b958-sfgmb in" -j KUBE-POD-FW-2SDQ7PJULXRQARHY
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x6a:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x67:JUMP:KUBE-NWPLCY-SP65V2GTJHPDLSM7  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-SP65V2GTJHPDLSM7
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-SP65V2GTJHPDLSM7:rule:0x58:CONTINUE  -4 -t filter -A KUBE-NWPLCY-SP65V2GTJHPDLSM7 -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-SP65V2GTJHPDLSM7:rule:0x59:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-SP65V2GTJHPDLSM7 -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x74:CONTINUE  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x75:CONTINUE  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 f4c96d4a filter:KUBE-ROUTER-FORWARD:rule:0xf0:JUMP:KUBE-POD-FW-GDIMPEBLJUEVUHRY  -4 -t filter -A KUBE-ROUTER-FORWARD -s 10.42.0.237/32 -m comment --comment "ci-agent/ag-smoke-gwconf-e88f0806-r1 out" -j KUBE-POD-FW-GDIMPEBLJUEVUHRY
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xeb:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xe9:JUMP:KUBE-NWPLCY-FFZJ2IVP2BBINSDR  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -m comment --comment "ci-agent/agent-egress-gateway-only policy" -j KUBE-NWPLCY-FFZJ2IVP2BBINSDR
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-FFZJ2IVP2BBINSDR:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-FFZJ2IVP2BBINSDR -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-FFZJ2IVP2BBINSDR:rule:0x55:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-FFZJ2IVP2BBINSDR -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xf5:CONTINUE  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xf6:CONTINUE  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 f4c96d4a filter:KUBE-ROUTER-FORWARD:rule:0xf2:JUMP:KUBE-POD-FW-GDIMPEBLJUEVUHRY  -4 -t filter -A KUBE-ROUTER-FORWARD -s 10.42.0.237/32 -m physdev --physdev-is-bridged -m comment --comment "ci-agent/ag-smoke-gwconf-e88f0806-r1 out" -j KUBE-POD-FW-GDIMPEBLJUEVUHRY
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xeb:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xe9:JUMP:KUBE-NWPLCY-FFZJ2IVP2BBINSDR  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -m comment --comment "ci-agent/agent-egress-gateway-only policy" -j KUBE-NWPLCY-FFZJ2IVP2BBINSDR
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-FFZJ2IVP2BBINSDR:rule:0x54:CONTINUE  -4 -t filter -A KUBE-NWPLCY-FFZJ2IVP2BBINSDR -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-FFZJ2IVP2BBINSDR:rule:0x55:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-FFZJ2IVP2BBINSDR -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xf5:CONTINUE  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 f4c96d4a filter:KUBE-POD-FW-GDIMPEBLJUEVUHRY:rule:0xf6:CONTINUE  -4 -t filter -A KUBE-POD-FW-GDIMPEBLJUEVUHRY -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 f4c96d4a filter:KUBE-ROUTER-FORWARD:rule:0x124:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-FORWARD -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 f4c96d4a filter:KUBE-NWPLCY-TAIL:rule:0x4f:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 f4c96d4a OUT=cni0 LL=0x0 ffffff96ffffff9dffffffae0343fffffffdffffffde25ffffffe20cffffff96520800 SRC=10.42.0.237 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=64 ID=53213 DF SPORT=55548 DPORT=8080 SYN MARK=0x20000
+TRACE: 2 f4c96d4a nat:POSTROUTING:rule:0x6c:JUMP:CNI-HOSTPORT-MASQ  -4 -t nat -A POSTROUTING -m comment --comment "CNI portfwd requiring masquerade" -j CNI-HOSTPORT-MASQ
+TRACE: 2 f4c96d4a nat:POSTROUTING:rule:0xf:JUMP:KUBE-POSTROUTING  -4 -t nat -A POSTROUTING -m comment --comment "kubernetes postrouting rules" -j KUBE-POSTROUTING
+TRACE: 2 f4c96d4a nat:KUBE-POSTROUTING:rule:0x233:0xfffffffb  -4 -t nat -A KUBE-POSTROUTING -m mark ! --mark 0x4000/0x4000 -j RETURN
+TRACE: 2 f4c96d4a nat:POSTROUTING:rule:0x1bb:JUMP:FLANNEL-POSTRTG  -4 -t nat -A POSTROUTING -m comment --comment "flanneld masq" -j FLANNEL-POSTRTG
+TRACE: 2 f4c96d4a nat:FLANNEL-POSTRTG:rule:0x1bd:0xfffffffb  -4 -t nat -A FLANNEL-POSTRTG -s 10.42.0.0/24 -d 10.42.0.0/16 -m comment --comment "flanneld masq" -j RETURN
+TRACE: 2 f4c96d4a nat:POSTROUTING:policy:ACCEPT
+PACKET: 2 8b581cf9 IN=cni0 OUT=cni0 MACSRC=de:25:e2:c:96:52 MACDST=96:9d:ae:3:43:fd MACPROTO=0800 SRC=10.42.0.237 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=63 ID=53213 DF SPORT=55548 DPORT=8080 SYN
+TRACE: 2 8b581cf9 filter:FORWARD:rule:0x30:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 8b581cf9 filter:KUBE-ROUTER-FORWARD:rule:0x6b:JUMP:KUBE-POD-FW-2SDQ7PJULXRQARHY  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-5488c5b958-sfgmb in" -j KUBE-POD-FW-2SDQ7PJULXRQARHY
+TRACE: 2 8b581cf9 filter:KUBE-POD-FW-2SDQ7PJULXRQARHY:rule:0x6a:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-2SDQ7PJULXRQARHY -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 8b581cf9 filter:KUBE-NWPLCY-COMMON:rule:0x49:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561651849 10.42.0.238:42044 10.43.210.10:8080 10.42.0.235:8080
+PACKET: 2 b11d411a IN=cni0 MACSRC=a:89:ce:27:0:d7 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.238 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=29849 DF SPORT=42044 DPORT=8080 SYN
+TRACE: 2 b11d411a raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 b11d411a raw:PREROUTING:policy:ACCEPT
+PACKET: 2 b11d411a IN=cni0 MACSRC=a:89:ce:27:0:d7 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.238 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=29849 DF SPORT=42044 DPORT=8080 SYN
+TRACE: 2 b11d411a nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 b11d411a nat:KUBE-SERVICES:rule:0x247:JUMP:KUBE-SVC-O4PVTUXHCS6EWXQF  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:model cluster IP" -m tcp --dport 8080 -j KUBE-SVC-O4PVTUXHCS6EWXQF
+TRACE: 2 b11d411a nat:KUBE-SVC-O4PVTUXHCS6EWXQF:rule:0x249:JUMP:KUBE-SEP-5SWRZANYMWKOJUIZ  -4 -t nat -A KUBE-SVC-O4PVTUXHCS6EWXQF -m comment --comment "ci-gateway/gateway:model -> 10.42.0.235:8080" -j KUBE-SEP-5SWRZANYMWKOJUIZ
+TRACE: 2 b11d411a nat:KUBE-SEP-5SWRZANYMWKOJUIZ:rule:0x24b:ACCEPT  -4 -t nat -A KUBE-SEP-5SWRZANYMWKOJUIZ -p tcp -m comment --comment "ci-gateway/gateway:model" -m tcp -j DNAT --to-destination 10.42.0.235:8080
+PACKET: 2 32acddaa IN=cni0 OUT=cni0 MACSRC=a:89:ce:27:0:d7 MACDST=96:9d:ae:3:43:fd MACPROTO=0800 SRC=10.42.0.238 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=64 ID=29849 DF SPORT=42044 DPORT=8080 SYN
+TRACE: 2 32acddaa filter:FORWARD:rule:0x30:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 32acddaa filter:KUBE-ROUTER-FORWARD:rule:0x6b:JUMP:KUBE-POD-FW-LD27NGH5PNCL72EF  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-5488c5b958-sfgmb in" -j KUBE-POD-FW-LD27NGH5PNCL72EF
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x6a:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x67:JUMP:KUBE-NWPLCY-B4VSOIW7FLYCJPTB  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-B4VSOIW7FLYCJPTB
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-B4VSOIW7FLYCJPTB:rule:0x64:CONTINUE  -4 -t filter -A KUBE-NWPLCY-B4VSOIW7FLYCJPTB -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-B4VSOIW7FLYCJPTB:rule:0x65:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-B4VSOIW7FLYCJPTB -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x74:CONTINUE  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x75:CONTINUE  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 32acddaa filter:KUBE-ROUTER-FORWARD:rule:0x6d:JUMP:KUBE-POD-FW-LD27NGH5PNCL72EF  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.235/32 -m physdev --physdev-is-bridged -m comment --comment "ci-gateway/gateway-5488c5b958-sfgmb in" -j KUBE-POD-FW-LD27NGH5PNCL72EF
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x6a:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x67:JUMP:KUBE-NWPLCY-B4VSOIW7FLYCJPTB  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-B4VSOIW7FLYCJPTB
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-B4VSOIW7FLYCJPTB:rule:0x64:CONTINUE  -4 -t filter -A KUBE-NWPLCY-B4VSOIW7FLYCJPTB -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-B4VSOIW7FLYCJPTB:rule:0x65:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-B4VSOIW7FLYCJPTB -p tcp -m comment --comment "ci-gateway/gateway-ingress ingress pods" -m set --match-set KUBE-SRC-GVPI5GGUHJUDC3ZP src -m set --match-set KUBE-DST-FLODXGQS5X7MQODV dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x74:CONTINUE  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 32acddaa filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x75:CONTINUE  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 32acddaa filter:KUBE-ROUTER-FORWARD:rule:0x100:JUMP:KUBE-POD-FW-DUY4SXY5M2AG3AQK  -4 -t filter -A KUBE-ROUTER-FORWARD -s 10.42.0.238/32 -m comment --comment "ci-agent/ag-smoke-gwconf-e88f0806-r1-t2 out" -j KUBE-POD-FW-DUY4SXY5M2AG3AQK
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0xfb:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0xf9:JUMP:KUBE-NWPLCY-XYAEIJX3LEXM7NSC  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -m comment --comment "ci-agent/agent-egress-gateway-only policy" -j KUBE-NWPLCY-XYAEIJX3LEXM7NSC
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-XYAEIJX3LEXM7NSC:rule:0x60:CONTINUE  -4 -t filter -A KUBE-NWPLCY-XYAEIJX3LEXM7NSC -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-XYAEIJX3LEXM7NSC:rule:0x61:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-XYAEIJX3LEXM7NSC -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0x105:CONTINUE  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0x106:CONTINUE  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 32acddaa filter:KUBE-ROUTER-FORWARD:rule:0x102:JUMP:KUBE-POD-FW-DUY4SXY5M2AG3AQK  -4 -t filter -A KUBE-ROUTER-FORWARD -s 10.42.0.238/32 -m physdev --physdev-is-bridged -m comment --comment "ci-agent/ag-smoke-gwconf-e88f0806-r1-t2 out" -j KUBE-POD-FW-DUY4SXY5M2AG3AQK
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0xfb:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0xf9:JUMP:KUBE-NWPLCY-XYAEIJX3LEXM7NSC  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -m comment --comment "ci-agent/agent-egress-gateway-only policy" -j KUBE-NWPLCY-XYAEIJX3LEXM7NSC
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-XYAEIJX3LEXM7NSC:rule:0x60:CONTINUE  -4 -t filter -A KUBE-NWPLCY-XYAEIJX3LEXM7NSC -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-XYAEIJX3LEXM7NSC:rule:0x61:0xfffffffb  -4 -t filter -A KUBE-NWPLCY-XYAEIJX3LEXM7NSC -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0x105:CONTINUE  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 32acddaa filter:KUBE-POD-FW-DUY4SXY5M2AG3AQK:rule:0x106:CONTINUE  -4 -t filter -A KUBE-POD-FW-DUY4SXY5M2AG3AQK -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 32acddaa filter:KUBE-ROUTER-FORWARD:rule:0x124:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-FORWARD -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 32acddaa filter:KUBE-NWPLCY-TAIL:rule:0x4f:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 32acddaa OUT=cni0 LL=0x0 ffffff96ffffff9dffffffae0343fffffffd0affffff89ffffffce2700ffffffd70800 SRC=10.42.0.238 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=64 ID=29849 DF SPORT=42044 DPORT=8080 SYN MARK=0x20000
+TRACE: 2 32acddaa nat:POSTROUTING:rule:0x6c:JUMP:CNI-HOSTPORT-MASQ  -4 -t nat -A POSTROUTING -m comment --comment "CNI portfwd requiring masquerade" -j CNI-HOSTPORT-MASQ
+TRACE: 2 32acddaa nat:POSTROUTING:rule:0xf:JUMP:KUBE-POSTROUTING  -4 -t nat -A POSTROUTING -m comment --comment "kubernetes postrouting rules" -j KUBE-POSTROUTING
+TRACE: 2 32acddaa nat:KUBE-POSTROUTING:rule:0x233:0xfffffffb  -4 -t nat -A KUBE-POSTROUTING -m mark ! --mark 0x4000/0x4000 -j RETURN
+TRACE: 2 32acddaa nat:POSTROUTING:rule:0x1bb:JUMP:FLANNEL-POSTRTG  -4 -t nat -A POSTROUTING -m comment --comment "flanneld masq" -j FLANNEL-POSTRTG
+TRACE: 2 32acddaa nat:FLANNEL-POSTRTG:rule:0x1bd:0xfffffffb  -4 -t nat -A FLANNEL-POSTRTG -s 10.42.0.0/24 -d 10.42.0.0/16 -m comment --comment "flanneld masq" -j RETURN
+TRACE: 2 32acddaa nat:POSTROUTING:policy:ACCEPT
+PACKET: 2 1efeef7c IN=cni0 OUT=cni0 MACSRC=a:89:ce:27:0:d7 MACDST=96:9d:ae:3:43:fd MACPROTO=0800 SRC=10.42.0.238 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=63 ID=29849 DF SPORT=42044 DPORT=8080 SYN
+TRACE: 2 1efeef7c filter:FORWARD:rule:0x30:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 1efeef7c filter:KUBE-ROUTER-FORWARD:rule:0x6b:JUMP:KUBE-POD-FW-LD27NGH5PNCL72EF  -4 -t filter -A KUBE-ROUTER-FORWARD -d 10.42.0.235/32 -m comment --comment "ci-gateway/gateway-5488c5b958-sfgmb in" -j KUBE-POD-FW-LD27NGH5PNCL72EF
+TRACE: 2 1efeef7c filter:KUBE-POD-FW-LD27NGH5PNCL72EF:rule:0x6a:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-LD27NGH5PNCL72EF -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 1efeef7c filter:KUBE-NWPLCY-COMMON:rule:0x49:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561673896 10.42.0.239:45444 10.43.210.10:8081 10.42.0.235:8081
+PACKET: 2 83c9477b IN=cni0 MACSRC=22:e7:81:67:8f:0 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.239 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=61753 DF SPORT=45444 DPORT=8081 SYN
+TRACE: 2 83c9477b raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 83c9477b raw:PREROUTING:policy:ACCEPT
+PACKET: 2 83c9477b IN=cni0 MACSRC=22:e7:81:67:8f:0 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.239 DST=10.43.210.10 LEN=60 TOS=0x0 TTL=64 ID=61753 DF SPORT=45444 DPORT=8081 SYN
+TRACE: 2 83c9477b nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 83c9477b nat:KUBE-SERVICES:rule:0x242:JUMP:KUBE-SVC-VLRBRKZC64V6BMJ3  -4 -t nat -A KUBE-SERVICES -d 10.43.210.10/32 -p tcp -m comment --comment "ci-gateway/gateway:admin cluster IP" -m tcp --dport 8081 -j KUBE-SVC-VLRBRKZC64V6BMJ3
+TRACE: 2 83c9477b nat:KUBE-SVC-VLRBRKZC64V6BMJ3:rule:0x244:JUMP:KUBE-SEP-IM6HX5P7UZNZNCIQ  -4 -t nat -A KUBE-SVC-VLRBRKZC64V6BMJ3 -m comment --comment "ci-gateway/gateway:admin -> 10.42.0.235:8081" -j KUBE-SEP-IM6HX5P7UZNZNCIQ
+TRACE: 2 83c9477b nat:KUBE-SEP-IM6HX5P7UZNZNCIQ:rule:0x246:ACCEPT  -4 -t nat -A KUBE-SEP-IM6HX5P7UZNZNCIQ -p tcp -m comment --comment "ci-gateway/gateway:admin" -m tcp -j DNAT --to-destination 10.42.0.235:8081
+PACKET: 2 fa00d452 IN=cni0 OUT=cni0 MACSRC=22:e7:81:67:8f:0 MACDST=96:9d:ae:3:43:fd MACPROTO=0800 SRC=10.42.0.239 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=64 ID=61753 DF SPORT=45444 DPORT=8081 SYN
+TRACE: 2 fa00d452 filter:FORWARD:rule:0x30:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 fa00d452 filter:KUBE-ROUTER-FORWARD:rule:0xa9:JUMP:KUBE-POD-FW-QGE4ZE4D4RUNCMYS  -4 -t filter -A KUBE-ROUTER-FORWARD -s 10.42.0.239/32 -m comment --comment "ci-agent/ag-smoke-gwunconf-e88f0806-r1 out" -j KUBE-POD-FW-QGE4ZE4D4RUNCMYS
+TRACE: 2 fa00d452 filter:KUBE-POD-FW-QGE4ZE4D4RUNCMYS:rule:0xa4:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-QGE4ZE4D4RUNCMYS -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 fa00d452 filter:KUBE-POD-FW-QGE4ZE4D4RUNCMYS:rule:0xa2:JUMP:KUBE-NWPLCY-2QHUR3XCPFZ4G66C  -4 -t filter -A KUBE-POD-FW-QGE4ZE4D4RUNCMYS -m comment --comment "ci-agent/agent-egress-gateway-only policy" -j KUBE-NWPLCY-2QHUR3XCPFZ4G66C
+TRACE: 2 fa00d452 filter:KUBE-POD-FW-QGE4ZE4D4RUNCMYS:rule:0xac:CONTINUE  -4 -t filter -A KUBE-POD-FW-QGE4ZE4D4RUNCMYS -m comment --comment "ci-agent/ag-smoke-gwunconf-e88f0806-r1 log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 fa00d452 filter:KUBE-POD-FW-QGE4ZE4D4RUNCMYS:rule:0xad:DROP  -4 -t filter -A KUBE-POD-FW-QGE4ZE4D4RUNCMYS -m comment --comment "ci-agent/ag-smoke-gwunconf-e88f0806-r1 reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+PACKET: 2 87ddd0fd IN=cni0 OUT=cni0 MACSRC=22:e7:81:67:8f:0 MACDST=96:9d:ae:3:43:fd MACPROTO=0800 SRC=10.42.0.239 DST=10.42.0.235 LEN=60 TOS=0x0 TTL=63 ID=61753 DF SPORT=45444 DPORT=8081 SYN
+TRACE: 2 87ddd0fd filter:FORWARD:rule:0x30:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 87ddd0fd filter:KUBE-ROUTER-FORWARD:rule:0xa9:JUMP:KUBE-POD-FW-QGE4ZE4D4RUNCMYS  -4 -t filter -A KUBE-ROUTER-FORWARD -s 10.42.0.239/32 -m comment --comment "ci-agent/ag-smoke-gwunconf-e88f0806-r1 out" -j KUBE-POD-FW-QGE4ZE4D4RUNCMYS
+TRACE: 2 87ddd0fd filter:KUBE-POD-FW-QGE4ZE4D4RUNCMYS:rule:0xa4:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-QGE4ZE4D4RUNCMYS -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 87ddd0fd filter:KUBE-NWPLCY-COMMON:rule:0x49:DROP  -4 -t filter -A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+### 1794561685368 10.42.0.240:33798 <public-ip>:4460 <public-ip>:4460
+PACKET: 2 9ffc51dc IN=cni0 MACSRC=66:66:8e:e6:6b:ab MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.240 DST=<public-ip> LEN=60 TOS=0x0 TTL=64 ID=48373 DF SPORT=33798 DPORT=4460 SYN
+TRACE: 2 9ffc51dc raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 9ffc51dc raw:PREROUTING:policy:ACCEPT
+PACKET: 2 9ffc51dc IN=cni0 MACSRC=66:66:8e:e6:6b:ab MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.240 DST=<public-ip> LEN=60 TOS=0x0 TTL=64 ID=48373 DF SPORT=33798 DPORT=4460 SYN
+TRACE: 2 9ffc51dc nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 9ffc51dc nat:PREROUTING:policy:ACCEPT
+PACKET: 2 5a228bc3 IN=cni0 OUT=ens4 MACSRC=66:66:8e:e6:6b:ab MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.240 DST=<public-ip> LEN=60 TOS=0x0 TTL=63 ID=48373 DF SPORT=33798 DPORT=4460 SYN
+TRACE: 2 5a228bc3 filter:FORWARD:rule:0x30:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+TRACE: 2 5a228bc3 filter:KUBE-ROUTER-FORWARD:rule:0x100:JUMP:KUBE-POD-FW-JADTWIGOIO2XYHKC  -4 -t filter -A KUBE-ROUTER-FORWARD -s 10.42.0.240/32 -m comment --comment "ci-exec/va-smoke-gwunconf-e88f0806-r1-suite-1 out" -j KUBE-POD-FW-JADTWIGOIO2XYHKC
+TRACE: 2 5a228bc3 filter:KUBE-POD-FW-JADTWIGOIO2XYHKC:rule:0xfa:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-JADTWIGOIO2XYHKC -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 5a228bc3 filter:KUBE-POD-FW-JADTWIGOIO2XYHKC:rule:0xf8:JUMP:KUBE-NWPLCY-DLAKW4QF3RNR4ZNW  -4 -t filter -A KUBE-POD-FW-JADTWIGOIO2XYHKC -m comment --comment "ci-exec/deny-all policy" -j KUBE-NWPLCY-DLAKW4QF3RNR4ZNW
+TRACE: 2 5a228bc3 filter:KUBE-POD-FW-JADTWIGOIO2XYHKC:rule:0x102:CONTINUE  -4 -t filter -A KUBE-POD-FW-JADTWIGOIO2XYHKC -m comment --comment "ci-exec/va-smoke-gwunconf-e88f0806-r1-suite-1 log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+TRACE: 2 5a228bc3 filter:KUBE-POD-FW-JADTWIGOIO2XYHKC:rule:0x103:DROP  -4 -t filter -A KUBE-POD-FW-JADTWIGOIO2XYHKC -m comment --comment "ci-exec/va-smoke-gwunconf-e88f0806-r1-suite-1 reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable

@@ -1,0 +1,6 @@
+{"concurrency": 6, "stagger": 0.5, "pods": [
+ {"name": "race-exec-kata-1", "kind": "exec-repro", "runtime": "kata", "gate": false, "seconds": 300, "interval": 0.2, "raw": true},
+ {"name": "race-exec-kata-2", "kind": "exec-repro", "runtime": "kata", "gate": false, "seconds": 300, "interval": 0.2, "raw": true},
+ {"name": "race-agent-kata", "kind": "agent", "runtime": "kata", "gate": false, "seconds": 300, "interval": 0.2, "raw": true},
+ {"name": "race-exec-runc-1", "kind": "exec-repro", "runtime": "runc", "gate": false, "seconds": 300, "interval": 0.2, "raw": true},
+ {"name": "race-exec-runc-2", "kind": "exec-repro", "runtime": "runc", "gate": false, "seconds": 300, "interval": 0.2, "raw": true}]}

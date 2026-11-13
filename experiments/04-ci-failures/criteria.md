@@ -141,3 +141,25 @@ Decision of Francisco, after the smoke test and **before the first v1 attempt**;
     patches (three use cases, with the maintainer's control passing); (b) for gobwas/ws the judging was not fully blind,
     because the table of outcomes per case and per version was already known and allows deducing which version the two
     patches that passed the hidden tests came from.
+
+## Amendment of 13/11/2026: what counts as a budget stop and what is an infrastructure failure (after the collection; future runs only)
+28. **In the collection** the agent recorded any 429 from the gateway as `budget_exhausted`: an attempt, counted, with
+    whatever was in the working copy validated. That covered three different things: the attempt's own cap (US$ 0.33),
+    the version's total cap (US$ 30) and a rate limit from the provider. In the archived rounds only the first one
+    happened: the 5 budget stops (3 in v1, 2 in v2) were all the attempt's own cap, and each version spent about
+    US$ 2.5 of its US$ 30. No archived attempt changes under this amendment.
+    **From now on:** (a) only the attempt's own cap is `budget_exhausted`, an outcome of the attempt. (b) The version's
+    total cap, a provider rate limit or error, a halted gateway, a closed run or a lost connection is
+    `gateway_unavailable`: not an attempt. Nothing is validated, the try is kept in `results/infra-<round>.jsonl`, the
+    round stops, and the case/repetition is redone under a new run id (at most 3 tries, then a person decides). So when
+    the total cap is reached the round **stops and asks for a person** instead of recording the remaining attempts as
+    budget stops; raising the cap or ending the round there is a decision to be written down, not a default.
+    (c) `gateway_unavailable` is reported by the agent's pod, which ran commands a model chose. It is accepted only
+    when something outside the pod agrees: the gateway booked at least one failed model call to that run, or the
+    runner's own close of the run was never confirmed. Without that, the try **is** an attempt: it is recorded as an
+    error, without a patch, and is not redone. A lost connection the gateway never saw falls here on purpose: the
+    harness prefers to count a doubtful try rather than let the pod void one.
+    Also from now on the agent's shell is not a login shell (`bash -c`, not `bash -lc`): in the collection the login
+    shell dropped the Go directory from `PATH`, so the first `go` command of an attempt answered 127 and the agent
+    spent a call fixing it, in both versions alike. A new collection therefore differs from the archive in this, and
+    its tool-call and cost figures are not comparable to the archived ones without saying so.

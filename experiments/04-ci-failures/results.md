@@ -243,8 +243,12 @@ re-validated: 50 with the archived outcome and 6 different, all nkanaev/yarr (ou
 treats its fixture as a hidden test). The main-analysis numbers computed from the new validator's outcomes are the published ones:
 48 attempts, 30 green, 4 failing the hidden tests. This is not a re-classification; the archived outcomes stand. The second run found
 one defect no local test could show (the integrity checker could not run in the pods), fixed since, and both found that the
-NetworkPolicy is not yet in force in a pod's first 0.3 to 0.7 s on this cluster software, which also applies to the archived
-collection. See [the addendum](FUTURE-RUNS.md), "Cluster integration", and `results/integration-2026-11-12*/`.
+NetworkPolicy is not yet in force when a pod starts on this cluster software, which also applies to the archived
+collection. A third round (2026-11-13) measured it at rule level: the window lasted 0.1 to 1.6 s there, for Kata and runc
+pods alike, until the policy controller wrote the pod's rules; the single later connections the first two rounds reported
+turned out to be a probe artifact inside the Kata guest (the node rejected every one that could be traced); and an init
+container that waits for the policy, now on by default, closed the window (0 of 60 pods). See [the addendum](FUTURE-RUNS.md),
+"Cluster integration" and "Network investigation", `results/integration-2026-11-12*/` and `results/network-2026-11-13/`.
 
 **Historical checks:** all 66 attempt records and patches, frozen cases, blind packets/verdicts and audit logs remain
 unchanged. Recomputing `results/final.json`, `results/final-summary.md` and `cases/funnel.md` in a temporary copy produced
@@ -253,7 +257,7 @@ patch contains `/in/secret`, `/srv/ci`, `fix.diff` or `hidden.diff`. The two min
 `go.mod`/`go.sum` (centrifugo and templ) were not in the frozen case set. These checks found no recorded evidence of the
 identified answer-file/cache exposure being used; they do not prove the absence of all possible interference.
 
-**Verification limits:** 41 security regression tests, 31 executor checks, 9 workflow tests and 22 gateway checks passed
+**Verification limits:** 45 security regression tests, 31 executor checks, 9 workflow tests and 23 gateway checks passed
 locally on synthetic inputs/a fake upstream. What ran on a cluster, and what did not, is listed in the addendum. A deliberate production-code `os._exit(0)` negative control still bypasses an assertion without changing the
 tree; semantic review of green patches remains required. See the addendum for the exact boundary.
 

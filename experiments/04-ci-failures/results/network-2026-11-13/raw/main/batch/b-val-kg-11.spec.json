@@ -1,0 +1,416 @@
+{
+ "replaced_command": [
+  "python3",
+  "-u",
+  "/code/executor.py",
+  "validate-run",
+  "suite"
+ ],
+ "plan": {
+  "name": "b-val-kg-11",
+  "kind": "exec-validate",
+  "runtime": "kata",
+  "gate": true,
+  "seconds": 16,
+  "interval": 0.1,
+  "timeout": 0.15
+ },
+ "spec": {
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+   "name": "b-val-kg-11",
+   "namespace": "ci-exec",
+   "labels": {
+    "app": "executor",
+    "case": "gobwas-ws-a567dfd6"
+   }
+  },
+  "spec": {
+   "runtimeClassName": "kata-qemu",
+   "serviceAccountName": "runner",
+   "automountServiceAccountToken": false,
+   "restartPolicy": "Never",
+   "activeDeadlineSeconds": 196,
+   "enableServiceLinks": false,
+   "securityContext": {
+    "runAsNonRoot": true,
+    "runAsUser": 1000,
+    "runAsGroup": 1000,
+    "seccompProfile": {
+     "type": "RuntimeDefault"
+    }
+   },
+   "containers": [
+    {
+     "name": "c",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "/probe/netwatch.py"
+     ],
+     "env": [
+      {
+       "name": "CASE_ID",
+       "value": "gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "HOME",
+       "value": "/tmp"
+      },
+      {
+       "name": "GOMODCACHE",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/gomod"
+      },
+      {
+       "name": "GOPROXY",
+       "value": "off"
+      },
+      {
+       "name": "GOSUMDB",
+       "value": "off"
+      },
+      {
+       "name": "GOFLAGS",
+       "value": "-mod=mod"
+      },
+      {
+       "name": "GOTOOLCHAIN",
+       "value": "auto"
+      },
+      {
+       "name": "GOCACHE",
+       "value": "/tmp/gocache"
+      },
+      {
+       "name": "GOPATH",
+       "value": "/tmp/gopath"
+      },
+      {
+       "name": "GOTELEMETRY",
+       "value": "off"
+      },
+      {
+       "name": "PATH",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/venv/bin:/usr/local/go/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      },
+      {
+       "name": "PYTHONDONTWRITEBYTECODE",
+       "value": "1"
+      },
+      {
+       "name": "PIP_NO_INDEX",
+       "value": "1"
+      },
+      {
+       "name": "PROBE_TARGETS",
+       "value": "{\"case_id\": \"gobwas-ws-a567dfd6\", \"node_ip\": \"10.128.0.8\", \"gw_pod_ip\": \"10.42.0.13\", \"dns_pod_ip\": \"10.42.0.8\"}"
+      },
+      {
+       "name": "PROBE_ROLE",
+       "value": "exec-validate"
+      },
+      {
+       "name": "PROBE_RUNTIME",
+       "value": "kata"
+      },
+      {
+       "name": "NETWATCH_SECONDS",
+       "value": "16"
+      },
+      {
+       "name": "NETWATCH_INTERVAL",
+       "value": "0.1"
+      },
+      {
+       "name": "NETWATCH_ALLOWED",
+       "value": ""
+      },
+      {
+       "name": "NETWATCH_SLOW",
+       "value": ""
+      },
+      {
+       "name": "NETWATCH_ONLY",
+       "value": ""
+      },
+      {
+       "name": "NETWATCH_TIMEOUT",
+       "value": "0.15"
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "100m",
+       "memory": "256Mi"
+      },
+      "limits": {
+       "cpu": "3",
+       "memory": "8Gi"
+      }
+     },
+     "volumeMounts": [
+      {
+       "name": "case",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6",
+       "readOnly": true
+      },
+      {
+       "name": "uv",
+       "mountPath": "/srv/ci/uv",
+       "readOnly": true
+      },
+      {
+       "name": "repo",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6/repo"
+      },
+      {
+       "name": "tmp",
+       "mountPath": "/tmp"
+      },
+      {
+       "name": "code",
+       "mountPath": "/code",
+       "readOnly": true
+      },
+      {
+       "name": "prepared",
+       "mountPath": "/validation",
+       "readOnly": true
+      },
+      {
+       "name": "probe",
+       "mountPath": "/probe",
+       "readOnly": true
+      }
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "name": "case",
+     "hostPath": {
+      "path": "/srv/ci/cases/gobwas-ws-a567dfd6",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "uv",
+     "hostPath": {
+      "path": "/srv/ci/cases/gobwas-ws-a567dfd6/uv",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "repo",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "tmp",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "code",
+     "configMap": {
+      "name": "ci-code"
+     }
+    },
+    {
+     "name": "patch",
+     "configMap": {
+      "name": "b-val-kg-11-patch"
+     }
+    },
+    {
+     "name": "prepared",
+     "emptyDir": {}
+    },
+    {
+     "name": "probe",
+     "configMap": {
+      "name": "probe-code"
+     }
+    }
+   ],
+   "initContainers": [
+    {
+     "name": "prepare",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "/code/executor.py",
+      "validate-prepare",
+      "suite"
+     ],
+     "env": [
+      {
+       "name": "CASE_ID",
+       "value": "gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "HOME",
+       "value": "/tmp"
+      },
+      {
+       "name": "GOMODCACHE",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/gomod"
+      },
+      {
+       "name": "GOPROXY",
+       "value": "off"
+      },
+      {
+       "name": "GOSUMDB",
+       "value": "off"
+      },
+      {
+       "name": "GOFLAGS",
+       "value": "-mod=mod"
+      },
+      {
+       "name": "GOTOOLCHAIN",
+       "value": "auto"
+      },
+      {
+       "name": "GOCACHE",
+       "value": "/tmp/gocache"
+      },
+      {
+       "name": "GOPATH",
+       "value": "/tmp/gopath"
+      },
+      {
+       "name": "GOTELEMETRY",
+       "value": "off"
+      },
+      {
+       "name": "PATH",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/venv/bin:/usr/local/go/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      },
+      {
+       "name": "PYTHONDONTWRITEBYTECODE",
+       "value": "1"
+      },
+      {
+       "name": "PIP_NO_INDEX",
+       "value": "1"
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "100m",
+       "memory": "256Mi"
+      },
+      "limits": {
+       "cpu": "3",
+       "memory": "8Gi"
+      }
+     },
+     "volumeMounts": [
+      {
+       "name": "case",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6",
+       "readOnly": true
+      },
+      {
+       "name": "uv",
+       "mountPath": "/srv/ci/uv",
+       "readOnly": true
+      },
+      {
+       "name": "repo",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6/repo"
+      },
+      {
+       "name": "tmp",
+       "mountPath": "/tmp"
+      },
+      {
+       "name": "code",
+       "mountPath": "/code",
+       "readOnly": true
+      },
+      {
+       "name": "patch",
+       "mountPath": "/in/patch.diff",
+       "subPath": "patch.diff",
+       "readOnly": true
+      },
+      {
+       "name": "prepared",
+       "mountPath": "/validation"
+      }
+     ]
+    },
+    {
+     "name": "netgate",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "-c",
+      "\nimport json, os, socket, sys, threading, time\nC = json.loads(os.environ[\"NETGATE_CONFIG\"]); t0 = time.monotonic(); host = os.environ.get(\"NETGATE_HOST_IP\", \"\")\nfix = lambda hp: (host if hp[0] == \"$HOST\" else hp[0], int(hp[1]))\nforbidden = [fix(x) for x in C[\"forbidden\"] if fix(x)[0]]; required = [fix(x) for x in C[\"required\"]]\ndef tcp(hp, res):\n    s = socket.socket(); s.settimeout(C[\"connect_timeout\"])\n    try: s.connect(hp); res.append(hp)\n    except OSError: pass\n    finally: s.close()\ndef reachable(targets):\n    res = []; th = [threading.Thread(target=tcp, args=(hp, res)) for hp in targets]\n    [t.start() for t in th]; [t.join() for t in th]; return res\ndef done(ok, why, **kw):\n    print(\"NETGATE \" + json.dumps({\"ok\": ok, \"why\": why, \"waited_s\": round(time.monotonic() - t0, 2), **kw}), flush=True); sys.exit(0 if ok else 1)\nrounds = 0; streak = 0; since = None; seen = {}\nwhile True:\n    now = time.monotonic() - t0\n    if now > C[\"deadline\"]: done(False, \"a forbidden destination still answers\", rounds=rounds, reachable=seen)\n    rounds += 1; hit = reachable(forbidden)\n    if hit:\n        streak = 0; since = None\n        for h, p in hit: seen[f\"{h}:{p}\"] = seen.get(f\"{h}:{p}\", 0) + 1\n    else:\n        streak += 1; since = now if since is None else since\n        if streak >= C[\"rounds\"] and now - since >= C[\"span\"]: break\n    time.sleep(C[\"interval\"])\nwhile required and len(reachable(required)) < len(required):\n    if time.monotonic() - t0 > C[\"deadline\"]: done(False, \"a required destination does not answer\", rounds=rounds, reachable=seen)\n    time.sleep(C[\"interval\"])\ndone(True, \"policy in force\", rounds=rounds, reachable_before=seen)\n"
+     ],
+     "env": [
+      {
+       "name": "NETGATE_CONFIG",
+       "value": "{\"forbidden\": [[\"1.1.1.1\", \"443\"], [\"169.254.169.254\", 80], [\"$HOST\", 10250], [\"10.43.0.1\", \"443\"]], \"required\": [], \"rounds\": 8, \"span\": 2.0, \"interval\": 0.25, \"connect_timeout\": 0.5, \"deadline\": 60.0}"
+      },
+      {
+       "name": "NETGATE_HOST_IP",
+       "valueFrom": {
+        "fieldRef": {
+         "fieldPath": "status.hostIP"
+        }
+       }
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "100m",
+       "memory": "256Mi"
+      },
+      "limits": {
+       "cpu": "1",
+       "memory": "256Mi"
+      }
+     },
+     "volumeMounts": []
+    }
+   ]
+  }
+ }
+}

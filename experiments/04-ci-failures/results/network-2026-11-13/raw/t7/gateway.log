@@ -1,0 +1,14 @@
+{"ts": 1794561612.461, "event": "start", "models": ["claude-sonnet-5-5"], "budget_usd": 2.0, "spent_usd": 0.0, "halted": null}
+{"ts": 1794561614.746, "event": "run_opened", "run": "smoke-gwconf-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561614.822, "event": "run_closed", "run": "smoke-gwconf-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561630.466, "src": "10.42.0.237", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "unknown or closed run token", "status": 403, "run": null}
+{"ts": 1794561635.612, "event": "run_closed", "run": "smoke-gwconf-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561635.754, "event": "run_closed", "run": "smoke-gwconf-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561635.869, "event": "run_opened", "run": "smoke-gwconf-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561635.96, "event": "run_closed", "run": "smoke-gwconf-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561650.913, "src": "10.42.0.238", "method": "POST", "path": "/v1/messages", "verdict": "refused", "why": "unknown or closed run token", "status": 403, "run": null}
+{"ts": 1794561656.586, "event": "run_closed", "run": "smoke-gwconf-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561656.756, "event": "run_closed", "run": "smoke-gwconf-e88f0806-r1-t2", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561657.285, "event": "run_opened", "run": "smoke-gwunconf-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561678.184, "event": "run_closed", "run": "smoke-gwunconf-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}
+{"ts": 1794561692.968, "event": "run_closed", "run": "smoke-gwunconf-e88f0806-r1", "cap_usd": 0.33, "spent_usd": 0.0, "calls": 0}

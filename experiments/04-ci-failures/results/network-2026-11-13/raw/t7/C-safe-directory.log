@@ -1,0 +1,10 @@
+== 2026-11-13T09:20:14Z REPRO_OUT=/home/lab/net/t7/c/C-repro.jsonl cases/repro.sh gobwas-ws-a567dfd6 3 (executor.py sha256 5119219fd92d7dfd)
+gobwas-ws-a567dfd6 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+repro.sh exit status: 0
+verdict: reproduced | integrity_control outcome: clean | suite samples: ['sampled', 'sampled', 'sampled'] | hidden samples: ['sampled', 'sampled', 'sampled']
+cache_control: {'applicable': True, 'suite': [{'rc': 0, 's': 47.3, 'tail': 'ok  \tgithub.com/gobwas/ws/wsflate\t0.030s', 'integrity': {'outcome': 'sampled'}}, {'rc': 0, 's': 1.9, 'tail': 'ok  \tgithub.com/gobwas/ws/wsflate\t0.032s', 'integrity': {'outcome': 'sampled'}}, {'rc': 0, 's': 2.1, 'tail': 'ok  \tgithub.com/gobwas/ws/wsflate\t0.032s', 'integrity': {'outcome': 'sampled'}}], 'hidden': [{'rc': 0, 's': 2.1, 'tail': 'ok  \tgithub.com/gobwas/ws/tests\t0.026s', 'integrity': {'outcome': 'sampled'}}, {'rc': 0, 's': 2.0, 'tail': 'ok  \tgithub.com/gobwas/ws/tests\t0.031s', 'integrity': {'outcome': 'sampled'}}, {'rc': 0, 's': 2.0, 'tail': 'ok  \tgithub.com/gobwas/ws/tests\t0.021s', 'integrity': {'outcome': 'sampled'}}], 'integrity': 'clean', 'passes': True}
+/srv/ci/logs/rb-gobwas-ws-a567dfd6.log: 0 lines with 'git status failed' or 'dubious ownership'
+/srv/ci/logs/rf-gobwas-ws-a567dfd6.log: 0 lines with 'git status failed' or 'dubious ownership'
+/srv/ci/logs/rh-gobwas-ws-a567dfd6.log: 0 lines with 'git status failed' or 'dubious ownership'
+/srv/ci/logs/rc-gobwas-ws-a567dfd6.log: 0 lines with 'git status failed' or 'dubious ownership'
+== 2026-11-13T09:25:13Z done

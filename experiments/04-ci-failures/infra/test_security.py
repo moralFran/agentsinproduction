@@ -403,7 +403,7 @@ class RuntimeControls(unittest.TestCase):
         md5=bin_dir/'md5sum';md5.write_text('#!'+sys.executable+'\nimport hashlib,sys\nprint(hashlib.md5(sys.stdin.buffer.read()).hexdigest()+"  -")\n');md5.chmod(0o755)
         curl=bin_dir/'curl';curl.write_text('#!'+sys.executable+'\nimport json,sys\n'
             'sys.stdin.read()\nwith open("gateway-calls.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
-            'print(json.dumps({"spent_usd":0.0,"calls":0,"cap_usd":0.33,"token":"synthetic-run-token-0123456789abcdef"}))\n');curl.chmod(0o755)
+            'import os\nprint(json.dumps({"spent_usd":0.0,"calls":0,"cap_usd":0.33,"model_path_failures":1 if os.path.exists("halted") else 0,"token":"synthetic-run-token-0123456789abcdef"}))\n');curl.chmod(0o755)
         env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'ADMIN_KEY_FILE':str(ci/'admin-key'),'CLOSE_RETRY_S':'0'}
         attempt=lambda:subprocess.run(['bash','cases/attempt.sh','v1','a','1'],cwd=self.root,env=env,capture_output=True,text=True)
         journal=self.root/'results/attempts-v1.jsonl';infra=self.root/'results/infra-v1.jsonl';(self.root/'halted').write_text('x')
@@ -415,6 +415,7 @@ class RuntimeControls(unittest.TestCase):
         tries=[json.loads(line) for line in infra.read_text().splitlines()]
         base=tries[0]['run'];self.assertEqual([t['run'] for t in tries],[base,base+'-t2']);self.assertEqual(opened(),[base,base+'-t2'])  # never a reused id
         self.assertTrue(all(t['agent']['outcome']=='gateway_unavailable' and 'unavailable' in t['reason'] for t in tries))
+        self.assertTrue(all(t['gateway']['model_path_failures']==1 and 'booked 1 failed call' in t['reason'] for t in tries))
         (self.root/'halted').unlink()
         third=attempt();self.assertEqual(third.returncode,0,third.stdout+third.stderr)
         rows=[json.loads(line) for line in journal.read_text().splitlines()]
@@ -428,6 +429,86 @@ class RuntimeControls(unittest.TestCase):
         calls_before=len(opened())
         refused=subprocess.run(['bash','cases/attempt.sh','v1','a','2'],cwd=self.root,env=env,capture_output=True,text=True)
         self.assertNotEqual(refused.returncode,0);self.assertIn('already failed 3 times for infrastructure reasons',refused.stderr);self.assertEqual(len(opened()),calls_before)
+    def test_unconfirmed_unavailability_claim_is_recorded_as_an_attempt(self):
+        # "gateway_unavailable" is the pod's own word. With no failed call booked by the gateway and a confirmed close,
+        # the try is an attempt (error, no patch, validated as such) and is never redone; a patch slipped into the
+        # report is dropped. If the runner's own close fails, the claim stands as infrastructure.
+        cases=self.root/'cases';cases.mkdir();bin_dir=self.root/'bin';bin_dir.mkdir()
+        ci=self.root/'ci';(ci/'cases/a').mkdir(parents=True);(ci/'cases/a/failure.txt').write_text('failed');(ci/'admin-key').write_text('synthetic-key')
+        (cases/'cases.csv').write_text('case_id,repo\na,example/a\n')
+        target=cases/'attempt.sh';target.write_text((R/'cases/attempt.sh').read_text().replace('/srv/ci',str(ci)));target.chmod(0o755)
+        (cases/'pod.py').write_text('import json\nprint("RESULT "+json.dumps({"outcome":"gateway_unavailable","patch":"slipped-in patch","error":"APIConnectionError: Connection error."}))\n')
+        (cases/'validate.py').write_text('import sys\nopen("validated","a").write(repr(open(sys.argv[2]).read())+"\\n")\nprint(\'EXECUTOR {"outcome":"no_patch"}\')\n')
+        md5=bin_dir/'md5sum';md5.write_text('#!'+sys.executable+'\nimport hashlib,sys\nprint(hashlib.md5(sys.stdin.buffer.read()).hexdigest()+"  -")\n');md5.chmod(0o755)
+        curl=bin_dir/'curl';curl.write_text('#!'+sys.executable+'\nimport json,os,sys\n'
+            'sys.stdin.read()\nwith open("gateway-calls.jsonl","a") as f: f.write(json.dumps(sys.argv[1:])+"\\n")\n'
+            'if os.path.exists("close-fails") and sys.argv[-3].endswith("/close"): sys.exit(22)\n'
+            'print(json.dumps({"spent_usd":0.0,"calls":0,"cap_usd":0.33,"model_path_failures":0,"token":"synthetic-run-token-0123456789abcdef"}))\n');curl.chmod(0o755)
+        env={**os.environ,'PATH':str(bin_dir)+':'+os.environ['PATH'],'ADMIN_KEY_FILE':str(ci/'admin-key'),'CLOSE_RETRY_S':'0'}
+        attempt=lambda rep:subprocess.run(['bash','cases/attempt.sh','v1','a',rep],cwd=self.root,env=env,capture_output=True,text=True)
+        journal=self.root/'results/attempts-v1.jsonl';infra=self.root/'results/infra-v1.jsonl'
+        first=attempt('1');self.assertEqual(first.returncode,0,first.stdout+first.stderr);self.assertIn('recorded as an attempt (error)',first.stderr)
+        row=json.loads(journal.read_text());self.assertFalse(infra.exists())
+        self.assertEqual((row['agent']['outcome'],row['agent']['claimed_outcome'],row['executor']['outcome'],row['gateway']['model_path_failures']),('error','gateway_unavailable','no_patch',0))
+        self.assertIn('booked no failed model call',row['agent']['error']);self.assertIn('APIConnectionError',row['agent']['error'])
+        self.assertEqual((self.root/'validated').read_text(),"''\n")                         # the validator saw an empty patch
+        self.assertEqual([f.read_text() for f in (self.root/'results/patches/v1').glob('*.diff')],[''])
+        again=attempt('1');self.assertEqual(again.returncode,0);self.assertIn('already recorded; skipping',again.stdout)
+        (self.root/'close-fails').write_text('x')
+        second=attempt('2');self.assertNotEqual(second.returncode,0);self.assertIn('not recorded as an attempt',second.stderr)
+        self.assertEqual(len(journal.read_text().splitlines()),1)
+        self.assertIn('could not close the run either',json.loads(infra.read_text())['reason'])
+    def test_agent_shell_keeps_the_path_it_was_started_with(self):
+        # A login shell (-lc) re-read /etc/profile and lost the image's Go directory: the first `go` answered 127.
+        case=self.root/'ci/cases/fixture';case.mkdir(parents=True);(case/'repo').mkdir()
+        (case/'meta.json').write_text(json.dumps({'language':'Go'}));(case/'failure.txt').write_text('test failed')
+        code=self.root/'code';code.mkdir();(code/'prompt-v1.txt').write_text('synthetic {language} case')
+        tools=self.root/'only-here';tools.mkdir();tool=tools/'go-fixture';tool.write_text('#!/bin/sh\necho fixture-go\n');tool.chmod(0o755)
+        script=self.root/'agent.py';script.write_text((R/'agent/agent.py').read_text().replace('/srv/ci',str(self.root/'ci')).replace('/code/',str(code)+'/'))
+        with warnings.catch_warnings(),patch.dict(sys.modules,{'anthropic':types.ModuleType('anthropic')}),patch.dict(os.environ,{'CASE_ID':'fixture','RUN_ID':'fixture','RUN_TOKEN':'synthetic-token','PATH':str(tools)+':'+os.environ['PATH']}):
+            warnings.simplefilter('ignore',ResourceWarning)
+            agent=module('security_agent_path',script)
+            rc,out,_=agent.bash('command -v go-fixture && go-fixture && command -v git && command -v python3',5)
+        self.assertEqual(rc,0,out);self.assertIn(str(tool),out);self.assertIn('fixture-go',out)
+        self.assertNotIn('"-lc"',(R/'agent/agent.py').read_text())
+    def test_network_gate_runs_last_before_case_code_and_mounts_nothing(self):
+        # The gate (cases/pod.py, 2026-11-13) keeps case code from starting before the NetworkPolicy applies to the pod.
+        for role,cmd,extra in [('agent',['python3','/code/agent.py'],()),('exec',['python3','-u','/code/executor.py','validate','suite'],()),
+                               ('exec',['python3','-u','/code/executor.py','repro','broken','3'],())]:
+            with self.subTest(role=role,cmd=cmd[-2:]),patch.dict(os.environ,{'NETGATE':'1'}):
+                spec=pods.build_spec(role,'fixture','pod',900,cmd,{'language':'Go'},secret_meta={'hidden_cmd':'hidden-test','fix_sha':'x'})
+                inits=spec['spec']['initContainers'];gate=inits[-1];main=spec['spec']['containers'][0]
+                self.assertEqual(gate['name'],'netgate');self.assertEqual(gate['volumeMounts'],[])           # no case, no secret, no code volume
+                self.assertEqual(gate['securityContext'],main['securityContext']);self.assertNotIn('envFrom',gate)
+                self.assertFalse(any('RUN_TOKEN' in json.dumps(e) for e in gate['env']))
+                cfg=json.loads(next(e['value'] for e in gate['env'] if e['name']=='NETGATE_CONFIG'))
+                forbidden={tuple(x) for x in cfg['forbidden']}
+                self.assertTrue({('169.254.169.254',80),('$HOST',10250),('10.43.0.1','443'),('1.1.1.1','443')}<=forbidden,forbidden)
+                self.assertEqual(bool(cfg['required']),role=='agent')                                     # only the agent needs the gateway
+                if 'validate' in cmd:self.assertEqual(inits[0]['name'],'prepare')                # patch application stays first
+            with patch.dict(os.environ,{'NETGATE':'0'}):
+                bare=pods.build_spec(role,'fixture','pod',900,cmd,{'language':'Go'},secret_meta={'hidden_cmd':'hidden-test','fix_sha':'x'})
+                self.assertFalse(any(c['name']=='netgate' for c in bare['spec'].get('initContainers',[])))
+        with patch.dict(os.environ,{'NETGATE':'1'}):
+            worker=prep.worker_spec('fixture','prep-pod','/src','/out',{'language':'Go'})
+        gate=worker['spec']['initContainers'][-1];cfg=json.loads(next(e['value'] for e in gate['env'] if e['name']=='NETGATE_CONFIG'))
+        self.assertEqual(gate['volumeMounts'],[]);self.assertNotIn(['1.1.1.1','443'],cfg['forbidden'])     # public 80/443 is allowed in ci-prep
+        self.assertIn(['169.254.169.254',80],cfg['forbidden'])
+    def test_network_gate_waits_for_refusals_and_fails_closed(self):
+        import socket,threading
+        listener=socket.socket();listener.bind(('127.0.0.1',0));listener.listen(64);port=listener.getsockname()[1]
+        closed=socket.socket();closed.bind(('127.0.0.1',0));dead=closed.getsockname()[1];closed.close()    # nothing listens here
+        def gate(forbidden,required,deadline):
+            cfg={'forbidden':forbidden,'required':required,'rounds':3,'span':0.3,'interval':0.05,'connect_timeout':0.2,'deadline':deadline}
+            p=subprocess.run([sys.executable,'-c',pods.NETGATE_CODE],env={**os.environ,'NETGATE_CONFIG':json.dumps(cfg)},capture_output=True,text=True,timeout=30)
+            return p.returncode,json.loads(p.stdout.strip().splitlines()[-1][8:])
+        rc,out=gate([['127.0.0.1',port]],[],1.0)                      # the forbidden destination keeps answering: no start
+        self.assertEqual(rc,1);self.assertFalse(out['ok']);self.assertIn(f'127.0.0.1:{port}',out['reachable'])
+        timer=threading.Timer(0.6,listener.close);timer.start()       # it answers at first, then is refused: the gate waits, then passes
+        rc,out=gate([['127.0.0.1',port]],[],10.0);timer.join()
+        self.assertEqual(rc,0,out);self.assertTrue(out['ok']);self.assertGreaterEqual(out['waited_s'],0.6);self.assertTrue(out['reachable_before'])
+        rc,out=gate([['127.0.0.1',dead]],[['127.0.0.1',dead]],1.0)    # refused as it should be, but the required path never answers
+        self.assertEqual(rc,1);self.assertIn('required',out['why'])
     def test_run_round_propagates_attempt_failure(self):
         (self.root/'cases').mkdir();(self.root/'cases/cases.csv').write_text('case_id\nfixture\n')
         shutil.copyfile(R/'cases/run-round.sh',self.root/'cases/run-round.sh')

@@ -1,0 +1,54 @@
+# One SYN that passed during a pod's first moments (from raw/main/cap/trace/passed-traces.log.gz): metadata endpoint, forwarded.
+# No KUBE-POD-FW chain is entered for the source address; the packet is accepted by flannel's forward rule.
+### 1794559862568 10.42.0.31:52570 169.254.169.254:80 169.254.169.254:80
+
+PACKET: 2 d1e20a4f IN=cni0 MACSRC=3e:e1:bb:40:29:85 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.31 DST=169.254.169.254 LEN=60 TOS=0x0 TTL=64 ID=2426 DF SPORT=52570 DPORT=80 SYN
+
+TRACE: 2 d1e20a4f raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+
+TRACE: 2 d1e20a4f raw:PREROUTING:policy:ACCEPT
+
+PACKET: 2 d1e20a4f IN=cni0 MACSRC=3e:e1:bb:40:29:85 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.31 DST=169.254.169.254 LEN=60 TOS=0x0 TTL=64 ID=2426 DF SPORT=52570 DPORT=80 SYN
+
+TRACE: 2 d1e20a4f nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+
+TRACE: 2 d1e20a4f nat:PREROUTING:policy:ACCEPT
+
+PACKET: 2 ccee2c78 IN=cni0 OUT=ens4 MACSRC=3e:e1:bb:40:29:85 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.31 DST=169.254.169.254 LEN=60 TOS=0x0 TTL=63 ID=2426 DF SPORT=52570 DPORT=80 SYN
+
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x28:JUMP:KUBE-ROUTER-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+
+TRACE: 2 ccee2c78 filter:KUBE-ROUTER-FORWARD:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-FORWARD -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/RE
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x29:JUMP:KUBE-PROXY-FIREWALL  -4 -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment "kubernetes load balancer firewall" -j KUBE-PROXY-FIREWALL
+
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x2a:JUMP:KUBE-FORWARD  -4 -t filter -A FORWARD -m comment --comment "kubernetes forwarding rules" -j KUBE-FORWARD
+
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x2b:JUMP:KUBE-SERVICES  -4 -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x2c:JUMP:KUBE-EXTERNAL-SERVICES  -4 -t filter -A FORWARD -m conntrack --ctstate NEW -m comment --comment "kubernetes externally-visible service portals" -j KUBE-
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x2d:JUMP:DOCKER-USER  -4 -t filter -A FORWARD -j DOCKER-USER
+
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x2e:JUMP:DOCKER-FORWARD  -4 -t filter -A FORWARD -j DOCKER-FORWARD
+
+TRACE: 2 ccee2c78 filter:DOCKER-FORWARD:rule:0x37:JUMP:DOCKER-CT  -4 -t filter -A DOCKER-FORWARD -j DOCKER-CT
+
+TRACE: 2 ccee2c78 filter:DOCKER-FORWARD:rule:0x38:JUMP:DOCKER-INTERNAL  -4 -t filter -A DOCKER-FORWARD -j DOCKER-INTERNAL
+
+TRACE: 2 ccee2c78 filter:DOCKER-FORWARD:rule:0x39:JUMP:DOCKER-BRIDGE  -4 -t filter -A DOCKER-FORWARD -j DOCKER-BRIDGE
+
+TRACE: 2 ccee2c78 filter:FORWARD:rule:0x2f:JUMP:FLANNEL-FWD  -4 -t filter -A FORWARD -m comment --comment "flanneld forward" -j FLANNEL-FWD
+
+TRACE: 2 ccee2c78 filter:FLANNEL-FWD:rule:0x3b:ACCEPT  -4 -t filter -A FLANNEL-FWD -s 10.42.0.0/16 -m comment --comment "flanneld forward" -j ACCEPT
+
+PACKET: 2 ccee2c78 IN=cni0 OUT=ens4 MACSRC=3e:e1:bb:40:29:85 MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.31 DST=169.254.169.254 LEN=60 TOS=0x0 TTL=63 ID=2426 DF SPORT=52570 DPORT=80 SYN
+
+TRACE: 2 ccee2c78 nat:POSTROUTING:rule:0x6c:JUMP:CNI-HOSTPORT-MASQ  -4 -t nat -A POSTROUTING -m comment --comment "CNI portfwd requiring masquerade" -j CNI-HOSTPORT-MASQ
+
+TRACE: 2 ccee2c78 nat:POSTROUTING:rule:0xf:JUMP:KUBE-POSTROUTING  -4 -t nat -A POSTROUTING -m comment --comment "kubernetes postrouting rules" -j KUBE-POSTROUTING
+
+TRACE: 2 ccee2c78 nat:KUBE-POSTROUTING:rule:0x1d7:0xfffffffb  -4 -t nat -A KUBE-POSTROUTING -m mark ! --mark 0x4000/0x4000 -j RETURN
+
+TRACE: 2 ccee2c78 nat:POSTROUTING:rule:0x1bb:JUMP:FLANNEL-POSTRTG  -4 -t nat -A POSTROUTING -m comment --comment "flanneld masq" -j FLANNEL-POSTRTG
+
+TRACE: 2 ccee2c78 nat:FLANNEL-POSTRTG:rule:0x1c0:ACCEPT  -4 -t nat -A FLANNEL-POSTRTG -s 10.42.0.0/16 ! -d 224.0.0.0/4 -m comment --comment "flanneld masq" -j MASQUERADE --random-fully
+

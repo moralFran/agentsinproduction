@@ -32,7 +32,10 @@ TOOLS = [{"name": "bash", "description": "Run a shell command and return its exi
 def bash(cmd, limit):
     t = time.monotonic()
     try:
-        p = subprocess.run(["bash", "-o", "pipefail", "-lc", cmd], cwd=WD, capture_output=True, text=True, timeout=limit)
+        # Not a login shell (-c, not -lc): a login shell re-reads /etc/profile, which resets PATH and dropped the
+        # image's /usr/local/go/bin, so the first `go` of an attempt answered 127 (found on the cluster, 2026-11-12;
+        # the archived collection ran with -lc).
+        p = subprocess.run(["bash", "-o", "pipefail", "-c", cmd], cwd=WD, capture_output=True, text=True, timeout=limit)
         out, rc = (p.stdout + p.stderr), p.returncode
     except subprocess.TimeoutExpired:
         out, rc = f"command timed out after {limit:.0f} s", 124

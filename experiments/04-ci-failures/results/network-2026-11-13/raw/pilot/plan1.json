@@ -1,0 +1,6 @@
+{"concurrency": 4, "pods": [{"name": "p1-exec-kata", "kind": "exec-repro", "runtime": "kata", "gate": false, "seconds": 10, "interval": 0.1},
+ {"name": "p1-agent-kata", "kind": "agent", "runtime": "kata", "gate": false, "seconds": 10, "interval": 0.1},
+ {"name": "p1-prep-kata", "kind": "prep", "runtime": "kata", "gate": false, "seconds": 10, "interval": 0.1},
+ {"name": "p1-val-kata", "kind": "exec-validate", "runtime": "kata", "gate": false, "seconds": 10, "interval": 0.1},
+ {"name": "p1-val-runc", "kind": "exec-validate", "runtime": "runc", "gate": false, "seconds": 10, "interval": 0.1},
+ {"name": "p1-prep-runc", "kind": "prep", "runtime": "runc", "gate": false, "seconds": 10, "interval": 0.1}]}

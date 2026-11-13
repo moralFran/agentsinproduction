@@ -1,0 +1,11 @@
+09:04:02 t3lat-runc-1 t3r runc nogate Succeeded 2753 lines
+09:04:03 PLAN_DONE
+09:04:49 t3lat-runc-2 t3r runc nogate Succeeded 2765 lines
+09:04:49 PLAN_DONE
+09:05:33 t3lat-runc-3 t3r runc nogate Succeeded 2759 lines
+09:05:34 PLAN_DONE
+09:06:22 t3lat-runc-4 t3r runc nogate Succeeded 2819 lines
+09:06:23 PLAN_DONE
+09:07:09 t3lat-runc-5 t3r runc nogate Succeeded 2747 lines
+09:07:10 PLAN_DONE
+09:07:15 T3_LATENCY_DONE runc

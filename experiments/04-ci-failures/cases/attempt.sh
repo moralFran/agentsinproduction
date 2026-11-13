@@ -23,6 +23,10 @@ run0="$round-$(echo "$cid" | md5sum | cut -c1-8)-r$rep"; out="$base/attempts-$ro
 # Tries that never became an attempt (the model path was unavailable, or the run opened without a usable token) are
 # kept here, not in the journal: they are redone on resume. The gateway refuses a reused run id, so a redo gets a new
 # one (-t2, -t3). After MAX_INFRA_TRIES such tries the script stops and asks for a person.
+# "Unavailable" is the pod's own word, and the pod ran commands a model chose. It is accepted only when something
+# outside the pod agrees: the gateway booked at least one failed model call to this run (model_path_failures in the
+# close reply), or the runner's own close of the run was never confirmed. Otherwise the try IS an attempt: it goes to
+# the journal as an error, without a patch, and is not redone (added 2026-11-13).
 infra="$base/infra-$round.jsonl"
 # A recorded attempt is complete for round scheduling, including a recorded failure. Never spend or overwrite it.
 # Parse the journal rather than depending on JSON whitespace; malformed records still stop the runner.
@@ -52,7 +56,8 @@ agent = grab(fa, "RESULT "); agent.pop("patch", None)
 try: gw = json.loads(open(fg).read() or "{}") if fg and os.path.exists(fg) else {}
 except ValueError: gw = {}
 print(json.dumps({"round": rnd, "case": cid, "rep": int(rep), "run": run, "reason": reason, "at": round(time.time()), "agent": agent,
-                  "agent_pod": grab(fa, "POD "), "gateway": {"spent_usd": gw.get("spent_usd"), "calls": gw.get("calls"), "cap_usd": gw.get("cap_usd")}}))
+                  "agent_pod": grab(fa, "POD "), "gateway": {"spent_usd": gw.get("spent_usd"), "calls": gw.get("calls"), "cap_usd": gw.get("cap_usd"),
+                                                          "model_path_failures": gw.get("model_path_failures")}}))
 PY
 }
 [ -s "/srv/ci/cases/$cid/failure.txt" ] || { echo "case $cid has no failure.txt (written at the freeze, or by smoke-failure.py)"; exit 1; }
@@ -88,23 +93,40 @@ open(sys.argv[2], "w").write(res.get("patch", ""))
 print(res.get("outcome"))
 PY
 )
+unconfirmed=0
 if [ "$agent_outcome" = gateway_unavailable ]; then
-  # The agent did not get its model calls (gateway halted, run closed, provider error): infrastructure, not a result.
-  # Nothing is validated and nothing enters the journal, so the resume redoes this case/repetition under a new run id.
-  not_an_attempt "the model path was unavailable to the agent" "/tmp/$run.agent" "/tmp/$run.gw"
-  rm -f "$pd/$run.diff" "/tmp/$run".*
-  echo "run $run: the model path was unavailable (see $infra); not recorded as an attempt, the resume redoes it" >&2
-  exit 1
+  failed_calls=$(python3 -c 'import json,sys
+try: n = json.load(open(sys.argv[1])).get("model_path_failures", 0)
+except Exception: n = 0
+print(n if isinstance(n, int) and not isinstance(n, bool) and n > 0 else 0)' "/tmp/$run.gw")
+  if [ "$failed_calls" -gt 0 ] || [ "$close_ok" != 1 ]; then
+    # The agent did not get its model calls (gateway halted, run closed, provider error) and the gateway, or the
+    # runner's own failed close, says so too: infrastructure, not a result. Nothing is validated and nothing enters
+    # the journal, so the resume redoes this case/repetition under a new run id.
+    if [ "$failed_calls" -gt 0 ]; then why="the model path was unavailable to the agent (the gateway booked $failed_calls failed call(s) to the run)"
+    else why="the model path was unavailable to the agent (the runner could not close the run either)"; fi
+    not_an_attempt "$why" "/tmp/$run.agent" "/tmp/$run.gw"
+    rm -f "$pd/$run.diff" "/tmp/$run".*
+    echo "run $run: the model path was unavailable (see $infra); not recorded as an attempt, the resume redoes it" >&2
+    exit 1
+  fi
+  # Nothing outside the pod confirms it: recorded as an attempt that ended in an error, with no patch.
+  unconfirmed=1; : > "$pd/$run.diff"
+  echo "run $run: the pod reported the model path as unavailable, but the gateway booked no failed call to this run; recorded as an attempt (error)" >&2
 fi
 python3 cases/validate.py "$cid" "$pd/$run.diff" "va-$run" > "/tmp/$run.exec" 2>&1 || true
-python3 - "$round" "$cid" "$rep" "$run" "$t0" "/tmp/$run.agent" "/tmp/$run.gw" "/tmp/$run.exec" >> "$out" <<'PY'
+python3 - "$round" "$cid" "$rep" "$run" "$t0" "/tmp/$run.agent" "/tmp/$run.gw" "/tmp/$run.exec" "$unconfirmed" >> "$out" <<'PY'
 import json, sys, time
-rnd, cid, rep, run, t0, fa, fg, fe = sys.argv[1:]
+rnd, cid, rep, run, t0, fa, fg, fe, unconfirmed = sys.argv[1:]
 grab = lambda f, tag: next((json.loads(l[len(tag):]) for l in reversed(open(f).readlines()) if l.startswith(tag)), {})
 agent = grab(fa, "RESULT "); agent.pop("patch", None); apod = grab(fa, "POD "); ex = grab(fe, "EXECUTOR "); epod = grab(fe, "POD ")
+if unconfirmed == "1":      # the pod's "gateway_unavailable" had no confirmation outside the pod (see the top of this file)
+    agent.update(outcome="error", claimed_outcome="gateway_unavailable",
+                 error="reported gateway_unavailable, but the gateway booked no failed model call to this run; its own account: " + str(agent.get("error", ""))[:300])
 gw = json.loads(open(fg).read() or "{}")
 print(json.dumps({"round": rnd, "case": cid, "rep": int(rep), "run": run, "agent": agent or {"outcome": "no_result"}, "agent_pod": apod,
-                  "gateway": {"spent_usd": gw.get("spent_usd"), "calls": gw.get("calls"), "cap_usd": gw.get("cap_usd")},
+                  "gateway": {"spent_usd": gw.get("spent_usd"), "calls": gw.get("calls"), "cap_usd": gw.get("cap_usd"),
+                              "model_path_failures": gw.get("model_path_failures")},
                   "executor": ex, "executor_pod": epod, "wall_s": round(time.time() - int(t0), 1)}))
 PY
 rm -f "/tmp/$run".*

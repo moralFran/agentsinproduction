@@ -298,6 +298,10 @@ round" below. It found one defect that no local test could show.
 
 ## Cluster integration (2026-11-12, fresh VM)
 
+> Read with the section "Network investigation and review changes (2026-11-13)" at the end: the start-up window was
+> measured again there (it is not limited to 0.3 to 0.7 s), and the single late connections reported in this section and
+> the next were found to be a probe artifact in the Kata guest, not connections.
+
 First run of the hardened harness on a real cluster. **Revision tested: the first hardening of 2026-11-12** (the sections up to
 "Independent re-test", commit `ecdbcd7`), not the follow-up above, which was written while this run was in progress and ran on the
 cluster afterwards (next section).
@@ -414,3 +418,65 @@ hit `test_changed_tree`, a flaky outcome, `did_not_apply`, a broken tree that do
 occurred among the 11. The `.gitignore` fingerprint has no before/after on real suites, because nothing ran with the earlier executor.
 
 Both rounds: 6.29 h of VM and US$0.4393 of model calls. The VM and its disk were deleted after the second round.
+
+## Network investigation and review changes (2026-11-13, fresh VM, no provider key)
+
+Three external reviews of the two cluster rounds asked what the network findings mean and pointed at four harness
+points. This round ran on a new VM for 1.25 h with a dummy gateway key (no model call; the gateway log has no
+forwarded request). Full report, scripts and raw data: `results/network-2026-11-13/`.
+
+**Start-up window: reproduced, cause seen at rule level.** A new pod's network works before the policy controller's
+next sync has written the pod's chain; until then its packets match no pod rule and are accepted (226 of 226 complete
+traces of passed SYNs have no jump into a pod chain). It is not "0.3 to 0.7 s" and not specific to Kata: 0.6 to 0.8 s
+for Kata pods on a quiet node, 0.4 to 1.6 s for Kata and 0.1 to 1.1 s for runc pods on a busy one, under 20 ms for
+quiet runc pods. 39 of 45 Kata pods and 45 of 45 runc pods without an init container had an established forbidden
+connection; 0 of 30 validation test containers (they start after an init container). Nothing bounds the window from
+above.
+
+**Late connections through an applied policy: none found; the earlier reports were a probe artifact.** The probe
+reported them again, in Kata pods only (76 in 276,318 forbidden tries, with and without churn, internal and external
+targets alike). Every one that could be looked up was rejected by the node: the packet trace shows the reject rule
+of the pod's chain, no connection-tracking entry, no SYN-ACK, and the socket was not connected. Inside the Kata guest
+`connect()` can return without error for a refused connection (the first `SO_ERROR` reads 0, the next reads 111). Of
+928,346 traced SYNs none was accepted outside a start-up window, with 834 controller syncs and 194 pods coming and
+going; about 774,000 forbidden tries from long-running pods, none passed. The single late connections recorded on
+2026-11-12 cannot be re-examined, but they have the same signature. The re-sync and stale-ipset explanations are not
+supported: the first was looked for and not seen, the second could not be tested (no pod address was reused).
+
+**The Kata guest has traffic of its own.** The guest image's time service opens TCP connections to public time
+servers (port 4460) from the pod's address as soon as the VM boots: 56 passed before the pod's rules existed, 689
+were rejected after. Not case code, and not stopped by the gate below. How to turn it off was not investigated.
+
+**Network gate (new, on by default).** `cases/pod.py` and `cases/prep.py` add an init container, `netgate`, with no
+volume and no secret: it tries the forbidden canaries (public address, metadata endpoint, node, Kubernetes API) until
+none connects in 8 consecutive rounds over at least 2 s, and for agent pods until the gateway's model port answers;
+after 60 s it fails the pod, which is an infrastructure error. With it, 0 of 60 pods had an established forbidden
+connection in the main container, against 39 of 60 Kata pods without it in the same minutes. Cost: about 8 s per pod
+as configured. `NETGATE=0` builds pods without it. It shows the rules were in force when it looked; it cannot
+prevent a later lapse. Not run on the cluster: its timeout path, and a complete round with it.
+
+**Guest seccomp.** `infra/install-k3s-kata.sh` now sets `disable_guest_seccomp = false` through the chart's drop-in:
+`Seccomp: 2` in 8 of 8 new Kata pods, where all pods of the earlier rounds showed 0; the Go case still reproduced
+(3/3 and 3/3). Applied to a running lab with `helm upgrade`; the new install line was not run from an empty machine.
+
+**Review points changed in the harness** (local tests 45 + 31 + 9 + 23; `criteria.md`, amendment 28):
+- `gateway_unavailable` is the pod's own word. The gateway now counts, per run, the model calls it answered with a
+  failure outside the agent's work (`model_path_failures`), and `attempt.sh` accepts the claim only with that count
+  above zero or when its own close was never confirmed. Otherwise the try is an attempt: an error, no patch, not
+  redone. Checked live both ways (confirmed: not recorded, redone under `-t2`; unconfirmed: one journal row).
+- The meaning of the version's total cap changed with `d5e1195` and is now written down: reaching it stops the round
+  and asks for a person, instead of recording the remaining attempts as budget stops. No archived attempt met it.
+- The agent's shell is `bash -c`, not `bash -lc`: the image's `/etc/profile` resets `PATH` for login shells, which
+  dropped Go and cost the first `go` command of every Go attempt of the collection, in both versions. A new
+  collection differs from the archive in this.
+- `checker_git` allows this checkout only (`safe.directory=<path>`), not `*`; reproduced clean on the cluster.
+
+**What this means for the archived collection.** Its pods had no gate, so every preparation, reproduction and agent
+pod started inside the window; the VM had no cloud credentials and the pods held no secrets. The published numbers
+do not depend on it: the two cluster rounds re-validated all 56 patches with the same outcomes for the main analysis.
+
+**Not determined.** Why the guest returns the false success, and whether it can happen under runc (594 refusals
+there showed none); whether another policy enforcer has the window (not run); whether the trace instruments change
+the window (no block ran without them); how long before a pod starts the controller learns its address.
+
+The VM ran 1.25 h and was stopped after the round.

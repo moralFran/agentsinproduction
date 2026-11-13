@@ -1,0 +1,29 @@
+[INFO]  Using v1.37.2+k3s1 as release
+[INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.37.2%2Bk3s1/sha256sum-amd64.txt
+[INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.37.2%2Bk3s1/k3s
+[INFO]  Verifying binary download
+[INFO]  Installing k3s to /usr/local/bin/k3s
+[INFO]  Skipping installation of SELinux RPM
+[INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+[INFO]  Creating /usr/local/bin/crictl symlink to k3s
+[INFO]  Skipping /usr/local/bin/ctr symlink to k3s, command exists in PATH at /usr/bin/ctr
+[INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+[INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+[INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+[INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+[INFO]  systemd: Enabling k3s unit
+Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+[INFO]  systemd: Starting k3s
+Pulled: ghcr.io/kata-containers/kata-deploy-charts/kata-deploy:4.3.1
+Digest: sha256:8eab352a59b42dc7b3aebe87d4114b936a8576967d4800047ce708fcebb61d2e
+E1113 08:38:41.933671    3365 reflector.go:227] "Failed to watch" err="the server is currently unable to handle the request (get jobs.batch)" logger="UnhandledError" reflector="k8s.io/client-go@v0.37.1/tools/cache/reflector.go:343" type="*unstructured.Unstructured"
+NAME: kata-deploy
+LAST DEPLOYED: Fri Nov 13 08:37:22 2026
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+k3s: k3s version v1.37.2+k3s1 (f6973cb8)
+kata: 4.3.1
+kata-qemu                       kata-qemu                       101s
+kata-qemu-runtime-rs            kata-qemu-runtime-rs            101s

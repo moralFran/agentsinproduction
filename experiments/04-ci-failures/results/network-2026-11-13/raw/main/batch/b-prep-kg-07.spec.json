@@ -1,0 +1,265 @@
+{
+ "replaced_command": [
+  "python3",
+  "-u",
+  "/code/prep_worker.py"
+ ],
+ "plan": {
+  "name": "b-prep-kg-07",
+  "kind": "prep",
+  "runtime": "kata",
+  "gate": true,
+  "seconds": 16,
+  "interval": 0.1,
+  "timeout": 0.15
+ },
+ "spec": {
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+   "name": "b-prep-kg-07",
+   "namespace": "ci-prep"
+  },
+  "spec": {
+   "initContainers": [
+    {
+     "name": "netgate",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "-c",
+      "\nimport json, os, socket, sys, threading, time\nC = json.loads(os.environ[\"NETGATE_CONFIG\"]); t0 = time.monotonic(); host = os.environ.get(\"NETGATE_HOST_IP\", \"\")\nfix = lambda hp: (host if hp[0] == \"$HOST\" else hp[0], int(hp[1]))\nforbidden = [fix(x) for x in C[\"forbidden\"] if fix(x)[0]]; required = [fix(x) for x in C[\"required\"]]\ndef tcp(hp, res):\n    s = socket.socket(); s.settimeout(C[\"connect_timeout\"])\n    try: s.connect(hp); res.append(hp)\n    except OSError: pass\n    finally: s.close()\ndef reachable(targets):\n    res = []; th = [threading.Thread(target=tcp, args=(hp, res)) for hp in targets]\n    [t.start() for t in th]; [t.join() for t in th]; return res\ndef done(ok, why, **kw):\n    print(\"NETGATE \" + json.dumps({\"ok\": ok, \"why\": why, \"waited_s\": round(time.monotonic() - t0, 2), **kw}), flush=True); sys.exit(0 if ok else 1)\nrounds = 0; streak = 0; since = None; seen = {}\nwhile True:\n    now = time.monotonic() - t0\n    if now > C[\"deadline\"]: done(False, \"a forbidden destination still answers\", rounds=rounds, reachable=seen)\n    rounds += 1; hit = reachable(forbidden)\n    if hit:\n        streak = 0; since = None\n        for h, p in hit: seen[f\"{h}:{p}\"] = seen.get(f\"{h}:{p}\", 0) + 1\n    else:\n        streak += 1; since = now if since is None else since\n        if streak >= C[\"rounds\"] and now - since >= C[\"span\"]: break\n    time.sleep(C[\"interval\"])\nwhile required and len(reachable(required)) < len(required):\n    if time.monotonic() - t0 > C[\"deadline\"]: done(False, \"a required destination does not answer\", rounds=rounds, reachable=seen)\n    time.sleep(C[\"interval\"])\ndone(True, \"policy in force\", rounds=rounds, reachable_before=seen)\n"
+     ],
+     "env": [
+      {
+       "name": "NETGATE_CONFIG",
+       "value": "{\"forbidden\": [[\"169.254.169.254\", 80], [\"$HOST\", 10250], [\"10.43.0.1\", \"443\"]], \"required\": [], \"rounds\": 8, \"span\": 2.0, \"interval\": 0.25, \"connect_timeout\": 0.5, \"deadline\": 60.0}"
+      },
+      {
+       "name": "NETGATE_HOST_IP",
+       "valueFrom": {
+        "fieldRef": {
+         "fieldPath": "status.hostIP"
+        }
+       }
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "100m",
+       "memory": "256Mi"
+      },
+      "limits": {
+       "cpu": "1",
+       "memory": "256Mi"
+      }
+     },
+     "volumeMounts": []
+    }
+   ],
+   "runtimeClassName": "kata-qemu",
+   "automountServiceAccountToken": false,
+   "enableServiceLinks": false,
+   "restartPolicy": "Never",
+   "activeDeadlineSeconds": 2400,
+   "securityContext": {
+    "runAsNonRoot": true,
+    "runAsUser": 1001,
+    "runAsGroup": 1002,
+    "seccompProfile": {
+     "type": "RuntimeDefault"
+    }
+   },
+   "containers": [
+    {
+     "name": "c",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "/probe/netwatch.py"
+     ],
+     "env": [
+      {
+       "name": "HOME",
+       "value": "/tmp"
+      },
+      {
+       "name": "CASE_ID",
+       "value": "gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "TASK",
+       "value": "{\"repo\": \"gobwas/ws\", \"language\": \"Go\", \"broken_sha\": \"a567dfd636adf28fdf608402ba9ed7a80bfd0a33\", \"workflow\": \"CI\", \"failed_job\": \"test (macos-latest, stable)\", \"id\": \"gobwas-ws-a567dfd6\", \"workdir\": \".\", \"test_cmd\": \"go test -count=1 github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate\", \"targets\": [\"github.com/gobwas/ws/tests\", \"github.com/gobwas/ws/wsflate\"], \"broken_compiles\": true}"
+      },
+      {
+       "name": "UV_PYTHON_INSTALL_DIR",
+       "value": "/srv/ci/uv/python"
+      },
+      {
+       "name": "UV_CACHE_DIR",
+       "value": "/tmp/uvcache"
+      },
+      {
+       "name": "UV_LINK_MODE",
+       "value": "copy"
+      },
+      {
+       "name": "GOMODCACHE",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/gomod"
+      },
+      {
+       "name": "GOCACHE",
+       "value": "/tmp/gocache"
+      },
+      {
+       "name": "GOPATH",
+       "value": "/tmp/gopath"
+      },
+      {
+       "name": "GOTOOLCHAIN",
+       "value": "auto"
+      },
+      {
+       "name": "GOFLAGS",
+       "value": "-mod=mod"
+      },
+      {
+       "name": "GOTELEMETRY",
+       "value": "off"
+      },
+      {
+       "name": "PROBE_TARGETS",
+       "value": "{\"case_id\": \"gobwas-ws-a567dfd6\", \"node_ip\": \"10.128.0.8\", \"gw_pod_ip\": \"10.42.0.13\", \"dns_pod_ip\": \"10.42.0.8\"}"
+      },
+      {
+       "name": "PROBE_ROLE",
+       "value": "prep"
+      },
+      {
+       "name": "PROBE_RUNTIME",
+       "value": "kata"
+      },
+      {
+       "name": "NETWATCH_SECONDS",
+       "value": "16"
+      },
+      {
+       "name": "NETWATCH_INTERVAL",
+       "value": "0.1"
+      },
+      {
+       "name": "NETWATCH_ALLOWED",
+       "value": "pub,dns"
+      },
+      {
+       "name": "NETWATCH_SLOW",
+       "value": "pub,dns"
+      },
+      {
+       "name": "NETWATCH_ONLY",
+       "value": ""
+      },
+      {
+       "name": "NETWATCH_TIMEOUT",
+       "value": "0.15"
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "100m",
+       "memory": "256Mi"
+      },
+      "limits": {
+       "cpu": "3",
+       "memory": "8Gi"
+      }
+     },
+     "volumeMounts": [
+      {
+       "name": "source",
+       "mountPath": "/input",
+       "readOnly": true
+      },
+      {
+       "name": "output",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "output",
+       "mountPath": "/srv/ci/uv",
+       "subPath": "uv"
+      },
+      {
+       "name": "tmp",
+       "mountPath": "/tmp"
+      },
+      {
+       "name": "code",
+       "mountPath": "/code",
+       "readOnly": true
+      },
+      {
+       "name": "probe",
+       "mountPath": "/probe",
+       "readOnly": true
+      }
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "name": "source",
+     "hostPath": {
+      "path": "/srv/ci/work/probe-b-prep-kg-07/source",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "output",
+     "hostPath": {
+      "path": "/srv/ci/work/probe-b-prep-kg-07/output",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "tmp",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "code",
+     "configMap": {
+      "name": "ci-prep-code"
+     }
+    },
+    {
+     "name": "probe",
+     "configMap": {
+      "name": "probe-code"
+     }
+    }
+   ]
+  }
+ }
+}

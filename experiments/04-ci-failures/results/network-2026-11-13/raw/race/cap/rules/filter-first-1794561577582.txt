@@ -1,0 +1,191 @@
+*filter
+:INPUT ACCEPT
+:FORWARD DROP
+:OUTPUT ACCEPT
+:DOCKER -
+:DOCKER-BRIDGE -
+:DOCKER-CT -
+:DOCKER-FORWARD -
+:DOCKER-INTERNAL -
+:DOCKER-USER -
+:FLANNEL-FWD -
+:KUBE-EXTERNAL-SERVICES -
+:KUBE-FIREWALL -
+:KUBE-FORWARD -
+:KUBE-KUBELET-CANARY -
+:KUBE-NODEPORTS -
+:KUBE-NWPLCY-3TPAY7N6TNGX7RXO -
+:KUBE-NWPLCY-CMVL6NNN2MNURCWR -
+:KUBE-NWPLCY-COMMON -
+:KUBE-NWPLCY-DEFAULT -
+:KUBE-NWPLCY-H662JK4DP3F4OCLL -
+:KUBE-NWPLCY-R2YIQUTDFZ4XUALF -
+:KUBE-NWPLCY-TAIL -
+:KUBE-NWPLCY-USYQ6REMCL3YTAZ7 -
+:KUBE-POD-FW-B6BE5VYSNXWWNEU5 -
+:KUBE-POD-FW-CQYV45M4RZ5QGG2J -
+:KUBE-POD-FW-ITZ62P4NTK35NHLJ -
+:KUBE-POD-FW-JP7MQ2FR3QSLFOZW -
+:KUBE-POD-FW-KAYBG3UTYTKDCPDN -
+:KUBE-POD-FW-KH444HAKP34OBKAU -
+:KUBE-PROXY-CANARY -
+:KUBE-PROXY-FIREWALL -
+:KUBE-ROUTER-FORWARD -
+:KUBE-ROUTER-INPUT -
+:KUBE-ROUTER-OUTPUT -
+:KUBE-SERVICES -
+-A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+-A INPUT -m conntrack --ctstate NEW -m comment --comment "kubernetes load balancer firewall" -j KUBE-PROXY-FIREWALL
+-A INPUT -m comment --comment "kubernetes health check service ports" -j KUBE-NODEPORTS
+-A INPUT -m conntrack --ctstate NEW -m comment --comment "kubernetes externally-visible service portals" -j KUBE-EXTERNAL-SERVICES
+-A INPUT -j KUBE-FIREWALL
+-A FORWARD -m comment --comment "kube-router netpol - TEMCG2JMHZYE7H7T" -j KUBE-ROUTER-FORWARD
+-A FORWARD -m conntrack --ctstate NEW -m comment --comment "kubernetes load balancer firewall" -j KUBE-PROXY-FIREWALL
+-A FORWARD -m comment --comment "kubernetes forwarding rules" -j KUBE-FORWARD
+-A FORWARD -m conntrack --ctstate NEW -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+-A FORWARD -m conntrack --ctstate NEW -m comment --comment "kubernetes externally-visible service portals" -j KUBE-EXTERNAL-SERVICES
+-A FORWARD -j DOCKER-USER
+-A FORWARD -j DOCKER-FORWARD
+-A FORWARD -m comment --comment "flanneld forward" -j FLANNEL-FWD
+-A OUTPUT -m comment --comment "kube-router netpol - VEAAIY32XVBHCSCY" -j KUBE-ROUTER-OUTPUT
+-A OUTPUT -m conntrack --ctstate NEW -m comment --comment "kubernetes load balancer firewall" -j KUBE-PROXY-FIREWALL
+-A OUTPUT -m conntrack --ctstate NEW -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+-A OUTPUT -j KUBE-FIREWALL
+-A DOCKER ! -i docker0 -o docker0 -j DROP
+-A DOCKER-BRIDGE -o docker0 -j DOCKER
+-A DOCKER-CT -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A DOCKER-FORWARD -j DOCKER-CT
+-A DOCKER-FORWARD -j DOCKER-INTERNAL
+-A DOCKER-FORWARD -j DOCKER-BRIDGE
+-A DOCKER-FORWARD -i docker0 -j ACCEPT
+-A FLANNEL-FWD -s 10.42.0.0/16 -m comment --comment "flanneld forward" -j ACCEPT
+-A FLANNEL-FWD -d 10.42.0.0/16 -m comment --comment "flanneld forward" -j ACCEPT
+-A KUBE-FIREWALL ! -s 127.0.0.0/8 -d 127.0.0.0/8 -m comment --comment "block incoming localnet connections" -m conntrack ! --ctstate RELATED,ESTABLISHED,DNAT -j DROP
+-A KUBE-FORWARD -m conntrack --ctstate INVALID -m nfacct --nfacct-name  ct_state_invalid_dropped_pkts -j DROP
+-A KUBE-FORWARD -m comment --comment "kubernetes forwarding rules" -m mark --mark 0x4000/0x4000 -j ACCEPT
+-A KUBE-FORWARD -m comment --comment "kubernetes forwarding conntrack rule" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A KUBE-NWPLCY-3TPAY7N6TNGX7RXO -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-gateway/gateway-ingress" --nflog-group 100
+-A KUBE-NWPLCY-CMVL6NNN2MNURCWR -p tcp -m comment --comment "t3/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-V45DZMISXQHD2GJ2 src -m set --match-set KUBE-DST-PCPWLPYLI2F63FBI dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+-A KUBE-NWPLCY-CMVL6NNN2MNURCWR -p tcp -m comment --comment "t3/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-V45DZMISXQHD2GJ2 src -m set --match-set KUBE-DST-PCPWLPYLI2F63FBI dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+-A KUBE-NWPLCY-CMVL6NNN2MNURCWR -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy t3/agent-egress-gateway-only" --nflog-group 100
+-A KUBE-NWPLCY-COMMON -m comment --comment "\"rule to drop invalid state for pod\"" -m conntrack --ctstate INVALID -j DROP
+-A KUBE-NWPLCY-COMMON -m comment --comment "\"rule for stateful firewall for pod\"" -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A KUBE-NWPLCY-COMMON -p icmp -m comment --comment "allow icmp echo requests" -m icmp --icmp-type 8 -j ACCEPT
+-A KUBE-NWPLCY-COMMON -p icmp -m comment --comment "allow icmp destination unreachable messages" -m icmp --icmp-type 3 -j ACCEPT
+-A KUBE-NWPLCY-COMMON -p icmp -m comment --comment "allow icmp time exceeded messages" -m icmp --icmp-type 11 -j ACCEPT
+-A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p udp -m comment --comment "ci-prep/prep-egress-public-only egress pods" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-BPH7PD7UYA3QWZU6 dst -m udp --dport 53 -j MARK --set-xmark 0x10000/0x10000
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p udp -m comment --comment "ci-prep/prep-egress-public-only egress pods" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-BPH7PD7UYA3QWZU6 dst -m udp --dport 53 -m mark --mark 0x10000/0x10000 -j RETURN
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p tcp -m comment --comment "ci-prep/prep-egress-public-only egress pods" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-BPH7PD7UYA3QWZU6 dst -m tcp --dport 53 -j MARK --set-xmark 0x10000/0x10000
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p tcp -m comment --comment "ci-prep/prep-egress-public-only egress pods" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-BPH7PD7UYA3QWZU6 dst -m tcp --dport 53 -m mark --mark 0x10000/0x10000 -j RETURN
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p tcp -m comment --comment "ci-prep/prep-egress-public-only egress cidr" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-43X4BXWN2PI62JT3 dst -m tcp --dport 443 -j MARK --set-xmark 0x10000/0x10000
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p tcp -m comment --comment "ci-prep/prep-egress-public-only egress cidr" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-43X4BXWN2PI62JT3 dst -m tcp --dport 443 -m mark --mark 0x10000/0x10000 -j RETURN
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p tcp -m comment --comment "ci-prep/prep-egress-public-only egress cidr" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-43X4BXWN2PI62JT3 dst -m tcp --dport 80 -j MARK --set-xmark 0x10000/0x10000
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -p tcp -m comment --comment "ci-prep/prep-egress-public-only egress cidr" -m set --match-set KUBE-SRC-3AQWWCQ7UEOQ3RAO src -m set --match-set KUBE-DST-43X4BXWN2PI62JT3 dst -m tcp --dport 80 -m mark --mark 0x10000/0x10000 -j RETURN
+-A KUBE-NWPLCY-H662JK4DP3F4OCLL -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-prep/prep-egress-public-only" --nflog-group 100
+-A KUBE-NWPLCY-R2YIQUTDFZ4XUALF -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-exec/deny-all" --nflog-group 100
+-A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+-A KUBE-NWPLCY-USYQ6REMCL3YTAZ7 -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -j MARK --set-xmark 0x10000/0x10000
+-A KUBE-NWPLCY-USYQ6REMCL3YTAZ7 -p tcp -m comment --comment "ci-agent/agent-egress-gateway-only egress pods" -m set --match-set KUBE-SRC-L3W3AF6DSEL3UNA7 src -m set --match-set KUBE-DST-PZPFTZ6GIPE2Y7YW dst -m tcp --dport 8080 -m mark --mark 0x10000/0x10000 -j RETURN
+-A KUBE-NWPLCY-USYQ6REMCL3YTAZ7 -m comment --comment "rule to log dropped traffic" -m limit --limit 10/min --limit-burst 10 -m mark ! --mark 0x10000/0x10000 -j NFLOG --nflog-prefix "DROP by policy ci-agent/agent-egress-gateway-only" --nflog-group 100
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -d 10.42.0.13/32 -m comment --comment "from local node" -m addrtype --src-type LOCAL -j ACCEPT
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-ingress policy" -j KUBE-NWPLCY-3TPAY7N6TNGX7RXO
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -j MARK --set-xmark 0x0/0x10000
+-A KUBE-POD-FW-B6BE5VYSNXWWNEU5 -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -d 10.42.0.9/32 -m comment --comment "from local node" -m addrtype --src-type LOCAL -j ACCEPT
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -s 10.42.0.9/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -d 10.42.0.9/32 -m comment --comment "default ingress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -j MARK --set-xmark 0x0/0x10000
+-A KUBE-POD-FW-CQYV45M4RZ5QGG2J -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -d 10.42.0.8/32 -m comment --comment "from local node" -m addrtype --src-type LOCAL -j ACCEPT
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -s 10.42.0.8/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -d 10.42.0.8/32 -m comment --comment "default ingress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -m comment --comment "kube-system/coredns-577d995dff-pl2c9 log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -m comment --comment "kube-system/coredns-577d995dff-pl2c9 reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -j MARK --set-xmark 0x0/0x10000
+-A KUBE-POD-FW-ITZ62P4NTK35NHLJ -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -d 10.42.0.10/32 -m comment --comment "from local node" -m addrtype --src-type LOCAL -j ACCEPT
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -s 10.42.0.10/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -d 10.42.0.10/32 -m comment --comment "default ingress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -m comment --comment "kube-system/traefik-68df944ff7-tgdtp log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -m comment --comment "kube-system/traefik-68df944ff7-tgdtp reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -j MARK --set-xmark 0x0/0x10000
+-A KUBE-POD-FW-JP7MQ2FR3QSLFOZW -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -d 10.42.0.7/32 -m comment --comment "from local node" -m addrtype --src-type LOCAL -j ACCEPT
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -s 10.42.0.7/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -d 10.42.0.7/32 -m comment --comment "default ingress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -j MARK --set-xmark 0x0/0x10000
+-A KUBE-POD-FW-KAYBG3UTYTKDCPDN -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+-A KUBE-POD-FW-KH444HAKP34OBKAU -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+-A KUBE-POD-FW-KH444HAKP34OBKAU -d 10.42.0.6/32 -m comment --comment "from local node" -m addrtype --src-type LOCAL -j ACCEPT
+-A KUBE-POD-FW-KH444HAKP34OBKAU -s 10.42.0.6/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-KH444HAKP34OBKAU -d 10.42.0.6/32 -m comment --comment "default ingress" -j KUBE-NWPLCY-DEFAULT
+-A KUBE-POD-FW-KH444HAKP34OBKAU -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv log-drop" -m mark ! --mark 0x10000/0x10000 -m limit --limit 10/min --limit-burst 10 -j NFLOG --nflog-group 100
+-A KUBE-POD-FW-KH444HAKP34OBKAU -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv reject" -m mark ! --mark 0x10000/0x10000 -j REJECT --reject-with icmp-port-unreachable
+-A KUBE-POD-FW-KH444HAKP34OBKAU -j MARK --set-xmark 0x0/0x10000
+-A KUBE-POD-FW-KH444HAKP34OBKAU -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+-A KUBE-ROUTER-FORWARD -d 10.42.0.10/32 -m comment --comment "kube-system/traefik-68df944ff7-tgdtp in" -j KUBE-POD-FW-JP7MQ2FR3QSLFOZW
+-A KUBE-ROUTER-FORWARD -d 10.42.0.10/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/traefik-68df944ff7-tgdtp in" -j KUBE-POD-FW-JP7MQ2FR3QSLFOZW
+-A KUBE-ROUTER-FORWARD -s 10.42.0.10/32 -m comment --comment "kube-system/traefik-68df944ff7-tgdtp out" -j KUBE-POD-FW-JP7MQ2FR3QSLFOZW
+-A KUBE-ROUTER-FORWARD -s 10.42.0.10/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/traefik-68df944ff7-tgdtp out" -j KUBE-POD-FW-JP7MQ2FR3QSLFOZW
+-A KUBE-ROUTER-FORWARD -d 10.42.0.7/32 -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 in" -j KUBE-POD-FW-KAYBG3UTYTKDCPDN
+-A KUBE-ROUTER-FORWARD -d 10.42.0.7/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 in" -j KUBE-POD-FW-KAYBG3UTYTKDCPDN
+-A KUBE-ROUTER-FORWARD -s 10.42.0.7/32 -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 out" -j KUBE-POD-FW-KAYBG3UTYTKDCPDN
+-A KUBE-ROUTER-FORWARD -s 10.42.0.7/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 out" -j KUBE-POD-FW-KAYBG3UTYTKDCPDN
+-A KUBE-ROUTER-FORWARD -d 10.42.0.8/32 -m comment --comment "kube-system/coredns-577d995dff-pl2c9 in" -j KUBE-POD-FW-ITZ62P4NTK35NHLJ
+-A KUBE-ROUTER-FORWARD -d 10.42.0.8/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/coredns-577d995dff-pl2c9 in" -j KUBE-POD-FW-ITZ62P4NTK35NHLJ
+-A KUBE-ROUTER-FORWARD -s 10.42.0.8/32 -m comment --comment "kube-system/coredns-577d995dff-pl2c9 out" -j KUBE-POD-FW-ITZ62P4NTK35NHLJ
+-A KUBE-ROUTER-FORWARD -s 10.42.0.8/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/coredns-577d995dff-pl2c9 out" -j KUBE-POD-FW-ITZ62P4NTK35NHLJ
+-A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-B6BE5VYSNXWWNEU5
+-A KUBE-ROUTER-FORWARD -d 10.42.0.13/32 -m physdev --physdev-is-bridged -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-B6BE5VYSNXWWNEU5
+-A KUBE-ROUTER-FORWARD -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-B6BE5VYSNXWWNEU5
+-A KUBE-ROUTER-FORWARD -s 10.42.0.13/32 -m physdev --physdev-is-bridged -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-B6BE5VYSNXWWNEU5
+-A KUBE-ROUTER-FORWARD -d 10.42.0.6/32 -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv in" -j KUBE-POD-FW-KH444HAKP34OBKAU
+-A KUBE-ROUTER-FORWARD -d 10.42.0.6/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv in" -j KUBE-POD-FW-KH444HAKP34OBKAU
+-A KUBE-ROUTER-FORWARD -s 10.42.0.6/32 -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv out" -j KUBE-POD-FW-KH444HAKP34OBKAU
+-A KUBE-ROUTER-FORWARD -s 10.42.0.6/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv out" -j KUBE-POD-FW-KH444HAKP34OBKAU
+-A KUBE-ROUTER-FORWARD -d 10.42.0.9/32 -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 in" -j KUBE-POD-FW-CQYV45M4RZ5QGG2J
+-A KUBE-ROUTER-FORWARD -d 10.42.0.9/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 in" -j KUBE-POD-FW-CQYV45M4RZ5QGG2J
+-A KUBE-ROUTER-FORWARD -s 10.42.0.9/32 -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 out" -j KUBE-POD-FW-CQYV45M4RZ5QGG2J
+-A KUBE-ROUTER-FORWARD -s 10.42.0.9/32 -m physdev --physdev-is-bridged -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 out" -j KUBE-POD-FW-CQYV45M4RZ5QGG2J
+-A KUBE-ROUTER-FORWARD -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+-A KUBE-ROUTER-FORWARD -m comment --comment "rule to explicitly ACCEPT traffic that comply to network policies" -m mark --mark 0x20000/0x20000 -j ACCEPT
+-A KUBE-ROUTER-INPUT -d 10.43.0.0/16 -m comment --comment "allow traffic to primary/secondary cluster IP range - EKROEGTNIJ3AP3LC" -j RETURN
+-A KUBE-ROUTER-INPUT -p tcp -m comment --comment "allow LOCAL TCP traffic to node ports - LR7XO7NXDBGQJD2M" -m addrtype --dst-type LOCAL -m multiport --dports 30000:32767 -j RETURN
+-A KUBE-ROUTER-INPUT -p udp -m comment --comment "allow LOCAL UDP traffic to node ports - 76UCBPIZNGJNWNUZ" -m addrtype --dst-type LOCAL -m multiport --dports 30000:32767 -j RETURN
+-A KUBE-ROUTER-INPUT -p sctp -m comment --comment "allow LOCAL SCTP traffic to node ports - YU47VQ3DEDE3VDG7" -m addrtype --dst-type LOCAL -m multiport --dports 30000:32767 -j RETURN
+-A KUBE-ROUTER-INPUT -s 10.42.0.10/32 -m comment --comment "kube-system/traefik-68df944ff7-tgdtp out" -j KUBE-POD-FW-JP7MQ2FR3QSLFOZW
+-A KUBE-ROUTER-INPUT -s 10.42.0.7/32 -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 out" -j KUBE-POD-FW-KAYBG3UTYTKDCPDN
+-A KUBE-ROUTER-INPUT -s 10.42.0.8/32 -m comment --comment "kube-system/coredns-577d995dff-pl2c9 out" -j KUBE-POD-FW-ITZ62P4NTK35NHLJ
+-A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-B6BE5VYSNXWWNEU5
+-A KUBE-ROUTER-INPUT -s 10.42.0.6/32 -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv out" -j KUBE-POD-FW-KH444HAKP34OBKAU
+-A KUBE-ROUTER-INPUT -s 10.42.0.9/32 -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 out" -j KUBE-POD-FW-CQYV45M4RZ5QGG2J
+-A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+-A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly ACCEPT traffic that comply to network policies" -m mark --mark 0x20000/0x20000 -j ACCEPT
+-A KUBE-ROUTER-OUTPUT -d 10.42.0.10/32 -m comment --comment "kube-system/traefik-68df944ff7-tgdtp in" -j KUBE-POD-FW-JP7MQ2FR3QSLFOZW
+-A KUBE-ROUTER-OUTPUT -s 10.42.0.10/32 -m comment --comment "kube-system/traefik-68df944ff7-tgdtp out" -j KUBE-POD-FW-JP7MQ2FR3QSLFOZW
+-A KUBE-ROUTER-OUTPUT -d 10.42.0.7/32 -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 in" -j KUBE-POD-FW-KAYBG3UTYTKDCPDN
+-A KUBE-ROUTER-OUTPUT -s 10.42.0.7/32 -m comment --comment "kube-system/local-path-provisioner-56c6584955-xfcr4 out" -j KUBE-POD-FW-KAYBG3UTYTKDCPDN
+-A KUBE-ROUTER-OUTPUT -d 10.42.0.8/32 -m comment --comment "kube-system/coredns-577d995dff-pl2c9 in" -j KUBE-POD-FW-ITZ62P4NTK35NHLJ
+-A KUBE-ROUTER-OUTPUT -s 10.42.0.8/32 -m comment --comment "kube-system/coredns-577d995dff-pl2c9 out" -j KUBE-POD-FW-ITZ62P4NTK35NHLJ
+-A KUBE-ROUTER-OUTPUT -d 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb in" -j KUBE-POD-FW-B6BE5VYSNXWWNEU5
+-A KUBE-ROUTER-OUTPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-B6BE5VYSNXWWNEU5
+-A KUBE-ROUTER-OUTPUT -d 10.42.0.6/32 -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv in" -j KUBE-POD-FW-KH444HAKP34OBKAU
+-A KUBE-ROUTER-OUTPUT -s 10.42.0.6/32 -m comment --comment "kube-system/metrics-server-778c4649b4-dtnmv out" -j KUBE-POD-FW-KH444HAKP34OBKAU
+-A KUBE-ROUTER-OUTPUT -d 10.42.0.9/32 -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 in" -j KUBE-POD-FW-CQYV45M4RZ5QGG2J
+-A KUBE-ROUTER-OUTPUT -s 10.42.0.9/32 -m comment --comment "kube-system/svclb-traefik-a79f1593-bw468 out" -j KUBE-POD-FW-CQYV45M4RZ5QGG2J
+-A KUBE-ROUTER-OUTPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+-A KUBE-ROUTER-OUTPUT -m comment --comment "rule to explicitly ACCEPT traffic that comply to network policies" -m mark --mark 0x20000/0x20000 -j ACCEPT
+COMMIT

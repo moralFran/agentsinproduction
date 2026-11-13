@@ -1,0 +1,5 @@
+shims:
+  qemu:
+    dropIn: |
+      [runtime]
+      disable_guest_seccomp = false

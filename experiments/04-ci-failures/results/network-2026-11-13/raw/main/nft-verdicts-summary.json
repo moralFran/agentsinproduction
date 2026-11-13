@@ -1,0 +1,1217 @@
+{
+ "filter_table_syns": 928346,
+ "verdicts": {
+  "drop": 905702,
+  "accept": 20202,
+  "chain policy accept": 2442
+ },
+ "accepted_from_probe_pods": {
+  "allowed (rule accept)": 7391,
+  "start-up (rule accept)": 1433,
+  "start-up (chain policy accept, no accepting or dropping rule)": 1865,
+  "UNEXPLAINED (rule accept)": 12,
+  "allowed (chain policy accept, no accepting or dropping rule)": 3,
+  "no probe try with this port (rule accept)": 143,
+  "no probe try with this port (chain policy accept, no accepting or dropping rule)": 39,
+  "pre-policy (rule accept)": 11223,
+  "pre-policy (chain policy accept, no accepting or dropping rule)": 530,
+  "UNEXPLAINED (chain policy accept, no accepting or dropping rule)": 5
+ },
+ "unexplained": [
+  [
+   "10.42.0.36",
+   51422,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.36",
+   55796,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.36",
+   46234,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.36",
+   52020,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.36",
+   48966,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.36",
+   37606,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.41",
+   42134,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.41",
+   41716,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.41",
+   37206,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.41",
+   55212,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.41",
+   42138,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.41",
+   41718,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.41",
+   37210,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.41",
+   55228,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.41",
+   41724,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.41",
+   37216,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.41",
+   42140,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.41",
+   55234,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.43",
+   36768,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.43",
+   58456,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.43",
+   41126,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.43",
+   47154,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.60",
+   54580,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.60",
+   47528,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.60",
+   49860,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.60",
+   36902,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.62",
+   44542,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.62",
+   48216,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.62",
+   32942,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.62",
+   55774,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.62",
+   33900,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.62",
+   40620,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.63",
+   34254,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.63",
+   51794,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.63",
+   49330,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.71",
+   35936,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.71",
+   54658,
+   "10.128.0.8:10250",
+   "UNEXPLAINED (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.71",
+   33932,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.71",
+   42194,
+   "10.128.0.8:6443",
+   "UNEXPLAINED (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.71",
+   35940,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.71",
+   54660,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.71",
+   33934,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.71",
+   42200,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.74",
+   56954,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.74",
+   56540,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.74",
+   46074,
+   "10.128.0.8:10250",
+   "UNEXPLAINED (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.74",
+   34534,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.78",
+   33628,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.78",
+   49828,
+   "10.128.0.8:10250",
+   "UNEXPLAINED (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.78",
+   60512,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.86",
+   34036,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.86",
+   47694,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.86",
+   46186,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.86",
+   35404,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.89",
+   54412,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.89",
+   34832,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.89",
+   52014,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.89",
+   59284,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.92",
+   51772,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.92",
+   52282,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.92",
+   45064,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.92",
+   45870,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.92",
+   41298,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.92",
+   58006,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.93",
+   33082,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.93",
+   50496,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.93",
+   59760,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.93",
+   51640,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.104",
+   41482,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.104",
+   48330,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.104",
+   41552,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.104",
+   43410,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.104",
+   38166,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.104",
+   36390,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.110",
+   35340,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.110",
+   60042,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.110",
+   60366,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.110",
+   52216,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.110",
+   47930,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.110",
+   60734,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.114",
+   60078,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.114",
+   48166,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.116",
+   59240,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.116",
+   34880,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.116",
+   58448,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.116",
+   36648,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.116",
+   35356,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.116",
+   57764,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.123",
+   45874,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.123",
+   37390,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.123",
+   36278,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.123",
+   42486,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.125",
+   34036,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.125",
+   51920,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.125",
+   54176,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.125",
+   41816,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.125",
+   41336,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.125",
+   33476,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.135",
+   47860,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.135",
+   46642,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.135",
+   39380,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.135",
+   37822,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.135",
+   40338,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.135",
+   56890,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.135",
+   41808,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.135",
+   40472,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.137",
+   40156,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.137",
+   48222,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.137",
+   53288,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.138",
+   34822,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.138",
+   51464,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.138",
+   43044,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.138",
+   53282,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.137",
+   38806,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.137",
+   42326,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.140",
+   43756,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.140",
+   50252,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.140",
+   52398,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.140",
+   39418,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.140",
+   57348,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.147",
+   60000,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.147",
+   59990,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.147",
+   59822,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.147",
+   58818,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.149",
+   33258,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.149",
+   37238,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.149",
+   38352,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.149",
+   55428,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.149",
+   43114,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.149",
+   42304,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.156",
+   47906,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.156",
+   47440,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.156",
+   32856,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.156",
+   49634,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.156",
+   42732,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.156",
+   51714,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.162",
+   34294,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.162",
+   34352,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.162",
+   50738,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.162",
+   45902,
+   "10.128.0.8:6443",
+   "UNEXPLAINED (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.164",
+   44864,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.164",
+   38176,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.164",
+   49692,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.164",
+   37482,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.164",
+   57556,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.164",
+   48130,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.174",
+   33510,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.174",
+   58090,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.174",
+   33968,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.174",
+   43626,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.181",
+   47772,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.181",
+   57782,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.181",
+   43982,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.181",
+   50138,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.181",
+   49130,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.181",
+   39328,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.183",
+   39828,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.183",
+   52890,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.183",
+   53794,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.189",
+   52394,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.189",
+   47714,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.189",
+   53938,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.197",
+   37312,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.197",
+   48062,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.198",
+   55864,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.198",
+   43298,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.198",
+   42064,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.198",
+   48540,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.197",
+   45826,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.198",
+   55874,
+   "1.1.1.1:443",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.198",
+   43300,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.198",
+   42080,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.198",
+   48542,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.197",
+   43222,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.197",
+   46260,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.197",
+   57600,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.209",
+   53010,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.209",
+   58852,
+   "<public-ip>:4460",
+   "UNEXPLAINED (rule accept)"
+  ],
+  [
+   "10.42.0.209",
+   36376,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.209",
+   53980,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.209",
+   56908,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.209",
+   34918,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.215",
+   34640,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.215",
+   56976,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.215",
+   40158,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.215",
+   60484,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.215",
+   57664,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.215",
+   43190,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.221",
+   41130,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.221",
+   58532,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.221",
+   44228,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.221",
+   52828,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.221",
+   52022,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.221",
+   51326,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.222",
+   53074,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.222",
+   36726,
+   "<public-ip>:4460",
+   "no probe try with this port (rule accept)"
+  ],
+  [
+   "10.42.0.225",
+   47100,
+   "10.128.0.8:10250",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.225",
+   46494,
+   "10.128.0.8:6443",
+   "no probe try with this port (chain policy accept, no accepting or dropping rule)"
+  ],
+  [
+   "10.42.0.225",
+   43876,
+   "169.254.169.254:80",
+   "no probe try with this port (rule accept)"
+  ]
+ ],
+ "no_verdict_from_probe_pods": 0
+}

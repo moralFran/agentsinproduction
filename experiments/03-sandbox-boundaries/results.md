@@ -523,6 +523,29 @@ Infrastructure: both VMs existed from 2026-11-11T08:39:44Z to 13:57:10Z (5.29 h)
 Re-run r4 (2026-11-12): the two VMs for 0.78 h, about **US$ 0.17**, and US$ 0.050 of model calls (8 Sonnet, 27
 Haiku, by the gateway's booking), so about US$ 0.22; with 2026-11-11, about US$ 1.77 in total.
 
+## Found later, in experiment 04's lab (2026-11-13): a new pod starts before its policy applies
+
+Not measured in this experiment; measured on the same cluster software (k3s with its embedded policy controller,
+flannel, Kata 4.3.1) in a later lab, `../04-ci-failures/results/network-2026-11-13/`.
+
+- **A new pod can reach what its NetworkPolicy forbids until the policy controller has written the pod's rules.**
+  There that took 0.1 to 1.6 s (Kata and runc pods alike; shorter on a quiet node), and 84 of 90 pods without an init
+  container had an established forbidden connection in that time. The packet trace shows the cause: the pod's
+  network works before the controller's next sync adds the pod's chain.
+- **What this experiment's network result covers.** The probes of sections 1 and 6 ran in a pod that was already
+  running, 15 s after the policy was applied (`diag/run-net.sh`). In the later lab a policy applied to a running pod
+  was in force within 0.5 s of `kubectl apply` returning (12 of 12), so those probes ran with the policy in force,
+  and "every direct request was refused" stands for what they measured: a pod that already exists.
+- **What it does not cover.** The agent's pods of the task runs were created with the policy already in the
+  namespace, so each of them started inside that window. Nothing in this experiment measured the first second of a
+  pod, and the statement about the network is not a statement about it.
+- **After the window, nothing got through there:** about 774,000 forbidden tries from long-running pods (Kata and
+  runc), none passed, with pods being created and deleted around them.
+- **The fix tried there:** an init container that waits until the forbidden destinations are refused before the
+  main container starts; 0 of 60 pods saw the window with it. This experiment's manifests do not have it.
+- Also seen there: the Kata guest's own time service opens connections to public time servers from the pod's address
+  when the VM boots, before the pod's rules exist.
+
 ## Limits
 One machine, one cluster distribution, one CNI and policy controller, one small task, one model. The recorded run
 installed k3s from the `stable` channel and the latest Kata release; the scripts now pin those versions, and the

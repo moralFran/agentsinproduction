@@ -1,0 +1,42 @@
+2026-11-13T09:19:38Z
+before:  9d54c7e9e594974c3ce3a0906024164b912941bc504e2b9986ac18f6ba9d3cb9  gateway/gateway.py
+working tree copy: 5091ecd512af6e25b00f40c431016815c8d577818e4227a5c45573d99912105c  gateway/gateway.py
+before:  690ec51fd40b5db815aeef59464ee612f2c3f05281f96e0f2f6eb14ecab4ba3d  cases/attempt.sh
+working tree copy: 1073e67710bf591f4a29eef904681e4a2a8e736e306fb86c3f0faefc39e434b1  cases/attempt.sh
+before:  461c268abad3e2cf79e9cf704dbac69ab0c7da5b8cd8398bbd94ce6160c1ffa0  agent/agent.py
+working tree copy: 3acec97a9f9cf8ca6d4c520e2db82466d93d59de10cde8f2c48a7547139ab940  agent/agent.py
+before:  106681253bde8a05b3d92c10f188b4b75a9f0fa401e41ea4b9ff8a128253e3cf  executor/executor.py
+working tree copy: 5119219fd92d7dfde7f3e5f0ab3bd22d880f8be4afa62b0ec661b9775c878e7b  executor/executor.py
+namespace/ci-agent unchanged
+namespace/ci-exec unchanged
+namespace/ci-gateway unchanged
+networkpolicy.networking.k8s.io/deny-all unchanged
+networkpolicy.networking.k8s.io/agent-egress-gateway-only unchanged
+serviceaccount/runner unchanged
+serviceaccount/runner unchanged
+networkpolicy.networking.k8s.io/gateway-ingress unchanged
+namespace/ci-prep unchanged
+networkpolicy.networking.k8s.io/prep-egress-public-only unchanged
+configmap/gateway-code configured
+secret/gateway-admin-key unchanged
+persistentvolumeclaim/gateway-state unchanged
+deployment.apps/gateway unchanged
+service/gateway unchanged
+deployment.apps/gateway restarted
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "gateway" rollout to finish: 0 of 1 updated replicas are available...
+deployment "gateway" successfully rolled out
+5119219fd92d7dfde7f3e5f0ab3bd22d880f8be4afa62b0ec661b9775c878e7b  executor/executor.py
+3acec97a9f9cf8ca6d4c520e2db82466d93d59de10cde8f2c48a7547139ab940  agent/agent.py
+b30bb240d97069752a726a30c68bf990abcb9f3e67ac7b15cc6d9e8771c612bd  agent/prompt-v1.txt
+8544789f4f0ee930e223616e75fba7f3c0ea6307d8d79f7a07ff39054687860c  agent/prompt-v2.txt
+setup-lab.sh rc=0
+agent.py in ci-agent ConfigMap:     3acec97a9f9cf8ca6d4c520e2db82466d93d59de10cde8f2c48a7547139ab940
+executor.py in ci-exec ConfigMap:   5119219fd92d7dfde7f3e5f0ab3bd22d880f8be4afa62b0ec661b9775c878e7b
+gateway.py in ci-gateway ConfigMap: 5091ecd512af6e25b00f40c431016815c8d577818e4227a5c45573d99912105c
+(the jsonpath output has no trailing newline difference: compare with the sums above)
+gateway-5488c5b958-sfgmb 1/1 Running 10.42.0.235
+provider key in the Secret is the dummy: 1
+2026-11-13T09:20:14Z

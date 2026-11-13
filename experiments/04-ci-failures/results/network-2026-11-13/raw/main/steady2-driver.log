@@ -1,0 +1,5 @@
+09:17:20 steady2-exec-runc ci-exec runc nogate Succeeded 41995 lines
+09:17:23 steady2-exec-kata ci-exec kata nogate Succeeded 42002 lines
+09:17:25 steady2-agent-kata ci-agent kata nogate Succeeded 34442 lines
+09:17:26 steady2-prep-kata ci-prep kata nogate Succeeded 34442 lines
+09:17:27 PLAN_DONE

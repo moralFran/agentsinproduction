@@ -1,0 +1,21 @@
+create KUBE-DST-3AQWWCQ7UEOQ3RAO hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0xc641dfe6
+create KUBE-DST-43X4BXWN2PI62JT3 hash:net family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0xca8e29d0
+create KUBE-DST-653EB64GNQ52QRMY hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0xbb35df03
+create KUBE-DST-BPH7PD7UYA3QWZU6 hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0x0207b6d6
+create KUBE-DST-FLODXGQS5X7MQODV hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0xae4754ff
+create KUBE-DST-L3W3AF6DSEL3UNA7 hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0x8739e7a3
+create KUBE-DST-PZPFTZ6GIPE2Y7YW hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0xb36d6792
+create KUBE-SRC-3AQWWCQ7UEOQ3RAO hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0x547fed0b
+create KUBE-SRC-653EB64GNQ52QRMY hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0x320766a3
+create KUBE-SRC-L3W3AF6DSEL3UNA7 hash:ip family inet hashsize 1024 maxelem 65536 timeout 0 bucketsize 12 initval 0xb41b1393
+add KUBE-DST-43X4BXWN2PI62JT3 0.0.0.0/1 timeout 0
+add KUBE-DST-43X4BXWN2PI62JT3 10.0.0.0/8 timeout 0 nomatch
+add KUBE-DST-43X4BXWN2PI62JT3 100.64.0.0/10 timeout 0 nomatch
+add KUBE-DST-43X4BXWN2PI62JT3 127.0.0.0/8 timeout 0 nomatch
+add KUBE-DST-43X4BXWN2PI62JT3 <public-ip>/1 timeout 0
+add KUBE-DST-43X4BXWN2PI62JT3 169.254.0.0/16 timeout 0 nomatch
+add KUBE-DST-43X4BXWN2PI62JT3 172.16.0.0/12 timeout 0 nomatch
+add KUBE-DST-43X4BXWN2PI62JT3 192.168.0.0/16 timeout 0 nomatch
+add KUBE-DST-BPH7PD7UYA3QWZU6 10.42.0.8 timeout 0
+add KUBE-DST-FLODXGQS5X7MQODV 10.42.0.13 timeout 0
+add KUBE-DST-PZPFTZ6GIPE2Y7YW 10.42.0.13 timeout 0

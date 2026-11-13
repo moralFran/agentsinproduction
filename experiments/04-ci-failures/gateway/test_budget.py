@@ -28,6 +28,9 @@ class Fake(BaseHTTPRequestHandler):
             calls.append(body)
             self.send_response(302); self.send_header("Location", "http://127.0.0.1:18081/redirect-target")
             self.send_header("Content-Length", "0"); self.end_headers(); return
+        if body.get("system") in ("overloaded", "ratelimited"):       # the provider's own failures, passed through
+            calls.append(body); out = b'{"type": "error"}'
+            self.send_response(529 if body["system"] == "overloaded" else 429); self.send_header("content-length", str(len(out))); self.end_headers(); self.wfile.write(out); return
         calls.append(body); time.sleep(3 if body.get("system") == "slow" else 0.2)
         tin = {"huge": 10 ** 9, "long": 150}.get(body.get("system"), 10)
         usage = {"input_tokens": tin, "output_tokens": body["max_tokens"]}                                   # uses all it may
@@ -250,6 +253,25 @@ stop(p); p = start(budget=10 ** 9)
 revived = post(body, "v1-close-c-r1"); stop(p)
 check("19 limit: a restart before the close is written brings the token back (the runner must stop on a failed close)",
       lost == {"status": 503} and refused == 403 and revived == 200, f"close={lost}, before restart={refused}, after restart={revived}")
+
+# Failed model calls are booked to the run whose token carried them, so the runner can check a pod's "unavailable".
+reset(); p = start(budget=10 ** 9)
+for name, cap in (("v1-mpf-ok-r1", 10 * one), ("v1-mpf-cap-r1", one), ("v1-mpf-prov-r1", 10 ** 6), ("v1-mpf-closed-r1", 10 * one), ("v1-mpf-fmt-r1", 10 * one)):
+    admin("/runs", {"run": name, "cap_usd": cap})
+fine = post(body, "v1-mpf-ok-r1")
+own_cap = [post(body, "v1-mpf-cap-r1"), post(body, "v1-mpf-cap-r1")]                    # the second one passes this run's cap
+provider = [post({**body, "system": "overloaded"}, "v1-mpf-prov-r1"), post({**body, "system": "ratelimited"}, "v1-mpf-prov-r1")]
+admin("/runs/v1-mpf-closed-r1/close", {}); after_close = [post(body, "v1-mpf-closed-r1"), post(body, "v1-mpf-closed-r1")]
+bad_format = post({**body, "stream": True}, "v1-mpf-fmt-r1"); stranger = post(body, token="not-a-token")
+other_path = urllib.request.Request("http://127.0.0.1:18080/v1/other", data=b"{}", headers={"x-run-token": TOKENS["v1-mpf-ok-r1"]})
+try: urllib.request.urlopen(other_path, timeout=10)
+except urllib.error.HTTPError: pass
+counts = {name: admin(f"/runs/{name}/close", {}).get("model_path_failures") for name in ("v1-mpf-ok-r1", "v1-mpf-cap-r1", "v1-mpf-prov-r1", "v1-mpf-closed-r1", "v1-mpf-fmt-r1")}
+stop(p); on_disk = json.load(open(SF))["runs"]["v1-mpf-prov-r1"].get("model_path_failures")
+check("20 failed model calls are booked to the token's run (closed token, provider 529/429, refused format), not its own cap or other paths",
+      fine == 200 and own_cap == [200, 429] and provider == [529, 429] and after_close == [403, 403] and bad_format == 403 and stranger == 403
+      and counts == {"v1-mpf-ok-r1": 0, "v1-mpf-cap-r1": 0, "v1-mpf-prov-r1": 2, "v1-mpf-closed-r1": 2, "v1-mpf-fmt-r1": 1} and on_disk == 2,
+      f"answers: ok={fine}, own cap={own_cap}, provider={provider}, closed={after_close}, format={bad_format}, unknown token={stranger}; counts={counts}; on disk={on_disk}")
 
 # Force the close between the initial lookup and the reservation lock, without adding test hooks to the gateway.
 import email.message, hashlib, importlib.util, io

@@ -1,0 +1,1 @@
+{"concurrency": 1, "pods": [{"name": "t3lat-runc-1", "kind": "agent", "runtime": "runc", "gate": false, "seconds": 30, "interval": 0.05, "timeout": 0.15, "ns": "t3r"}]}

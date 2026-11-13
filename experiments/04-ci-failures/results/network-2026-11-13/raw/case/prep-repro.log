@@ -1,0 +1,6 @@
+2026-11-13T08:42:11Z
+{"id": "gobwas-ws-a567dfd6", "prep": "ok", "test_cmd": "go test -count=1 github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate", "hidden_cmd": "go test -count=1 ./wsflate github.com/gobwas/ws/tests github.com/gobwas/ws/wsflate", "broken_compiles": true}
+2026-11-13T08:43:55Z
+gobwas-ws-a567dfd6 reproduced | broken failed 3 of 3 | fixed passed 3 of 3 | hidden on fix rc 0
+2026-11-13T08:47:50Z
+{"id": "gobwas-ws-a567dfd6", "hidden_control": {"applicable": true, "broken_plus_tests": [{"rc": 1, "s": 39.6, "tail": "FAIL"}, {"rc": 1, "s": 2.0, "tail": "FAIL"}, {"rc": 1, "s": 1.9, "tail": "FAIL"}], "fixed": [{"rc": 0, "s": 1.9, "tail": "ok  \tgithub.com/gobwas/ws/tests\t0.022s", "integrity": {"outcome": "sampled"}}, {"rc": 0, "s": 1.9, "tail": "ok  \tgithub.com/gobwas/ws/tests\t0.020s", "integrity": {"outcome": "sampled"}}, {"rc": 0, "s": 2.0, "tail": "ok  \tgithub.com/gobwas/ws/tests\t0.023s", "integrity": {"outcome": "sampled"}}], "discriminates": true}, "integrity_control": {"suite": [

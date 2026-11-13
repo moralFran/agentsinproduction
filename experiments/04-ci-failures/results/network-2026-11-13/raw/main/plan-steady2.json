@@ -1,0 +1,5 @@
+{"concurrency": 4, "stagger": 0.5, "pods": [
+ {"name": "steady2-exec-kata", "kind": "exec-repro", "runtime": "kata", "gate": false, "seconds": 840, "interval": 0.2},
+ {"name": "steady2-agent-kata", "kind": "agent", "runtime": "kata", "gate": false, "seconds": 840, "interval": 0.2},
+ {"name": "steady2-prep-kata", "kind": "prep", "runtime": "kata", "gate": false, "seconds": 840, "interval": 0.2},
+ {"name": "steady2-exec-runc", "kind": "exec-repro", "runtime": "runc", "gate": false, "seconds": 840, "interval": 0.2}]}

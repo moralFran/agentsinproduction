@@ -1,0 +1,15 @@
+{
+ "filter_table_syns": 60925,
+ "verdicts": {
+  "accept": 65,
+  "chain policy accept": 48,
+  "drop": 60812
+ },
+ "accepted_from_probe_pods": {
+  "start-up (rule accept)": 48,
+  "start-up (chain policy accept, no accepting or dropping rule)": 48,
+  "allowed (rule accept)": 12
+ },
+ "unexplained": [],
+ "no_verdict_from_probe_pods": 0
+}

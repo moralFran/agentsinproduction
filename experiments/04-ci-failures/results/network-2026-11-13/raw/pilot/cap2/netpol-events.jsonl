@@ -1,0 +1,4 @@
+{"t_ms": 1794559804620, "event": "ADDED", "ns": "ci-agent", "name": "agent-egress-gateway-only", "uid": "d08406be-cd79-46e4-9a45-1a22f62a9fe5", "rv": "1055", "created": "2026-11-13T08:40:26Z", "deleting": null, "generation": 1}
+{"t_ms": 1794559804620, "event": "ADDED", "ns": "ci-exec", "name": "deny-all", "uid": "1168bfc7-1b08-4e87-b3b4-bec5ac7c8b02", "rv": "1053", "created": "2026-11-13T08:40:26Z", "deleting": null, "generation": 1}
+{"t_ms": 1794559804620, "event": "ADDED", "ns": "ci-gateway", "name": "gateway-ingress", "uid": "042a0455-86ed-44d5-aa8e-bbf875a8bcb0", "rv": "1058", "created": "2026-11-13T08:40:26Z", "deleting": null, "generation": 1}
+{"t_ms": 1794559804620, "event": "ADDED", "ns": "ci-prep", "name": "prep-egress-public-only", "uid": "ea77ad0a-83c4-4049-af42-c0860d664ec8", "rv": "1063", "created": "2026-11-13T08:40:26Z", "deleting": null, "generation": 1}

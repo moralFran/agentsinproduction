@@ -1,0 +1,20 @@
+{"ns": "t3r", "pods": "t3lat-runc-1", "apply_start_ms": 1794560616807, "apply_end_ms": 1794560617132}
+{"ns": "t3k", "pods": "t3lat-kata-1", "apply_start_ms": 1794560622705, "apply_end_ms": 1794560623124}
+{"ns": "t3r", "after": "t3lat-runc-1", "policy_deleted_ms": 1794560643368}
+{"ns": "t3k", "after": "t3lat-kata-1", "policy_deleted_ms": 1794560648782}
+{"ns": "t3r", "pods": "t3lat-runc-2", "apply_start_ms": 1794560664174, "apply_end_ms": 1794560664897}
+{"ns": "t3k", "pods": "t3lat-kata-2", "apply_start_ms": 1794560680474, "apply_end_ms": 1794560681294}
+{"ns": "t3r", "after": "t3lat-runc-2", "policy_deleted_ms": 1794560689593}
+{"ns": "t3k", "after": "t3lat-kata-2", "policy_deleted_ms": 1794560707867}
+{"ns": "t3r", "pods": "t3lat-runc-3", "apply_start_ms": 1794560708609, "apply_end_ms": 1794560709094}
+{"ns": "t3r", "after": "t3lat-runc-3", "policy_deleted_ms": 1794560734433}
+{"ns": "t3k", "pods": "t3lat-kata-3", "apply_start_ms": 1794560735418, "apply_end_ms": 1794560735863}
+{"ns": "t3r", "pods": "t3lat-runc-4", "apply_start_ms": 1794560757241, "apply_end_ms": 1794560757578}
+{"ns": "t3k", "after": "t3lat-kata-3", "policy_deleted_ms": 1794560761171}
+{"ns": "t3r", "after": "t3lat-runc-4", "policy_deleted_ms": 1794560783240}
+{"ns": "t3k", "pods": "t3lat-kata-4", "apply_start_ms": 1794560785588, "apply_end_ms": 1794560786520}
+{"ns": "t3r", "pods": "t3lat-runc-5", "apply_start_ms": 1794560804534, "apply_end_ms": 1794560804953}
+{"ns": "t3k", "after": "t3lat-kata-4", "policy_deleted_ms": 1794560812691}
+{"ns": "t3r", "after": "t3lat-runc-5", "policy_deleted_ms": 1794560830603}
+{"ns": "t3k", "pods": "t3lat-kata-5", "apply_start_ms": 1794560835514, "apply_end_ms": 1794560836121}
+{"ns": "t3k", "after": "t3lat-kata-5", "policy_deleted_ms": 1794560861236}

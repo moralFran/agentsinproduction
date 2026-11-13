@@ -10,6 +10,12 @@ Changes from v3 (experiment 03):
     A run has its own cap (US$0.33 in this experiment); a call that would pass it is refused (429) before forwarding.
     Unknown or closed run tokens are refused (403). The total cap
     (BUDGET_USD) still applies on top. Reservations carry their run id, so a crash books them to that run.
+  - FAILED MODEL CALLS, counted per run (added 2026-11-13). A call that carried a run's token and was answered with a
+    status the agent treats as "the model path was unavailable" (403, 5xx, or a 429 that is not that run's own cap,
+    whether the gateway refused it or the provider answered it) adds one to the run's model_path_failures, which the
+    close reports. The runner accepts an agent's gateway_unavailable only with that count above zero, so the pod
+    cannot void an attempt by claiming it. A call that never reached the gateway is not counted, and the count is
+    written with the next state write (a restart before the close loses it): both err towards recording the attempt.
   - PROMPT CACHING, priced. cache_control {"type": "ephemeral"} (5-minute TTL only) is allowed on text and
     tool_result blocks. Booking prices cache writes at 1.25x and cache reads at the model's read multiplier (0.05x
     Sonnet 5.5, 0.1x Haiku 5.5; pricing page checked 2026-11-11). The reservation assumes every input token is a
@@ -110,6 +116,18 @@ CLOSE_HALT = "a run close could not be written to the state file; close that run
 
 def public_run(run): return {k: v for k, v in run.items() if k != "token_hash"}
 
+def model_path_failure(status, why=""):
+    """True for an answer the agent reports as gateway_unavailable (agent.py, model_call_failure): 403, any 5xx, and
+    a 429 other than the run's own cap."""
+    if status == 429: return not why.startswith("run budget")
+    return status == 403 or (isinstance(status, int) and status >= 500)
+
+def count_model_path_failure(token_hash):
+    """Books one failed model call to the run that owns this token, open or closed. Call with the lock held."""
+    for r in state["runs"].values():
+        if r.get("token_hash") == token_hash:
+            r["model_path_failures"] = r.get("model_path_failures", 0) + 1; return
+
 def log(**kw): print(json.dumps({"ts": round(time.time(), 3), **kw}), flush=True)
 
 def save():
@@ -186,6 +204,8 @@ def format_error(body):
 class H(TimedHandler):
     protocol_version = "HTTP/1.1"
     def refuse(self, code, why):
+        if self.command == "POST" and self.path == "/v1/messages" and model_path_failure(code, why):
+            with lock: count_model_path_failure(hashlib.sha256(self.headers.get("x-run-token", "").encode()).hexdigest())
         log(src=self.client_address[0], method=self.command, path=self.path[:200], verdict="refused", why=why, status=code,
             run=getattr(self, "run", None))
         out = json.dumps({"error": why}).encode()
@@ -260,6 +280,7 @@ class H(TimedHandler):
             state["spent_usd"] += real; state["requests"] += 1; state["in_tok"] += tin; state["out_tok"] += tout
             if run in state["runs"]: state["runs"][run]["spent_usd"] += real; state["runs"][run]["calls"] = state["runs"][run].get("calls", 0) + 1
             if over: state["halted"] = f"a call cost ${real:.6f}, above its reservation ${bound:.6f}"
+            if not err and model_path_failure(status): count_model_path_failure(token_hash)   # the provider's own 429/5xx/403
             try: save()
             except OSError as e: log(event="state_write_failed", why=type(e).__name__)    # the file still holds the reservation
             spent = state["spent_usd"]
@@ -312,7 +333,7 @@ class Admin(TimedHandler):
                 if not run or run in state["runs"]: return self.reply(409, {"error": "missing or reused run id"})
                 token = secrets.token_urlsafe(32)
                 token_hash = hashlib.sha256(token.encode()).hexdigest()
-                state["runs"][run] = {"cap_usd": cap, "spent_usd": 0.0, "calls": 0, "open": True, "opened": time.time(), "token_hash": token_hash}
+                state["runs"][run] = {"cap_usd": cap, "spent_usd": 0.0, "calls": 0, "model_path_failures": 0, "open": True, "opened": time.time(), "token_hash": token_hash}
             elif self.path.startswith("/runs/") and self.path.endswith("/close"):
                 run = self.path.split("/")[2]
                 if run not in state["runs"]: return self.reply(404, {"error": "no such run"})

@@ -1,0 +1,101 @@
+diff --git a/experiments/04-ci-failures/cases/pod.py b/experiments/04-ci-failures/cases/pod.py
+index 62f10cf..5a86c4b 100755
+--- a/experiments/04-ci-failures/cases/pod.py
++++ b/experiments/04-ci-failures/cases/pod.py
+@@ -8,6 +8,65 @@ usage: pod.py <exec|agent> <case_id> <pod_name> <deadline_s> [--patch FILE] [--e
+ """
+ import copy, json, os, subprocess, sys, time
+ 
++# Network gate (2026-11-13, after the collection; results/network-2026-11-13). The cluster's policy controller writes a new
++# pod's rules some tenths of a second AFTER the pod's network works, so the first process of a pod can reach what the
++# namespace's NetworkPolicy forbids. This init container runs before any case code, with no volume and no secret: it
++# tries the forbidden canaries until NONE of them has connected in NETGATE_ROUNDS consecutive rounds spanning at least
++# NETGATE_SPAN seconds, then (agent pods) waits until the gateway's model port answers. If that does not happen within
++# NETGATE_DEADLINE seconds it exits 1 and the pod fails: an infrastructure error, not a result. It proves the rules were
++# in force when it looked; it cannot prevent a later lapse of enforcement. NETGATE=0 in the runner's environment builds
++# the pod without it (used only to measure the difference).
++NETGATE_CODE = r"""
++import json, os, socket, sys, threading, time
++C = json.loads(os.environ["NETGATE_CONFIG"]); t0 = time.monotonic(); host = os.environ.get("NETGATE_HOST_IP", "")
++fix = lambda hp: (host if hp[0] == "$HOST" else hp[0], int(hp[1]))
++forbidden = [fix(x) for x in C["forbidden"] if fix(x)[0]]; required = [fix(x) for x in C["required"]]
++def tcp(hp, res):
++    s = socket.socket(); s.settimeout(C["connect_timeout"])
++    try: s.connect(hp); res.append(hp)
++    except OSError: pass
++    finally: s.close()
++def reachable(targets):
++    res = []; th = [threading.Thread(target=tcp, args=(hp, res)) for hp in targets]
++    [t.start() for t in th]; [t.join() for t in th]; return res
++def done(ok, why, **kw):
++    print("NETGATE " + json.dumps({"ok": ok, "why": why, "waited_s": round(time.monotonic() - t0, 2), **kw}), flush=True); sys.exit(0 if ok else 1)
++rounds = 0; streak = 0; since = None; seen = {}
++while True:
++    now = time.monotonic() - t0
++    if now > C["deadline"]: done(False, "a forbidden destination still answers", rounds=rounds, reachable=seen)
++    rounds += 1; hit = reachable(forbidden)
++    if hit:
++        streak = 0; since = None
++        for h, p in hit: seen[f"{h}:{p}"] = seen.get(f"{h}:{p}", 0) + 1
++    else:
++        streak += 1; since = now if since is None else since
++        if streak >= C["rounds"] and now - since >= C["span"]: break
++    time.sleep(C["interval"])
++while required and len(reachable(required)) < len(required):
++    if time.monotonic() - t0 > C["deadline"]: done(False, "a required destination does not answer", rounds=rounds, reachable=seen)
++    time.sleep(C["interval"])
++done(True, "policy in force", rounds=rounds, reachable_before=seen)
++"""
++
++def netgate_container(image, security_context, forbidden, required=()):
++    """forbidden/required: (host, port) pairs; host "$HOST" is the node's address (status.hostIP)."""
++    cfg = {"forbidden": [list(x) for x in forbidden], "required": [list(x) for x in required],
++           "rounds": int(os.environ.get("NETGATE_ROUNDS", "8")), "span": float(os.environ.get("NETGATE_SPAN", "2.0")),
++           "interval": float(os.environ.get("NETGATE_INTERVAL", "0.25")), "connect_timeout": float(os.environ.get("NETGATE_CONNECT_TIMEOUT", "0.5")),
++           "deadline": float(os.environ.get("NETGATE_DEADLINE", "60"))}
++    return {"name": "netgate", "image": image, "imagePullPolicy": "Never", "command": ["python3", "-u", "-c", NETGATE_CODE],
++            "env": [{"name": "NETGATE_CONFIG", "value": json.dumps(cfg)},
++                    {"name": "NETGATE_HOST_IP", "valueFrom": {"fieldRef": {"fieldPath": "status.hostIP"}}}],
++            "securityContext": copy.deepcopy(security_context),
++            "resources": {"requests": {"cpu": "100m", "memory": "64Mi"}, "limits": {"cpu": "1", "memory": "256Mi"}}, "volumeMounts": []}
++
++def netgate_enabled(): return os.environ.get("NETGATE", "1") != "0"
++API_CLUSTER_IP = os.environ.get("NETGATE_API", "10.43.0.1:443")           # k3s default; the first address of the service range
++PUBLIC_CANARY = os.environ.get("NETGATE_PUBLIC", "1.1.1.1:443")
++# metadata endpoint, the node's kubelet port, the Kubernetes API Service: forbidden in every case namespace
++PRIVATE_CANARIES = [("169.254.169.254", 80), ("$HOST", 10250), tuple(API_CLUSTER_IP.rsplit(":", 1))]
++
+ 
+ def build_spec(role, cid, name, deadline, cmd, meta, patch=None, extra_env=(), secret_meta=None):
+     if role not in ("exec", "agent"): raise ValueError("unknown pod role")
+@@ -75,6 +134,13 @@ def build_spec(role, cid, name, deadline, cmd, meta, patch=None, extra_env=(), s
+         init["volumeMounts"].append({"name": "prepared", "mountPath": "/validation"})
+         container["volumeMounts"].append({"name": "prepared", "mountPath": "/validation", "readOnly": True})
+         spec["spec"]["initContainers"] = [init]
++    if netgate_enabled():
++        # After validate-prepare (which runs no case code and stays first), immediately before the container that does.
++        gw = env.get("GATEWAY_URL", "http://10.43.210.10:8080").split("//", 1)[-1].split("/", 1)[0]
++        gate = netgate_container("aip-ci-box:1", spec["spec"]["containers"][0]["securityContext"],
++                                 [tuple(PUBLIC_CANARY.rsplit(":", 1))] + PRIVATE_CANARIES,
++                                 [tuple(gw.rsplit(":", 1))] if role == "agent" else ())
++        spec["spec"].setdefault("initContainers", []).append(gate)
+     return spec
+ 
+ 
+@@ -104,11 +170,15 @@ def main():
+         time.sleep(2)
+     logs = kc("logs", name).stdout
+     open(f"/srv/ci/logs/{name}.log", "w").write(logs) if os.path.isdir("/srv/ci/logs") else None
++    gate = [line for line in kc("logs", name, "-c", "netgate").stdout.splitlines() if line.startswith("NETGATE ")] if netgate_enabled() else []
++    gate_failed = netgate_enabled() and not (gate and json.loads(gate[-1][8:]).get("ok"))
+     # Only the final record of each kind belongs to the harness, not an earlier line printed by a command.
+     for tag in ("EXECUTOR ", "RESULT "):
+         lines = [line for line in logs.splitlines() if line.startswith(tag)]
+         if lines: print(lines[-1])
+-    print("POD " + json.dumps({"pod": name, "phase": phase, "wall_s": round(time.time() - t0, 1)}))
++    # A failed gate is an infrastructure error: the main container never started, so there is no EXECUTOR/RESULT line.
++    print("POD " + json.dumps({"pod": name, "phase": phase, "wall_s": round(time.time() - t0, 1),
++                               **({"infra_error": "netgate: " + (gate[-1][8:] if gate else "no result")} if gate_failed else {})}))
+     kc("delete", "pod", name, "--wait=false")
+     if patch: kc("delete", "configmap", f"{name}-patch", "--ignore-not-found")
+ 

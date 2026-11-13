@@ -1,0 +1,29 @@
+diff --git a/experiments/04-ci-failures/cases/prep.py b/experiments/04-ci-failures/cases/prep.py
+index 1962688..be2fcf2 100755
+--- a/experiments/04-ci-failures/cases/prep.py
++++ b/experiments/04-ci-failures/cases/prep.py
+@@ -85,7 +85,15 @@ def worker_spec(cid, name, source, output, meta, phase=None):
+            'UV_CACHE_DIR':'/tmp/uvcache', 'UV_LINK_MODE':'copy', 'GOMODCACHE':case+'/gomod', 'GOCACHE':'/tmp/gocache',
+            'GOPATH':'/tmp/gopath', 'GOTOOLCHAIN':'auto', 'GOFLAGS':'-mod=mod', 'GOTELEMETRY':'off'}
+     if phase: env['PREP_PHASE'] = phase   # "broken": a failed compile is recorded, not fatal (prep_worker.py)
++    # Network gate (2026-11-13, cases/pod.py): no repository code starts before the policy is seen to refuse the metadata
++    # endpoint, the node and the Kubernetes API. Public 80/443 stays allowed here, so it is not a canary.
++    import importlib.util   # pod.py sits beside this file; loaded by path so it works whatever the caller's sys.path is
++    _spec = importlib.util.spec_from_file_location('netgate_pod', pathlib.Path(__file__).resolve().parent/'pod.py')
++    _pod = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(_pod)
++    security = {'allowPrivilegeEscalation':False,'capabilities':{'drop':['ALL']}}
++    gate = [_pod.netgate_container('aip-ci-box:1', security, _pod.PRIVATE_CANARIES)] if _pod.netgate_enabled() else []
+     return {'apiVersion':'v1', 'kind':'Pod', 'metadata':{'name':name,'namespace':'ci-prep'}, 'spec':{
++        **({'initContainers':gate} if gate else {}),
+         'runtimeClassName':'kata-qemu','automountServiceAccountToken':False,'enableServiceLinks':False,
+         'restartPolicy':'Never','activeDeadlineSeconds':2400,
+         'securityContext':{'runAsNonRoot':True,'runAsUser':os.getuid(),'runAsGroup':os.getgid(),'seccompProfile':{'type':'RuntimeDefault'}},
+@@ -117,6 +125,8 @@ def run_worker(cid, phase, source, output, meta, seed=None):
+             phase_status = command(['kubectl','-n','ci-prep','get','pod',name,'-o','jsonpath={.status.phase}'])
+             if phase_status in ('Succeeded','Failed'): break
+             time.sleep(2)
++        gate = subprocess.run(['kubectl','-n','ci-prep','logs',name,'-c','netgate'],capture_output=True,text=True).stdout if 'initContainers' in spec['spec'] else ''
++        if '"ok": false' in gate: raise ValueError(f'{phase} preparation: infrastructure error, network gate: {gate[-300:]}')
+         log = command(['kubectl','-n','ci-prep','logs',name])
+         if phase_status != 'Succeeded': raise ValueError(f'{phase} preparation failed: {log[-300:]}')
+         return log

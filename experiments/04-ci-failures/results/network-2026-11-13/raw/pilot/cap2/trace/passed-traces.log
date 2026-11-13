@@ -1,0 +1,336 @@
+### 1794559805643 10.42.0.13:37090 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 92685ef3 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=40866 DF SPORT=37090 DPORT=443 SYN
+TRACE: 2 92685ef3 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 92685ef3 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 92685ef3 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=40866 DF SPORT=37090 DPORT=443 SYN
+TRACE: 2 92685ef3 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 92685ef3 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 92685ef3 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 92685ef3 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 41626d38 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=40866 DF SPORT=37090 DPORT=6443 SYN
+TRACE: 2 41626d38 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 41626d38 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 41626d38 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 41626d38 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 41626d38 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 41626d38 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 41626d38 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 41626d38 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 41626d38 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 41626d38 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=40866 DF SPORT=37090 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 41626d38 nat:INPUT:policy:ACCEPT
+### 1794559805743 10.42.0.13:37096 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 d9c63bc7 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=12391 DF SPORT=37096 DPORT=443 SYN
+TRACE: 2 d9c63bc7 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 d9c63bc7 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 d9c63bc7 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=12391 DF SPORT=37096 DPORT=443 SYN
+TRACE: 2 d9c63bc7 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 d9c63bc7 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 d9c63bc7 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 d9c63bc7 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 2eaaefe3 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=12391 DF SPORT=37096 DPORT=6443 SYN
+TRACE: 2 2eaaefe3 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 2eaaefe3 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 2eaaefe3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 2eaaefe3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 2eaaefe3 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 2eaaefe3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 2eaaefe3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 2eaaefe3 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 2eaaefe3 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 2eaaefe3 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=12391 DF SPORT=37096 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 2eaaefe3 nat:INPUT:policy:ACCEPT
+### 1794559805844 10.42.0.13:37100 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 9cdbe7dd IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=13742 DF SPORT=37100 DPORT=443 SYN
+TRACE: 2 9cdbe7dd raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 9cdbe7dd raw:PREROUTING:policy:ACCEPT
+PACKET: 2 9cdbe7dd IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=13742 DF SPORT=37100 DPORT=443 SYN
+TRACE: 2 9cdbe7dd nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 9cdbe7dd nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 9cdbe7dd nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 9cdbe7dd nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 3ef98131 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=13742 DF SPORT=37100 DPORT=6443 SYN
+TRACE: 2 3ef98131 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 3ef98131 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 3ef98131 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 3ef98131 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 3ef98131 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 3ef98131 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 3ef98131 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 3ef98131 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 3ef98131 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 3ef98131 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=13742 DF SPORT=37100 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 3ef98131 nat:INPUT:policy:ACCEPT
+### 1794559805944 10.42.0.13:37110 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 fea50268 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=52078 DF SPORT=37110 DPORT=443 SYN
+TRACE: 2 fea50268 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 fea50268 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 fea50268 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=52078 DF SPORT=37110 DPORT=443 SYN
+TRACE: 2 fea50268 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 fea50268 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 fea50268 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 fea50268 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 4f7a4cd3 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=52078 DF SPORT=37110 DPORT=6443 SYN
+TRACE: 2 4f7a4cd3 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 4f7a4cd3 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 4f7a4cd3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 4f7a4cd3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 4f7a4cd3 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 4f7a4cd3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 4f7a4cd3 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 4f7a4cd3 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 4f7a4cd3 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 4f7a4cd3 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=52078 DF SPORT=37110 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 4f7a4cd3 nat:INPUT:policy:ACCEPT
+### 1794559806044 10.42.0.13:37114 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 cc011a48 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=48374 DF SPORT=37114 DPORT=443 SYN
+TRACE: 2 cc011a48 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 cc011a48 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 cc011a48 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=48374 DF SPORT=37114 DPORT=443 SYN
+TRACE: 2 cc011a48 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 cc011a48 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 cc011a48 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 cc011a48 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 9f68f05a IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=48374 DF SPORT=37114 DPORT=6443 SYN
+TRACE: 2 9f68f05a filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 9f68f05a filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 9f68f05a filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 9f68f05a filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 9f68f05a filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 9f68f05a filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 9f68f05a filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 9f68f05a filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 9f68f05a filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 9f68f05a IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=48374 DF SPORT=37114 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 9f68f05a nat:INPUT:policy:ACCEPT
+### 1794559806145 10.42.0.13:37124 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 be1aac3a IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=27089 DF SPORT=37124 DPORT=443 SYN
+TRACE: 2 be1aac3a raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 be1aac3a raw:PREROUTING:policy:ACCEPT
+PACKET: 2 be1aac3a IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=27089 DF SPORT=37124 DPORT=443 SYN
+TRACE: 2 be1aac3a nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 be1aac3a nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 be1aac3a nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 be1aac3a nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 618eec91 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=27089 DF SPORT=37124 DPORT=6443 SYN
+TRACE: 2 618eec91 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 618eec91 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 618eec91 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 618eec91 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 618eec91 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 618eec91 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 618eec91 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 618eec91 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 618eec91 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 618eec91 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=27089 DF SPORT=37124 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 618eec91 nat:INPUT:policy:ACCEPT
+### 1794559806245 10.42.0.13:37140 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 75301eb0 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=32676 DF SPORT=37140 DPORT=443 SYN
+TRACE: 2 75301eb0 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 75301eb0 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 75301eb0 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=32676 DF SPORT=37140 DPORT=443 SYN
+TRACE: 2 75301eb0 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 75301eb0 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 75301eb0 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 75301eb0 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 9499db37 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=32676 DF SPORT=37140 DPORT=6443 SYN
+TRACE: 2 9499db37 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 9499db37 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 9499db37 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 9499db37 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 9499db37 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 9499db37 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 9499db37 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 9499db37 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 9499db37 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 9499db37 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=32676 DF SPORT=37140 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 9499db37 nat:INPUT:policy:ACCEPT
+### 1794559806346 10.42.0.13:37144 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 079c07b0 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=47164 DF SPORT=37144 DPORT=443 SYN
+TRACE: 2 079c07b0 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 079c07b0 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 079c07b0 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=47164 DF SPORT=37144 DPORT=443 SYN
+TRACE: 2 079c07b0 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 079c07b0 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 079c07b0 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 079c07b0 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 5f8dce64 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=47164 DF SPORT=37144 DPORT=6443 SYN
+TRACE: 2 5f8dce64 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 5f8dce64 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 5f8dce64 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 5f8dce64 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 5f8dce64 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 5f8dce64 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 5f8dce64 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 5f8dce64 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 5f8dce64 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 5f8dce64 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=47164 DF SPORT=37144 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 5f8dce64 nat:INPUT:policy:ACCEPT
+### 1794559806446 10.42.0.13:37160 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 3613f0d9 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=15504 DF SPORT=37160 DPORT=443 SYN
+TRACE: 2 3613f0d9 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 3613f0d9 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 3613f0d9 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=15504 DF SPORT=37160 DPORT=443 SYN
+TRACE: 2 3613f0d9 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 3613f0d9 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 3613f0d9 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 3613f0d9 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 26783deb IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=15504 DF SPORT=37160 DPORT=6443 SYN
+TRACE: 2 26783deb filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 26783deb filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 26783deb filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 26783deb filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 26783deb filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 26783deb filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 26783deb filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 26783deb filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 26783deb filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 26783deb IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=15504 DF SPORT=37160 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 26783deb nat:INPUT:policy:ACCEPT
+### 1794559806547 10.42.0.13:37176 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 7323b8a2 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=55872 DF SPORT=37176 DPORT=443 SYN
+TRACE: 2 7323b8a2 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 7323b8a2 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 7323b8a2 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=55872 DF SPORT=37176 DPORT=443 SYN
+TRACE: 2 7323b8a2 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 7323b8a2 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 7323b8a2 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 7323b8a2 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 ac55b5c6 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=55872 DF SPORT=37176 DPORT=6443 SYN
+TRACE: 2 ac55b5c6 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 ac55b5c6 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 ac55b5c6 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 ac55b5c6 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 ac55b5c6 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 ac55b5c6 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 ac55b5c6 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 ac55b5c6 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 ac55b5c6 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 ac55b5c6 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=55872 DF SPORT=37176 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 ac55b5c6 nat:INPUT:policy:ACCEPT
+### 1794559806647 10.42.0.13:37178 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 8571b427 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=49068 DF SPORT=37178 DPORT=443 SYN
+TRACE: 2 8571b427 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 8571b427 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 8571b427 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=49068 DF SPORT=37178 DPORT=443 SYN
+TRACE: 2 8571b427 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 8571b427 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 8571b427 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 8571b427 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 31ac1a1d IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=49068 DF SPORT=37178 DPORT=6443 SYN
+TRACE: 2 31ac1a1d filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 31ac1a1d filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 31ac1a1d filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 31ac1a1d filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 31ac1a1d filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 31ac1a1d filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 31ac1a1d filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 31ac1a1d filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 31ac1a1d filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 31ac1a1d IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=49068 DF SPORT=37178 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 31ac1a1d nat:INPUT:policy:ACCEPT
+### 1794559806747 10.42.0.13:37194 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 fd6e4780 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=27137 DF SPORT=37194 DPORT=443 SYN
+TRACE: 2 fd6e4780 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 fd6e4780 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 fd6e4780 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=27137 DF SPORT=37194 DPORT=443 SYN
+TRACE: 2 fd6e4780 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 fd6e4780 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 fd6e4780 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 fd6e4780 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 32c680fe IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=27137 DF SPORT=37194 DPORT=6443 SYN
+TRACE: 2 32c680fe filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 32c680fe filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 32c680fe filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 32c680fe filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 32c680fe filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 32c680fe filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 32c680fe filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 32c680fe filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 32c680fe filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 32c680fe IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=27137 DF SPORT=37194 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 32c680fe nat:INPUT:policy:ACCEPT
+### 1794559806848 10.42.0.13:37206 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 83c2762e IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=52909 DF SPORT=37206 DPORT=443 SYN
+TRACE: 2 83c2762e raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 83c2762e raw:PREROUTING:policy:ACCEPT
+PACKET: 2 83c2762e IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=52909 DF SPORT=37206 DPORT=443 SYN
+TRACE: 2 83c2762e nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 83c2762e nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 83c2762e nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 83c2762e nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 f7ddbb40 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=52909 DF SPORT=37206 DPORT=6443 SYN
+TRACE: 2 f7ddbb40 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 f7ddbb40 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 f7ddbb40 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 f7ddbb40 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 f7ddbb40 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 f7ddbb40 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 f7ddbb40 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 f7ddbb40 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 f7ddbb40 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 f7ddbb40 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=52909 DF SPORT=37206 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 f7ddbb40 nat:INPUT:policy:ACCEPT
+### 1794559806948 10.42.0.13:37218 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 d527ec11 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=52024 DF SPORT=37218 DPORT=443 SYN
+TRACE: 2 d527ec11 raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 d527ec11 raw:PREROUTING:policy:ACCEPT
+PACKET: 2 d527ec11 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=52024 DF SPORT=37218 DPORT=443 SYN
+TRACE: 2 d527ec11 nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 d527ec11 nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 d527ec11 nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 d527ec11 nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 7757d8d7 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=52024 DF SPORT=37218 DPORT=6443 SYN
+TRACE: 2 7757d8d7 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 7757d8d7 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 7757d8d7 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 7757d8d7 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 7757d8d7 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 7757d8d7 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 7757d8d7 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 7757d8d7 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 7757d8d7 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 7757d8d7 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=52024 DF SPORT=37218 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 7757d8d7 nat:INPUT:policy:ACCEPT
+### 1794559807049 10.42.0.13:37230 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 f2ef178d IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=717 DF SPORT=37230 DPORT=443 SYN
+TRACE: 2 f2ef178d raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 f2ef178d raw:PREROUTING:policy:ACCEPT
+PACKET: 2 f2ef178d IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=717 DF SPORT=37230 DPORT=443 SYN
+TRACE: 2 f2ef178d nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 f2ef178d nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 f2ef178d nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 f2ef178d nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 537dfab5 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=717 DF SPORT=37230 DPORT=6443 SYN
+TRACE: 2 537dfab5 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 537dfab5 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 537dfab5 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 537dfab5 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 537dfab5 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 537dfab5 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 537dfab5 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 537dfab5 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 537dfab5 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 537dfab5 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=717 DF SPORT=37230 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 537dfab5 nat:INPUT:policy:ACCEPT
+### 1794559807149 10.42.0.13:37236 10.43.0.1:443 10.128.0.8:6443
+PACKET: 2 fbee0f6b IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=38809 DF SPORT=37236 DPORT=443 SYN
+TRACE: 2 fbee0f6b raw:PREROUTING:rule:0x4:CONTINUE  -4 -t raw -A PREROUTING -s 10.42.0.0/16 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m comment --comment "aip-trace pod SYN" -j TRACE
+TRACE: 2 fbee0f6b raw:PREROUTING:policy:ACCEPT
+PACKET: 2 fbee0f6b IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.43.0.1 LEN=60 TOS=0x0 TTL=64 ID=38809 DF SPORT=37236 DPORT=443 SYN
+TRACE: 2 fbee0f6b nat:PREROUTING:rule:0xd:JUMP:KUBE-SERVICES  -4 -t nat -A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+TRACE: 2 fbee0f6b nat:KUBE-SERVICES:rule:0x1e8:JUMP:KUBE-SVC-NPX46M4PTMTKRN6Y  -4 -t nat -A KUBE-SERVICES -d 10.43.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+TRACE: 2 fbee0f6b nat:KUBE-SVC-NPX46M4PTMTKRN6Y:rule:0x1b2:JUMP:KUBE-SEP-NYZRUNWE6WLV42DR  -4 -t nat -A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https -> 10.128.0.8:6443" -j KUBE-SEP-NYZRUNWE6WLV42DR
+TRACE: 2 fbee0f6b nat:KUBE-SEP-NYZRUNWE6WLV42DR:rule:0x1b4:ACCEPT  -4 -t nat -A KUBE-SEP-NYZRUNWE6WLV42DR -p tcp -m comment --comment "default/kubernetes:https" -m tcp -j DNAT --to-destination 10.128.0.8:6443
+PACKET: 2 52c60552 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=38809 DF SPORT=37236 DPORT=6443 SYN
+TRACE: 2 52c60552 filter:INPUT:rule:0x23:JUMP:KUBE-ROUTER-INPUT  -4 -t filter -A INPUT -m comment --comment "kube-router netpol - 4IA2OSFRMVNDXBVV" -j KUBE-ROUTER-INPUT
+TRACE: 2 52c60552 filter:KUBE-ROUTER-INPUT:rule:0x70:JUMP:KUBE-POD-FW-6GRWUNNCHMDECGGD  -4 -t filter -A KUBE-ROUTER-INPUT -s 10.42.0.13/32 -m comment --comment "ci-gateway/gateway-55b886cc8d-gqmrb out" -j KUBE-POD-FW-6GRWUNNCHMDECGGD
+TRACE: 2 52c60552 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6c:JUMP:KUBE-NWPLCY-COMMON  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "common netpol rules" -j KUBE-NWPLCY-COMMON
+TRACE: 2 52c60552 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x6a:JUMP:KUBE-NWPLCY-DEFAULT  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -s 10.42.0.13/32 -m comment --comment "default egress" -j KUBE-NWPLCY-DEFAULT
+TRACE: 2 52c60552 filter:KUBE-NWPLCY-DEFAULT:rule:0x46:CONTINUE  -4 -t filter -A KUBE-NWPLCY-DEFAULT -m comment --comment "rule to mark traffic matching a network policy" -j MARK --set-xmark 0x10000/0x10000
+TRACE: 2 52c60552 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x76:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -j MARK --set-xmark 0x0/0x10000
+TRACE: 2 52c60552 filter:KUBE-POD-FW-6GRWUNNCHMDECGGD:rule:0x77:CONTINUE  -4 -t filter -A KUBE-POD-FW-6GRWUNNCHMDECGGD -m comment --comment "set netpol-ok mark" -j MARK --set-xmark 0x20000/0x20000
+TRACE: 2 52c60552 filter:KUBE-ROUTER-INPUT:rule:0xb6:JUMP:KUBE-NWPLCY-TAIL  -4 -t filter -A KUBE-ROUTER-INPUT -m comment --comment "rule to explicitly handle traffic for network policies ACCEPT/REJECT decision" -j KUBE-NWPLCY-TAIL
+TRACE: 2 52c60552 filter:KUBE-NWPLCY-TAIL:rule:0x47:ACCEPT  -4 -t filter -A KUBE-NWPLCY-TAIL -m comment --comment "accept netpol-ok" -m mark --mark 0x20000/0x20000 -j ACCEPT
+PACKET: 2 52c60552 IN=cni0 MACSRC=9e:81:f6:f1:81:8e MACDST=26:ab:13:86:f2:b4 MACPROTO=0800 SRC=10.42.0.13 DST=10.128.0.8 LEN=60 TOS=0x0 TTL=64 ID=38809 DF SPORT=37236 DPORT=6443 SYN MARK=0x20000
+TRACE: 2 52c60552 nat:INPUT:policy:ACCEPT

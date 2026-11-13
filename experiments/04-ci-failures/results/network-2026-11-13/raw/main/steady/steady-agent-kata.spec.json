@@ -1,0 +1,231 @@
+{
+ "replaced_command": [
+  "true"
+ ],
+ "plan": {
+  "name": "steady-agent-kata",
+  "kind": "agent",
+  "runtime": "kata",
+  "gate": false,
+  "seconds": 1680,
+  "interval": 0.2
+ },
+ "spec": {
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+   "name": "steady-agent-kata",
+   "namespace": "ci-agent",
+   "labels": {
+    "app": "agent",
+    "case": "gobwas-ws-a567dfd6"
+   }
+  },
+  "spec": {
+   "runtimeClassName": "kata-qemu",
+   "serviceAccountName": "runner",
+   "automountServiceAccountToken": false,
+   "restartPolicy": "Never",
+   "activeDeadlineSeconds": 1860,
+   "enableServiceLinks": false,
+   "securityContext": {
+    "runAsNonRoot": true,
+    "runAsUser": 1000,
+    "runAsGroup": 1000,
+    "seccompProfile": {
+     "type": "RuntimeDefault"
+    }
+   },
+   "containers": [
+    {
+     "name": "c",
+     "image": "aip-ci-box:1",
+     "imagePullPolicy": "Never",
+     "command": [
+      "python3",
+      "-u",
+      "/probe/netwatch.py"
+     ],
+     "env": [
+      {
+       "name": "CASE_ID",
+       "value": "gobwas-ws-a567dfd6"
+      },
+      {
+       "name": "HOME",
+       "value": "/tmp"
+      },
+      {
+       "name": "GOMODCACHE",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/gomod"
+      },
+      {
+       "name": "GOPROXY",
+       "value": "off"
+      },
+      {
+       "name": "GOSUMDB",
+       "value": "off"
+      },
+      {
+       "name": "GOFLAGS",
+       "value": "-mod=mod"
+      },
+      {
+       "name": "GOTOOLCHAIN",
+       "value": "auto"
+      },
+      {
+       "name": "GOCACHE",
+       "value": "/tmp/gocache"
+      },
+      {
+       "name": "GOPATH",
+       "value": "/tmp/gopath"
+      },
+      {
+       "name": "GOTELEMETRY",
+       "value": "off"
+      },
+      {
+       "name": "PATH",
+       "value": "/srv/ci/cases/gobwas-ws-a567dfd6/venv/bin:/usr/local/go/bin:/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      },
+      {
+       "name": "PYTHONDONTWRITEBYTECODE",
+       "value": "1"
+      },
+      {
+       "name": "PIP_NO_INDEX",
+       "value": "1"
+      },
+      {
+       "name": "PROBE_TARGETS",
+       "value": "{\"case_id\": \"gobwas-ws-a567dfd6\", \"node_ip\": \"10.128.0.8\", \"gw_pod_ip\": \"10.42.0.13\", \"dns_pod_ip\": \"10.42.0.8\"}"
+      },
+      {
+       "name": "PROBE_ROLE",
+       "value": "agent"
+      },
+      {
+       "name": "PROBE_RUNTIME",
+       "value": "kata"
+      },
+      {
+       "name": "NETWATCH_SECONDS",
+       "value": "1680"
+      },
+      {
+       "name": "NETWATCH_INTERVAL",
+       "value": "0.2"
+      },
+      {
+       "name": "NETWATCH_ALLOWED",
+       "value": "gwm,gwpm"
+      },
+      {
+       "name": "NETWATCH_SLOW",
+       "value": "gwm,gwpm"
+      },
+      {
+       "name": "NETWATCH_ONLY",
+       "value": ""
+      },
+      {
+       "name": "NETWATCH_TIMEOUT",
+       "value": "0.2"
+      }
+     ],
+     "securityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+       "drop": [
+        "ALL"
+       ]
+      }
+     },
+     "resources": {
+      "requests": {
+       "cpu": "100m",
+       "memory": "256Mi"
+      },
+      "limits": {
+       "cpu": "3",
+       "memory": "8Gi"
+      }
+     },
+     "volumeMounts": [
+      {
+       "name": "case",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6",
+       "readOnly": true
+      },
+      {
+       "name": "uv",
+       "mountPath": "/srv/ci/uv",
+       "readOnly": true
+      },
+      {
+       "name": "repo",
+       "mountPath": "/srv/ci/cases/gobwas-ws-a567dfd6/repo"
+      },
+      {
+       "name": "tmp",
+       "mountPath": "/tmp"
+      },
+      {
+       "name": "code",
+       "mountPath": "/code",
+       "readOnly": true
+      },
+      {
+       "name": "probe",
+       "mountPath": "/probe",
+       "readOnly": true
+      }
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "name": "case",
+     "hostPath": {
+      "path": "/srv/ci/cases/gobwas-ws-a567dfd6",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "uv",
+     "hostPath": {
+      "path": "/srv/ci/cases/gobwas-ws-a567dfd6/uv",
+      "type": "Directory"
+     }
+    },
+    {
+     "name": "repo",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "tmp",
+     "emptyDir": {
+      "sizeLimit": "8Gi"
+     }
+    },
+    {
+     "name": "code",
+     "configMap": {
+      "name": "ci-code"
+     }
+    },
+    {
+     "name": "probe",
+     "configMap": {
+      "name": "probe-code"
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,9 @@
+09:26:30 t5-exec-n ci-exec kata nogate Succeeded 561 lines
+09:26:47 t5-agent-n ci-agent kata nogate Succeeded 461 lines
+09:27:03 t5-prep-n ci-prep kata nogate Succeeded 457 lines
+09:27:24 t5-val-n ci-exec kata nogate Succeeded 549 lines
+09:27:50 t5-exec-g ci-exec kata gate Succeeded 550 lines
+09:28:15 t5-agent-g ci-agent kata gate Succeeded 450 lines
+09:28:39 t5-prep-g ci-prep kata gate Succeeded 450 lines
+09:29:05 t5-val-g ci-exec kata gate Succeeded 550 lines
+09:29:05 PLAN_DONE

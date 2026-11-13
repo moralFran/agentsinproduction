@@ -1,0 +1,30 @@
+== 2026-11-13T09:25:19Z before
+627:disable_guest_seccomp = true
+config.d: 4096 Nov 13 08:38 .;4096 Nov 13 08:38 ..;
+a6a420f764c3773295fe1603839c314e4249c24e7368a0c07bdcbd3d198055fb  /opt/kata/share/defaults/kata-containers/runtimes/qemu/configuration-qemu.toml
+kata-qemu
+/var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d/kata-deploy.toml:61:[plugins."io.containerd.cri.v1.runtime".containerd.runtimes.kata-qemu]
+/var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d/kata-deploy.toml-62-runtime_type = "io.containerd.kata-qemu.v2"
+shims:
+  qemu:
+    dropIn: |
+      [runtime]
+      disable_guest_seccomp = false
+== 2026-11-13T09:25:19Z helm upgrade (same chart version, values reused plus the drop-in)
+NAME: kata-deploy
+LAST DEPLOYED: Fri Nov 13 09:25:20 2026
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+== 2026-11-13T09:26:11Z after
+kata-deploy-install-aip-ci-01-us-centr-db2cba9bc9a4109079dllfhw Completed 35s
+kata-deploy-install-dispatcher-zltvl Completed 51s
+627:disable_guest_seccomp = true
+a6a420f764c3773295fe1603839c314e4249c24e7368a0c07bdcbd3d198055fb  /opt/kata/share/defaults/kata-containers/runtimes/qemu/configuration-qemu.toml
+config.d: 4096 Nov 13 09:25 .;4096 Nov 13 09:25 ..;40 Nov 13 09:25 50-user-overrides.toml;
+--- /opt/kata/share/defaults/kata-containers/runtimes/qemu/config.d/50-user-overrides.toml
+[runtime]
+disable_guest_seccomp = false
+Ready v1.37.2+k3s1
+== 2026-11-13T09:26:12Z done

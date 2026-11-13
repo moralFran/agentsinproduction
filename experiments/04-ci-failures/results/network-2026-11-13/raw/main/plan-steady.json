@@ -1,0 +1,9 @@
+{"concurrency": 8, "stagger": 0.5, "pods": [
+ {"name": "steady-exec-kata", "kind": "exec-repro", "runtime": "kata", "gate": false, "seconds": 1680, "interval": 0.2},
+ {"name": "steady-agent-kata", "kind": "agent", "runtime": "kata", "gate": false, "seconds": 1680, "interval": 0.2},
+ {"name": "steady-prep-kata", "kind": "prep", "runtime": "kata", "gate": false, "seconds": 1680, "interval": 0.2},
+ {"name": "steady-exec-runc", "kind": "exec-repro", "runtime": "runc", "gate": false, "seconds": 1680, "interval": 0.2},
+ {"name": "steady-agent-runc", "kind": "agent", "runtime": "runc", "gate": false, "seconds": 1680, "interval": 0.2},
+ {"name": "steady-prep-runc", "kind": "prep", "runtime": "runc", "gate": false, "seconds": 1680, "interval": 0.2},
+ {"name": "steady-t3-kata", "kind": "agent", "runtime": "kata", "gate": false, "seconds": 1680, "interval": 0.2, "ns": "t3"},
+ {"name": "steady-t3-runc", "kind": "agent", "runtime": "runc", "gate": false, "seconds": 1680, "interval": 0.2, "ns": "t3"}]}

@@ -1,0 +1,42 @@
+2026-11-13T09:19:12Z 1. end of the main block: stop the batch driver, the recorders, delete what is left
+3.9G	/home/lab/net/main/cap
+No resources found
+No resources found
+No resources found
+No resources found
+No resources found
+No resources found
+2026-11-13T09:19:17Z 2. host-side evidence for the main block (background)
+2026-11-13T09:19:37Z 3. connect() race pods (probe version 3, raw system calls) with their own capture
+2026-11-13T09:19:38Z 4. T7: redeploy with the four changed files, then checks A B D (C in parallel)
+2026-11-13T09:20:01Z 2. done
+setup-lab.sh rc=0
+agent.py in ci-agent ConfigMap:     3acec97a9f9cf8ca6d4c520e2db82466d93d59de10cde8f2c48a7547139ab940
+executor.py in ci-exec ConfigMap:   5119219fd92d7dfde7f3e5f0ab3bd22d880f8be4afa62b0ec661b9775c878e7b
+gateway.py in ci-gateway ConfigMap: 5091ecd512af6e25b00f40c431016815c8d577818e4227a5c45573d99912105c
+(the jsonpath output has no trailing newline difference: compare with the sums above)
+gateway-5488c5b958-sfgmb 1/1 Running 10.42.0.235
+provider key in the Secret is the dummy: 1
+2026-11-13T09:20:14Z
+2026-11-13T09:21:45Z 4. A B D done
+2026-11-13T09:25:13Z 4. C done
+2026-11-13T09:25:13Z 3. race pods done
+2026-11-13T09:25:13Z 5. stop the race capture, look up its events
+334M	/home/lab/net/race/cap
+2026-11-13T09:25:19Z 6. T5: guest seccomp on, then one pod of each kind with and without the gate (one at a time), then a real reproduction
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+== 2026-11-13T09:26:11Z after
+kata-deploy-install-aip-ci-01-us-centr-db2cba9bc9a4109079dllfhw Completed 35s
+kata-deploy-install-dispatcher-zltvl Completed 51s
+627:disable_guest_seccomp = true
+a6a420f764c3773295fe1603839c314e4249c24e7368a0c07bdcbd3d198055fb  /opt/kata/share/defaults/kata-containers/runtimes/qemu/configuration-qemu.toml
+config.d: 4096 Nov 13 09:25 .;4096 Nov 13 09:25 ..;40 Nov 13 09:25 50-user-overrides.toml;
+--- /opt/kata/share/defaults/kata-containers/runtimes/qemu/config.d/50-user-overrides.toml
+[runtime]
+disable_guest_seccomp = false
+Ready v1.37.2+k3s1
+== 2026-11-13T09:26:12Z done
+2026-11-13T09:29:05Z 6b. reproduction of gobwas-ws-a567dfd6 with guest seccomp on and the gate in every pod
+2026-11-13T09:33:28Z SEQUENCE_DONE
