@@ -16,6 +16,14 @@ packets moved from "allowed" to "start-up window", and five late events turned o
 in the two minutes when no trace reader was running). The same session checked two harness fixes live and reinstalled
 k3s and Kata on the same VM with guest seccomp and the gate (sections "Review follow-up" at the end).
 
+**Second correction after review (third session, 12:50 to 12:56Z; "Second correction" in the same section).** The
+per-event lookup pooled the verdicts of all packets in the nft trace that shared a late event's address, port and
+destination; it now takes each packet by itself. Of the 133 late events: **126 rejected** (92 by a time-matched trace
+line, 26 where the key had one try and one packet, 7 where every packet of the key was dropped, 1 separated by the
+pcap), **2 inconclusive, 5 with no trace** (the first correction said 128 and 5). **No packet with a late event's key was
+accepted** (173 packets, 173 dropped) and no late event has a conntrack NEW event, so the second headline still stands;
+for 7 events (all in the two minutes without a trace reader) it rests on conntrack alone.
+
 **Time limit.** The owner capped the machine at 2 hours from creation (08:31Z), so the samples are smaller than first
 planned: about 15 pods per kind and arm for start-up, one 10-minute block without churn and one 16-minute block with
 churn for steady state, 5 repetitions per runtime for the apply latency. Every rate below carries its denominator.
@@ -27,11 +35,14 @@ A different policy enforcer (to tell whether the window is specific to k3s's con
    rules, packets from the new pod's address match no pod chain and are accepted. The window ends with the controller's
    rule restore. It is not "0.3 to 0.7 s": it was 0.6 to 0.8 s for quiet Kata pods, 0.4 to 1.6 s for Kata pods and 0.1 to
    1.1 s for runc pods while other pods were being created, and under 20 ms for quiet runc pods.
-2. **Late connections through an applied policy: none.** The probe did report them again (in Kata pods only, about one
-   in 3,600 forbidden tries, with or without churn, internal and external targets alike), but every one that could be
-   looked up was **rejected by the node's firewall**: the packet trace shows the reject rule of the pod's chain, no
-   connection-tracking entry was created, no SYN-ACK went to the pod, and the socket was not connected (state CLOSE or
-   SYN_SENT, `ECONNREFUSED` pending). They are **false successes of `connect()` inside the Kata guest**, not leaks.
+2. **Late connections through an applied policy: none found.** The probe did report them again (in Kata pods only,
+   about one in 3,600 forbidden tries, with or without churn, internal and external targets alike), but of the 133 such
+   tries the node is **shown to have rejected 126** (the packet trace has the reject rule of the pod's chain for that
+   packet), none of the 173 traced packets that share an address, port and destination with one of them was accepted,
+   no connection-tracking entry was created for any, no SYN-ACK went to the pod in the 101 the packet capture covers,
+   and where the socket was read (47) it was not connected (state CLOSE or SYN_SENT, `ECONNREFUSED` pending). For 7 of the 133 (2 inconclusive, 5 without a
+   trace, all in two minutes when no trace reader ran) the absence of a connection-tracking entry is the only
+   host-side evidence. They are **false successes of `connect()` inside the Kata guest**, not leaks.
    The events of 2026-11-12 were recorded by probes that kept nothing but "connect() returned"; they cannot be
    re-examined, but they have the same signature (Kata pods only, single tries).
 3. **New, not asked for:** the Kata guest itself opens TCP connections to public time servers (port 4460) from the
@@ -178,18 +189,34 @@ Kata, v1: 76 in 276,318 tries (1 in about 3,600); 33 in 106,214 without churn an
 forbidden target after that target had already been blocked in the pod: **133 tries, all in Kata pods**
 (`raw/main/late-events.jsonl`, summary `raw/main/late-lookup-summary.txt`).
 
-| Evidence for the same source address, port **and destination**, within 3 s (corrected join) | Result |
-|---|---|
-| xtables-monitor trace line found | 92 of 133: **92 blocked** (reject rule of the pod's `KUBE-POD-FW-*` chain), 0 passed |
-| the 41 without one, in the nft trace (packet identified by its own pre-translation line and IP id) | 36 blocked, 0 passed, **5 not found** |
-| conntrack NEW event | **0 of 133** |
-| packets in the pcap (from 08:59Z) | 101 of 133: SYN-ACK to the pod **0**, ICMP port-unreachable to the pod 101 |
-| socket after `connect()` (probe v2) | 47 of 47: state CLOSE, `getpeername()` fails, `SO_ERROR` = `ECONNREFUSED`; the other 86 are v1 tries |
+Per event, version 3 of the lookup (each packet of the nft trace by itself, identified by its own pre-translation
+line and IP id; `raw/main/late-lookup-summary.txt`):
 
-So 128 of 133 are traced as rejected. The other 5 (steady pods, 08:51:38 to 08:52:48Z, v1 probe) fall in the gap
-from 08:51:10 to 08:53:03Z when neither trace reader was running, and before the pcap: for them the only host-side
-evidence is that conntrack, which was recording, has no NEW event. (The first version of this table said 132 and 1:
-four of those five had been paired with the blocked packet of a later try that reused the port.)
+| Status of the 133 late events | Events | First report / first correction |
+|---|---|---|
+| rejected: xtables-monitor line with the same address, port and destination within 3 s (no other try with that key within 3 s: 0 of 92 had one) | 92 | 92 / 92 |
+| rejected: the key had one try and one packet in the nft trace, and that packet was dropped | 26 | counted in "40" / "36" |
+| rejected: the key had several tries; every packet of the key was dropped and there are as many packets as tries (2 and 2 in all seven) | 7 | counted in "40" / "36" |
+| rejected: fewer packets than tries, separated by the pcap (the SYN to this destination within 3 s is answered by ICMP port-unreachable, no SYN-ACK) | 1 | counted in "40" / "36" |
+| **inconclusive**: fewer packets than tries and no timed source for this try (both at 08:51:33 and 08:52:13Z, when no trace reader ran; the packets found belong to later tries) | **2** | counted as blocked |
+| **no trace at all** (08:51:38 to 08:52:48Z, no trace reader, before the pcap) | **5** | 1 / 5 |
+| a packet of the event's key accepted | **0** (173 packets share a key with a late event: 173 dropped) | - |
+
+And for all 133: conntrack NEW event for the event's address, port and destination, at any time in the capture: **0**;
+within the pcap (from 08:59Z) 101 events: SYN-ACK to the pod 0, ICMP port-unreachable 101; socket after `connect()`
+(probe v2) 47 of 47: state CLOSE, `getpeername()` fails, `SO_ERROR` = `ECONNREFUSED`; the other 86 are v1 tries.
+
+So **126 of 133 are shown rejected**, 2 are inconclusive and 5 have no trace. The 7 that are not shown rejected all
+fall between 08:51:10 and 08:53:03Z, when neither trace reader was running: for them the only host-side evidence is
+that conntrack, which was recording, has no NEW event for their address, port and destination.
+
+**The accepted side, counted independently** (`nft-verdicts.py` version 2, next paragraph but one): every SYN the node
+accepted is matched to a probe try by address, port, destination and time; 0 are unexplained and 0 ambiguous, and no
+accepted SYN was matched to a late try. What that covers for these events: the time the nft reader ran (from
+08:53:03Z), i.e. 126 of the 133. What it does not: the 7 events before 08:53:03Z (no trace of any packet; conntrack
+only), and it leans on conntrack for time: 22,590 of the 22,644 accepted SYNs (99.8 %) have a conntrack time, 45 an
+xtables-monitor time, 9 none. Those 9 were matched on address, port and destination alone; none of them shares its
+address, port and destination with a late event.
 
 The six-minute block with the v3 probe added 4 more (Kata), all blocked in the trace for the same destination, no
 conntrack event, no SYN-ACK, 4 ICMP errors (`raw/race/`).
@@ -372,6 +399,9 @@ Supported by this round:
 - "Once the rules were there, nothing got through: in about 774,000 forbidden tries from long-running pods (426,168
   Kata, 347,527 runc) the node let no connection pass, and of 928,346 traced SYNs none was accepted outside a start-up
   window, with 834 controller syncs and 194 pods coming and going."
+- "Of 133 late 'connections' the probe reported, the node is shown to have rejected 126; none of the 173 packets that
+  share an address, port and destination with one of them was accepted; no connection-tracking entry exists for any."
+  Not: "every one was traced as rejected" (2 are inconclusive and 5 have no trace; conntrack is the only evidence there).
 - "The single late connections reported on 2026-11-12 are, on this evidence, a probe artifact in Kata guests:
   `connect()` returned success for a connection the node had rejected." With the limit that those earlier events
   themselves cannot be re-examined.
@@ -436,7 +466,7 @@ and `raw/race/`; `analysis-main-v1.md`, `extra-checks-main-v1.txt`):
 | accepted: guest port 4460 | 115 | **117** (78 before the container's process started, 39 inside the window) |
 | accepted: gate canaries | 84 | 84 (all before the gated pod's main process started) |
 | accepted: unexplained / ambiguous | 0 (weak join) | **0 / 0** |
-| late events traced as rejected | 132 of 133 (1 not found) | **128 of 133** (5 not found: no trace reader was running) |
+| late events traced as rejected | 132 of 133 (1 not found) | **128 of 133** (5 not found: no trace reader was running); superseded by the second correction below: 126, 2 inconclusive, 5 without a trace |
 | late events with a conntrack NEW event / a SYN-ACK in the pcap | 0 of 133 / 0 of 101 | same |
 | complete passed start-up traces without a jump for the source address | 226 of 226 | same (`startup-traces.py`) |
 | port 4460 in the timed xtables-monitor summaries | 752: 56 passed, 689 blocked, 7 incomplete | same |
@@ -458,9 +488,63 @@ class left "allowed".
 
 **What this does and does not change.** No accepted SYN is unexplained or ambiguous, so the statement "no connection
 passed the applied policy" stands on the stronger join. It is weaker than first written in one place: for 5 of the 133
-late events there is no packet trace, only the absence of a conntrack entry. The guest clocks differ from the node's
+late events there is no packet trace, only the absence of a conntrack entry (7 after the second correction below). The guest clocks differ from the node's
 by up to about 0.2 s in these logs, which is why the tolerance is 1 s and not a few milliseconds; no key had two tries
 of different classes within it.
+
+### Second correction (per-packet lookup of the late events)
+
+**The defect.** For a late event without an xtables-monitor line, `late-lookup.py` version 2 (kept as
+`controls/late-lookup-v2.py`) collected the filter verdict lines of all packets in the nft trace with the event's
+address, port and destination, whenever they were sent, and called the event blocked if any was a drop. Where that
+combination was used by more than one try, an old rejected packet would have hidden a later accepted one. 10 of the 36
+events it marked blocked had such a reused combination.
+
+**The fix** (`controls/late-lookup.py` version 3): each packet of the trace is taken by itself (its own PREROUTING line
+and IP id; verdict lines tied to it by trace id and position, since trace ids repeat). For every late event the
+script lists the tries and the packets with its key and decides as the table in "What the node did with those
+packets" shows; an event is "blocked" only by a time-matched line, by a key whose packets were all dropped (with at
+least as many packets as tries), or after a timed source (conntrack, pcap, order when the counts are equal) separated
+the packets; otherwise "inconclusive". `controls/test_late_lookup.py`: the reviewer's case (an old rejected packet and
+a late accepted one, same key, different IP ids) comes out ACCEPTED, with and without a conntrack event; all packets
+dropped comes out blocked; a start-up packet accepted and a late one dropped is separated by conntrack; three tries
+with two packets of different verdicts is inconclusive. Six of six pass (`review-followup/a2/test_late_lookup.out`).
+
+**The xtables-monitor path (the 92).** Its lines carry a time and are taken within 3 s of the try. No late event has
+another try with the same address, port and destination within 3 s (0 of 133), so no line can belong to another try.
+
+**Recomputed on the VM from the raw trace** (version 2 outputs kept with the suffix `-v2` in `raw/main/` and `raw/race/`):
+
+| | First report | First correction | Now |
+|---|---|---|---|
+| late events shown rejected | 132 | 128 | **126** (92 + 26 + 7 + 1) |
+| inconclusive | - | - | **2** |
+| no trace | 1 | 5 | 5 |
+| packets sharing a key with a late event: dropped / accepted | not counted | not counted | 173 / **0** |
+| late events with a conntrack NEW event for their key | 0 | 0 | 0 |
+| v3 block, 4 late events | blocked | blocked | blocked (3 time-matched lines, 1 single packet) |
+
+**The 10 events with a reused combination** (`review-followup/a2/reused-keys.txt` has tries, packets and evidence):
+
+| Pod, source port, destination, time | Final status |
+|---|---|
+| `steady-exec-kata` :53524 to `10.43.210.10:8080`, 08:51:33Z | **inconclusive**: 2 tries, 1 packet (dropped); this try is in the reader gap, the packet is the later try's. No conntrack event. |
+| `steady-exec-kata` :45328 to `10.42.0.13:8080`, 08:52:13Z | **inconclusive**: 3 tries, 2 packets (both dropped); this try is in the reader gap. No conntrack event. |
+| `steady-exec-kata` :53512 to `1.1.1.1:443`, 09:06:19Z | rejected: 2 tries, 2 packets, both dropped |
+| `steady-exec-kata` :40276 to `10.43.210.10:8080`, 09:11:33Z | rejected: 2 tries, 2 packets, both dropped |
+| `steady-prep-kata` :58432 to `10.43.0.1:443`, 09:06:26Z | rejected: 2 tries, 2 packets, both dropped |
+| `steady-t3-kata` :34676 to `10.128.0.8:6443`, 09:05:34Z | rejected, separated by the pcap: 2 tries (the other at 08:52:44Z, in the reader gap), 1 packet (dropped); at this try the pcap has the SYN and the ICMP port-unreachable, no SYN-ACK |
+| `steady-t3-kata` :56640 to `10.128.0.8:6443`, 09:16:25Z | rejected: 2 tries, 2 packets, both dropped |
+| `steady2-agent-kata` :53604 to `10.128.0.8:6443`, 09:15:01Z | rejected: 2 tries, 2 packets, both dropped |
+| `steady2-exec-kata` :51950 to `10.43.210.10:8081`, 09:06:22Z | rejected: 2 tries, 2 packets, both dropped |
+| `steady2-prep-kata` :35782 to `169.254.169.254:80`, 09:15:07Z | rejected: 2 tries, 2 packets, both dropped |
+
+`analysis-main.md` does not use the nft path and is unchanged. `nft-verdicts.py` (accepted side) is unchanged.
+
+**What stays open.** For 7 of the 133 late events (5 without any trace, 2 inconclusive) no packet can be tied to the
+try; they are the 7 that fall in the 1 min 53 s without a trace reader. Conntrack recorded through that time and has
+no NEW event for any of them, and all 7 were v1 probe tries (socket state not read). Nothing accepted was found for any
+late event.
 
 ## Review follow-up B · two harness fixes, live (second session)
 
@@ -521,6 +605,9 @@ the T7 `gateway.py`, the run folder with the T7 files, the gated `pod.py` / `pre
 one prepared case (gobwas/ws), no probe pod, the raw traces and pcaps of this round (about 4 GB, not copied).
 Time on: created 08:31:27Z; the last command of the first session ran at 09:38Z (1.2 h at 09:45Z); stopped by the owner
 at 10:30Z.
+
+Third session (12:50Z to the stop at 13:12Z): only the raw trace on the disk was read (last command about 12:56Z);
+nothing on the machine was changed apart from files under the round's own folder.
 
 Second session: started by the owner at 11:50Z, last command at about 12:03Z, stopped from outside at 12:30Z. State
 left by it: k3s and Kata freshly reinstalled (default k3s configuration, guest seccomp drop-in from the install), the

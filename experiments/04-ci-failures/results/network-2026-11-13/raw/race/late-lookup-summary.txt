@@ -1,4 +1,9 @@
-  late tries without an xtables-monitor line: 1 | in the nft trace: blocked 1 passed 0 not found 0
+late events by status (version 3, per packet):
+     1  blocked: one try and one packet with this key; that packet was dropped
+     3  blocked: time-matched xtables-monitor line (same address, port, destination, within 3 s; no other try with this key wit
+  events whose key (address, port, destination) had more than one try: 1 | more than one packet: 1 | another try with the key within 3 s: 0
+  events with an xtables-monitor line (same destination, 3 s): 3 | of those with another try of the same key within 3 s: 0
+  * race-exec-kata-2 10.42.0.231:34146 -> 1.1.1.1:443 t=1794561843869 | blocked: time-matched xtables-monitor line (same address, port, destination, within 3 s; no other try with this key within 3 s) | packets [(23626, 'drop'), (28286, 'drop')] | tries [(1794561737057, 'blocked in the probe'), (1794561843869, 'late: connect() returned no error')] | xt lines 1 | SYN-ACK 0 ICMP 1
 late connections: 4; by runtime: {'kata': 4, 'runc': 0}
   with a trace line for the same destination: 3 | trace says blocked: 3 | trace says passed: 0
   with a conntrack NEW event: 0

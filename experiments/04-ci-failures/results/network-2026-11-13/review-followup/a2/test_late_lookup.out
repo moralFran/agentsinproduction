@@ -1,0 +1,7 @@
+PASS reviewer's case -> ACCEPTED: a conntrack NEW event for this address, port and destination within 3 s of the try
+PASS same, no conntrack -> ACCEPTED: by order: the tries and the packets of this key are equal in number (2); this try's packet, by position, was accepted
+PASS all dropped -> blocked: every packet of this key was dropped (2 packets, 2 tries)
+PASS one and one -> blocked: one try and one packet with this key; that packet was dropped
+PASS window then late -> blocked: separated by conntrack: the 1 accepted packet(s) of this key have NEW events at [-101.9] s from this try, none within 3 s; 1 packet(s) of the key were
+PASS cannot separate -> inconclusive: 2 packets (1 dropped, 1 accepted) for 3 tries with this key; no timed source separates them
+ALL PASS

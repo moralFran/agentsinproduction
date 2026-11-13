@@ -435,9 +435,11 @@ above.
 
 **Late connections through an applied policy: none found; the earlier reports were a probe artifact.** The probe
 reported them again, in Kata pods only (76 in 276,318 forbidden tries, with and without churn, internal and external
-targets alike). Of the 133 such events in the main block, 128 have a packet trace and every one shows the reject
-rule of the pod's chain; the other 5 fell in a minute when no trace reader was running. None of the 133 has a
-connection-tracking entry, none has a SYN-ACK, and the socket was not connected. Inside the Kata guest
+targets alike). Of the 133 such events in the main block, 126 are shown rejected by a packet of their own (a
+time-matched trace line, a single dropped packet, every packet of that address, port and destination dropped, or the
+packet capture); 2 are inconclusive and 5 have no trace: those 7 fell in two minutes when no trace reader was
+running. None of the 133 has a connection-tracking entry at any time, no packet matched to one was accepted, and
+where the socket state was read it was not connected. Inside the Kata guest
 `connect()` can return without error for a refused connection (the first `SO_ERROR` reads 0, the next reads 111). Of
 928,346 traced SYNs none was accepted outside a start-up window, with 834 controller syncs and 194 pods coming and
 going; about 774,000 forbidden tries from long-running pods, none passed. The single late connections recorded on
@@ -494,7 +496,10 @@ the window (no block ran without them); how long before a pod starts the control
 source address and port only, so a reused port could lend an "allowed" label to a forbidden destination. It now
 matches on destination and time as well and never resolves doubt towards "allowed"; recomputed from the raw trace:
 still 0 unexplained and 0 ambiguous accepted SYNs among 928,346. Five moved from "allowed" to "start-up window";
-the count of late events with a rejecting trace went from 132 to 128 of 133 (above). Details in the folder's README,
-"Correction after review".
+the count of late events with a rejecting trace went from 132 to 128 of 133. A second review found the same kind of
+weakness in the per-event lookup (a rejected packet of an earlier try could stand in for a later one with the same
+address, port and destination); it now works packet by packet and calls an event blocked only when its own packet,
+or every packet of that combination, was dropped: 126 rejected, 2 inconclusive, 5 without a trace (above). Details
+in the folder's README, "Correction after review" and "Second correction".
 
-The VM ran 1.54 h in two sessions (1.25 h and 0.29 h) and was stopped after each.
+The VM ran 1.68 h in three sessions (1.25 h, 0.29 h and 0.14 h) and was stopped after each.
