@@ -10,7 +10,9 @@
      conversation. The reviewer gets the same review instructions as A (agent/reviewer.txt). If the orchestrator ends
      without a review, the harness runs one and hands it the report once.
 
-What differs between A and B is only how the context is split. Same model, same shared project notes, same bash tool,
+What differs between A and B is how the work and the context are split, and how the review runs (A reviews in its own
+session; B's orchestrator calls a fresh reviewer subagent, and the harness runs one if it never does). [Corrected on
+17/11/2026 after an external review; it said "only how the context is split". Docstring only.] Same model, same shared project notes, same bash tool,
 same review instructions, same working copy, and the same limits for the whole attempt, summed over every agent of the
 team: MAX_SECONDS of wall clock, MAX_TOOL_CALLS tool calls (every bash command of any agent, and every dispatch/review
 call of the orchestrator), and the gateway's budget for the run (one run token for all of them).

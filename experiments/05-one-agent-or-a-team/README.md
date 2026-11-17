@@ -33,6 +33,8 @@ Edits for the public copy, all marked where they are:
   Portuguese originals, with the redactions listed at the top of each. `infra/TEARDOWN.md` was carried over from
   experiment 04 and not updated; a note at its top says what is stale.
 - `capture/collect_replay.py`: one line of its docstring now says where the log is in this folder.
+- `agent/agent.py`: its docstring said the setups differ "only" in how the context is split; corrected on 17/11 after
+  an external review (the review also runs differently). Docstring only, marked in place.
 
 ## Setup
 One ephemeral GCP VM (`n2-standard-8`, resized to `n2-standard-32` for the collection so 4 attempts could run at
@@ -42,7 +44,7 @@ no service-account token.
 
 | Role | Where | What it can reach |
 |---|---|---|
-| **Agent** (setup A or B) | pod in `ci-agent` | only the gateway's model port; no credentials, no internet, no DNS. Gets a snapshot of the app as it was just before my commit, with my commit's tests put back and **no history** (one commit, no remotes), the task text and the output of the failing tests. **Never my fix.** |
+| **Agent** (setup A or B) | pod in `ci-agent` | only the gateway's model port (NetworkPolicy; before the agent starts, an init container checks that forbidden destinations do not connect over several consecutive rounds, which shows the rules were in force then, not for the whole attempt); no credentials, no internet, no DNS. Gets a snapshot of the app as it was just before my commit, with my commit's tests put back and **no history** (one commit, no remotes), the task text and the output of the failing tests. **Never my fix.** |
 | **Gateway** | pod in `ci-gateway` | holds the provider key; forwards only `POST /v1/messages`; a budget per attempt (US$ 0.75) shared by every agent of that attempt, plus a total budget (US$ 15); logs every call. Before each call it reserves the worst case of that call and refuses it if the attempt's budget cannot cover it. |
 | **Validator** | pods in `ci-exec` | no network at all. Applies the patch and runs, in order: path rules (no test, CI, configuration or lock-file change); my commit's test files, 3 samples, every case must pass; one sample of each touched area's suite, which must keep passing (a file that fails is rerun twice; failing again = broken). |
 | **Blind judging** | packets built on the VM (`cases/blind_team.py`) | each patch the validator called `resolved` becomes a packet with a random id: the task as the agent got it, my commit's test files, the validator's summary, the agent's patch and my commit's code. It never shows the setup, the repetition, cost, calls, time or the agents' final text. The key stays closed until every packet has a verdict. |
@@ -54,7 +56,7 @@ its review found.
 **Setup B, a team** (`agent/orchestrator.txt`, `agent/subagent.txt`): an orchestrator plans and dispatches one
 subagent per area (security rules, back end functions, Flutter app), then calls a reviewer subagent with the same
 review instructions as A. Every subagent starts from its own context: the shared project notes, its role prompt and
-the task the orchestrator wrote for it.
+the task the orchestrator wrote for it. Subagents run one after another, not in parallel.
 
 Same for both (`agent/agent.py`): model `claude-sonnet-5-5`, one `bash` tool, the shared project notes
 (`agent/project.txt`, `agent/areas.txt`), and the same limits **for the whole attempt**, summed over every agent of the

@@ -5,7 +5,9 @@ Every number below comes from a file in this folder, named next to it. Collectio
 `claude-sonnet-5-5` in every attempt (`report/collection/attempts-c1.meta.jsonl`).
 
 **In one line:** one agent got 7 valid fixes out of 16 attempts, the team 9 out of 16; the team cost 42% more in total
-and about 10% more per fix. With 2 runs per setup, the gap is 2 cells and I can't tell the setups apart.
+and about 10% more per fix. With 2 runs per setup, the gap is 2 cells and I can't tell the setups apart. One of the
+single agent's 7 counts only because of a rule written after the runs (E23, [Limits](#limits)): without it, **6 against
+9**.
 
 ## 1. Per setup (`report/c1-blind.csv`, `report/c1-attempts.csv`)
 `python3 ../capture/show_results.py tally` and `… cost`, from `report/`.
@@ -15,6 +17,7 @@ and about 10% more per fix. With 2 runs per setup, the gap is 2 cells and I can'
 | passed the validator (`resolved`) | 13 of 16 | 14 of 16 |
 | blind verdict: equivalent / valid / worse | 3 / 4 / 6 | 4 / 5 / 5 |
 | **fixes** (`resolved` and equivalent or valid) | **7 of 16** (3 in repetition 1, 4 in 2) | **9 of 16** (5 and 4) |
+| fixes without E23 (a rule written after the runs) | 6 of 16 | 9 of 16 |
 | spent (model calls) | US$ 3.99 | US$ 5.67 |
 | **spent per fix** | **US$ 0.57** | **US$ 0.63** |
 | model calls | 309 | 475 |
@@ -36,8 +39,13 @@ and about 10% more per fix. With 2 runs per setup, the gap is 2 cells and I can'
 
 6 of the 8 tasks came out the same for both setups in both repetitions. The 7 vs 9 is two cells, both in repetition 1:
 - **T3:** the single agent stopped at the limit of 4,096 output tokens per reply, after 12 model calls and before it wrote
-  any file (`stopped_max_tokens` in `report/c1-attempts.csv`). That limit is the same for A and B.
-- **T7:** the single agent's patch passed the tests and was judged worse.
+  any file (`stopped_max_tokens` in `report/c1-attempts.csv`). That limit is the same for A and B, and **the harness
+  ends the whole attempt when any reply hits it** (`agent/agent.py`, `Session.run`): it does not tell the model the reply
+  was cut and let it continue. So this cell comes from a rule of my harness, not from one agent against a team. The
+  same rule ended one of the team's task-8 attempts.
+- **T7:** the single agent's patch passed the tests and was judged worse. The team's attempt in that repetition
+  (`c1-t7-b-r1-t2`) ended at the budget cap (`budget_exhausted`) and its patch counts as a fix: by the protocol, the
+  patch a stopped attempt leaves in the working copy is validated and judged like any other.
 
 ## 3. What the team's extra cost is made of (`show_results.py cost`)
 Priced as the gateway books it (Sonnet 5.5 at US$ 2 / 10 per million input / output tokens, cache writes 1.25×, cache
@@ -80,7 +88,11 @@ gateway log of `c1-t8-a-r2` (`source ../capture/gw.sh && gw c1-t8-a-r2`):
 refused   run budget: this call reserves $0.3330, $0.3246 left in run c1-t8-a-r2
 ```
 A single agent's conversation keeps growing, so its next call's worst case grows with it; a team spreads the same work
-over shorter conversations. So this rule weighs more on one long conversation than on several short ones.
+over shorter conversations. So this rule weighs more on one long conversation than on several short ones. Almost all of
+a long conversation's input is billed as a cache read (0.05× the input price) but reserved as a cache write (1.25×),
+about 25 times its real price: in practice the reservation, more than the US$ 0.75 itself, stopped the three task-8
+attempts that ended on the budget. **The same nominal
+budget is not the same effective budget for the two setups**, and the bias is against the single agent.
 
 ## 6. What the whole experiment cost
 - **Model calls: US$ 11.11** (`report/collection/gateway-budget.json`, 943 requests): the 32 counted attempts
@@ -94,8 +106,14 @@ over shorter conversations. So this rule weighs more on one long conversation th
 - The blind judge is another model (Codex), by my delegation. It read the code; it did not run the patches. I checked
   its calls on the two tasks that hold 8 of the 11 "worse"; the other 3 I did not review.
 - The team is one way to build a team, with my prompts. The setups differ in how the work is split **and** in how the
-  review runs (A reviews in its own session, B calls a fresh reviewer subagent); `agent/agent.py`'s docstring says
-  only the first.
+  review runs (A reviews in its own session, B calls a fresh reviewer subagent); `agent/agent.py`'s docstring said only
+  the first until it was corrected on 17/11. B's orchestrator also writes each subagent's task, which can change the
+  result on its own.
+- The team's subagents run **one after another**, not in parallel (a `dispatch` call waits for its subagent), and 6 of
+  the 8 tasks touch a single area (`tasks.csv`). On T1, T3 and T5 the team was a planner, one specialist and a reviewer
+  (one dispatch); on T4, T6 and T7, two dispatches to the same area. Only T2 and T8 had specialists from different
+  areas (`roles` and `dispatches` in `report/c1-attempts.csv`). Parallel work, which the advice usually promises, was
+  not tested.
 - I made the validator stricter after the runs (E22) and re-checked all 32 attempts: 31 kept their verdict. One
   single-agent fix (T1, repetition 2) fell, because one of its 3 samples was cut by the per-file time limit before
   reporting any case. It counts again only because of a rule I wrote after seeing it (E23: a cut before any case is not
@@ -106,4 +124,25 @@ over shorter conversations. So this rule weighs more on one long conversation th
 - Repetition 3 did not run: the budget rule set before the first run stopped it (US$ 3.89 left, US$ 6.57 needed).
 - `report/c1-context-per-run.csv` covers 26 of the 32 attempts: the gateway's per-call log of the first hour was lost
   in pod restarts. Per-run totals for all of them are in `gateway-budget.json`.
-- The app's code isn't public, so these exact tasks can't be re-run.
+- The verdict of a test run comes from the test process's own JSON reporter (`flutter test --reporter json`, `jest
+  --json`), which runs in the same process as the code under test, so a patch could in principle print fake results.
+  This run has no negative control for that (experiment 04 had one for a forced exit). The blind judging read every
+  passing diff, and a scan of the lines the 32 patches add found no prints, writes to stdout, exits or reporter strings.
+- The network rules are checked by sampling: before the agent starts, an init container (`cases/pod.py`, on by
+  default) tries forbidden destinations until none connects for several consecutive rounds. That shows the rules were in
+  force when it looked; it does not prove they stayed in force for the whole attempt.
+- The app's code isn't public, so these exact tasks can't be re-run, and nobody outside can check the 27 verdicts
+  against the code: the patches, the judge's notes and the app stay private.
+
+## For a future run
+- When a reply hits the output limit, tell the model it was cut and let it continue in smaller parts, counted as a
+  normal call, instead of ending the attempt.
+- Make the budget fairer to long conversations: a soft cap (forward while spent < cap, accept going over by at most one
+  call, and say so), or reserve the prefix identical to the run's previous call, sent less than 5 minutes before (the
+  cache TTL), at the cache-read price.
+- Add a third setup, one agent plus an independent reviewer, to separate the effect of the fresh review from the
+  effect of splitting the work.
+- Add a negative control for fake reporter output, as experiment 04 did for a forced exit.
+- Already in the harness since amendment E20 (16/11, during the collection): a provider refusal of the account (no
+  credit, key refused) is booked by the gateway as `provider_billing` / `provider_auth`, halts it, and the try goes to
+  the infrastructure file instead of the journal (`gateway/gateway.py`, `cases/attempt_team.sh`).
