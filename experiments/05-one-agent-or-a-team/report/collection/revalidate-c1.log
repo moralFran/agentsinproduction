@@ -1,0 +1,83 @@
+== revalidation c1 (E22) start 2026-11-16T13:44:53Z
+CONTROL T3 empty: not_resolved (expected not_resolved) decided in stage 1 | stage 1: f2p_failed=861/861 p2p_failed=0 wall=91.7s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=None wall=Nones | pods=3 total wall=91.7s OK 
+CONTROL T2 empty: not_resolved (expected not_resolved) decided in stage 1 | stage 1: f2p_failed=4/4 p2p_failed=0 wall=173.3s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=None wall=Nones | pods=6 total wall=173.3s OK 
+CONTROL T4 empty: not_resolved (expected not_resolved) decided in stage 1 | stage 1: f2p_failed=24/24 p2p_failed=0 wall=170.8s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=None wall=Nones | pods=3 total wall=170.8s OK 
+CONTROL T4 gold: resolved (expected resolved) decided in stage 2 | stage 1: f2p_failed=0/24 p2p_failed=0 wall=96.5s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=0 wall=532.5s | pods=4 total wall=631.4s OK 
+CONTROL T2 gold: resolved (expected resolved) decided in stage 2 | stage 1: f2p_failed=0/4 p2p_failed=0 wall=176.6s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=0 wall=635.9s | pods=10 total wall=814.6s OK 
+CONTROL T5 empty: not_resolved (expected not_resolved) decided in stage 1 | stage 1: f2p_failed=19/19 p2p_failed=0 wall=106.9s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=None wall=Nones | pods=3 total wall=107.0s OK 
+CONTROL T3 gold: resolved (expected resolved) decided in stage 2 | stage 1: f2p_failed=0/861 p2p_failed=0 wall=262.2s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=0 wall=655.3s | pods=6 total wall=919.4s OK 
+CONTROL T6 empty: not_resolved (expected not_resolved) decided in stage 1 | stage 1: f2p_failed=12/12 p2p_failed=0 wall=132.3s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=None wall=Nones | pods=3 total wall=132.3s OK 
+CONTROL T5 gold: resolved (expected resolved) decided in stage 2 | stage 1: f2p_failed=0/19 p2p_failed=0 wall=150.5s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=0 wall=497.2s | pods=4 total wall=650.2s OK 
+CONTROL T7 empty: not_resolved (expected not_resolved) decided in stage 1 | stage 1: f2p_failed=8/8 p2p_failed=0 wall=104.8s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=None wall=Nones | pods=3 total wall=104.8s OK 
+CONTROL T6 gold: resolved (expected resolved) decided in stage 2 | stage 1: f2p_failed=0/12 p2p_failed=0 wall=90.0s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=0 wall=451.6s | pods=4 total wall=543.3s OK 
+CONTROL T7 gold: resolved (expected resolved) decided in stage 2 | stage 1: f2p_failed=0/8 p2p_failed=0 wall=94.0s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=0 wall=569.2s | pods=4 total wall=665.4s OK 
+CONTROL T8 empty: not_resolved (expected not_resolved) decided in stage 1 | stage 1: f2p_failed=204/204 p2p_failed=0 wall=557.0s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=None wall=Nones | pods=6 total wall=557.0s OK 
+CONTROL T8 gold: resolved (expected resolved) decided in stage 2 | stage 1: f2p_failed=0/204 p2p_failed=0 wall=524.6s | stage 2: broken=0 unstable_in_attempt=0 environment_dependent=0 reruns=0 wall=633.5s | pods=10 total wall=1160.5s OK 
+CONTROLS E22: all 16 as expected
+CONTROLS E22: all 16 as expected
+REVALIDATED c1-t8-b-r1 not_resolved
+REVALIDATED c1-t6-a-r1 resolved
+REVALIDATED c1-t8-a-r1 not_resolved
+REVALIDATED c1-t3-b-r1 resolved
+REVALIDATED c1-t1-a-r1-t2 resolved
+REVALIDATED c1-t4-a-r1 resolved
+REVALIDATED c1-t5-a-r1 resolved
+REVALIDATED c1-t3-a-r1-t2 not_resolved
+REVALIDATED c1-t6-b-r1-t2 resolved
+REVALIDATED c1-t4-b-r1-t2 resolved
+REVALIDATED c1-t7-a-r1-t2 resolved
+REVALIDATED c1-t7-b-r1-t2 resolved
+REVALIDATED c1-t5-b-r1-t2 resolved
+REVALIDATED c1-t2-b-r1-t2 resolved
+REVALIDATED c1-t1-a-r2-t2 not_resolved
+REVALIDATED c1-t1-b-r1-t2 resolved
+REVALIDATED c1-t2-a-r1-t2 resolved
+REVALIDATED c1-t5-b-r2-t2 resolved
+REVALIDATED c1-t7-b-r2-t2 resolved
+REVALIDATED c1-t2-a-r2-t2 resolved
+REVALIDATED c1-t1-b-r2 resolved
+REVALIDATED c1-t6-a-r2 resolved
+REVALIDATED c1-t8-b-r2 not_resolved
+REVALIDATED c1-t3-b-r2 resolved
+REVALIDATED c1-t8-a-r2 not_resolved
+REVALIDATED c1-t4-a-r2 resolved
+REVALIDATED c1-t6-b-r2 resolved
+REVALIDATED c1-t4-b-r2 resolved
+REVALIDATED c1-t7-a-r2 resolved
+REVALIDATED c1-t2-b-r2 resolved
+REVALIDATED c1-t5-a-r2 resolved
+REVALIDATED c1-t3-a-r2 resolved
+REVALIDATION c1: 31 same, 1 changed, 0 missing
+  c1-t6-a-r1: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t8-b-r1: old not_resolved (stage 1) | new not_resolved (stage 1) same | samples 6, dirty files 15, with required cases 15, broken 0, unstable 0, environment-dependent 0 
+  c1-t8-a-r1: old not_resolved (stage 1) | new not_resolved (stage 1) same | samples 6, dirty files 16, with required cases 16, broken 0, unstable 0, environment-dependent 0 
+  c1-t3-b-r1: old resolved (stage 2) | new resolved (stage 2) same | samples 6, dirty files 2, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t5-a-r1: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t4-a-r1: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t1-a-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t4-b-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t6-b-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t7-b-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t3-a-r1-t2: old not_resolved (stage 1) | new not_resolved (stage 1) same | samples 3, dirty files 6, with required cases 6, broken 0, unstable 0, environment-dependent 0 
+  c1-t7-a-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t2-b-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 10, dirty files 2, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t5-b-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t2-a-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 10, dirty files 2, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t1-b-r1-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t1-a-r2-t2: old resolved (stage 2) | new not_resolved (stage 1) CHANGED | samples 3, dirty files 1, with required cases 1, broken 0, unstable 0, environment-dependent 0 
+  c1-t5-b-r2-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t2-a-r2-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 10, dirty files 2, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t7-b-r2-t2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t1-b-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t6-a-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t3-b-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 6, dirty files 2, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t8-b-r2: old not_resolved (stage 1) | new not_resolved (stage 1) same | samples 6, dirty files 15, with required cases 15, broken 0, unstable 0, environment-dependent 0 
+  c1-t8-a-r2: old not_resolved (stage 1) | new not_resolved (stage 1) same | samples 6, dirty files 15, with required cases 15, broken 0, unstable 0, environment-dependent 0 
+  c1-t4-a-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t6-b-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t4-b-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t7-a-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t2-b-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 10, dirty files 2, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t5-a-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 4, dirty files 0, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+  c1-t3-a-r2: old resolved (stage 2) | new resolved (stage 2) same | samples 6, dirty files 2, with required cases 0, broken 0, unstable 0, environment-dependent 0 
+== revalidation c1 exit 0 2026-11-16T16:05:27Z

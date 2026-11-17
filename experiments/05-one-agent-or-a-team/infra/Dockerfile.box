@@ -1,0 +1,53 @@
+# The one image of experiment 05 (A-v07, one agent vs a team): the toolchain the app's 8 parent commits expect, nothing
+# of the app itself. Flutter 3.41.9 stable (Dart 3.11.5), Node 20, OpenJDK 21, firebase-tools 14.27.0 with the Firestore,
+# Storage and UI emulator files already downloaded (Auth and Functions emulators are part of firebase-tools), git, rsync,
+# Python 3 with an isolated venv holding the Anthropic SDK for the agent loop (same version as experiment 04's image).
+# App code and its dependencies (pub cache, node_modules) are NOT here: they are prepared on the VM and mounted read-only.
+# Everything is fetched at build time; pods run without network. Versions are printed by infra/build-images.sh.
+FROM ubuntu:24.04@sha256:__UBUNTU_DIGEST__
+ARG FLUTTER_VERSION=3.41.9
+ARG FLUTTER_SHA256=cf2631dde02570733921a530f47a96abe896b5e334682d2743c29530ea88bb2e
+ARG NODE_VERSION=20.20.2
+ARG NODE_SHA256=df770b2a6f130ed8627c9782c988fda9669fa23898329a61a871e32f965e007d
+ARG FIREBASE_TOOLS_VERSION=14.27.0
+ENV DEBIAN_FRONTEND=noninteractive LANG=C.UTF-8 \
+    FIREBASE_EMULATORS_PATH=/opt/firebase-emulators \
+    FLUTTER_ROOT=/opt/flutter PUB_CACHE=/srv/ci/deps/pub-cache \
+    FLUTTER_SUPPRESS_ANALYTICS=true DART_SUPPRESS_ANALYTICS=true DO_NOT_TRACK=1 \
+    NO_UPDATE_NOTIFIER=1 NPM_CONFIG_UPDATE_NOTIFIER=false NPM_CONFIG_FUND=false NPM_CONFIG_AUDIT=false \
+    FIREBASE_CLI_EXPERIMENTS= \
+    PATH=/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+RUN apt-get update -qq \
+ && apt-get install -y -qq --no-install-recommends ca-certificates curl git rsync xz-utils unzip zip procps \
+      python3 python3-venv python3-pip openjdk-21-jre-headless >/dev/null \
+ && rm -rf /var/lib/apt/lists/* \
+ && python3 -m venv /opt/agent-venv && /opt/agent-venv/bin/pip install -q --no-cache-dir anthropic==2.8.0 \
+ && (userdel -r ubuntu 2>/dev/null || true) && useradd -m -u 1000 agent \
+ && git config --system user.name aip && git config --system user.email aip@example.invalid \
+ && git config --system --add safe.directory '*'
+RUN curl -fsSL -o /tmp/node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
+ && echo "${NODE_SHA256}  /tmp/node.tar.xz" | sha256sum -c - \
+ && tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 --no-same-owner && rm /tmp/node.tar.xz \
+ && npm install -g --no-audit --no-fund "firebase-tools@${FIREBASE_TOOLS_VERSION}" >/dev/null \
+ && npm cache clean --force >/dev/null 2>&1 \
+ && mkdir -p "$FIREBASE_EMULATORS_PATH" \
+ && HOME=/tmp/fbhome firebase setup:emulators:firestore && HOME=/tmp/fbhome firebase setup:emulators:storage \
+ && HOME=/tmp/fbhome firebase setup:emulators:ui && rm -rf /tmp/fbhome && chmod -R a+rX "$FIREBASE_EMULATORS_PATH"
+RUN curl -fsSL -o /tmp/flutter.tar.xz "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" \
+ && echo "${FLUTTER_SHA256}  /tmp/flutter.tar.xz" | sha256sum -c - \
+ && tar -xJf /tmp/flutter.tar.xz -C /opt --no-same-owner && rm /tmp/flutter.tar.xz && chown -R agent:agent /opt/flutter \
+ && mkdir -p /srv/ci/deps/pub-cache && chown -R agent:agent /srv/ci
+USER agent
+ENV HOME=/home/agent
+# PUB_CACHE (/srv/ci/deps/pub-cache) exists in the image only so the Flutter tool can unpack its own preloaded packages at
+# build time; in the pods the prepared cache of the VM is mounted over it, read-only.
+# Telemetry off for the tools (files in the image's HOME; pods use this HOME, which holds nothing else), then only the
+# artifacts `flutter test` needs: the universal set (Dart SDK, flutter_tester, patched SDK, fonts), no platform SDKs.
+RUN flutter --disable-analytics >/dev/null && dart --disable-analytics >/dev/null \
+ && flutter config --no-cli-animations >/dev/null \
+ && flutter precache --universal --no-android --no-ios --no-web --no-linux --no-windows --no-macos --no-fuchsia \
+ && flutter --version && npm config set update-notifier false && npm config set fund false && npm config set audit false \
+ && mkdir -p /home/agent/.config/configstore \
+ && printf '{"usage": false, "analytics-uuid": "disabled"}\n' > /home/agent/.config/configstore/firebase-tools.json \
+ && printf '{"optOut": true}\n' > /home/agent/.config/configstore/update-notifier-firebase-tools.json
+WORKDIR /home/agent

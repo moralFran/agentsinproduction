@@ -1,0 +1,10 @@
+Review step. Review the change in the working copy (run `git status --short` and `git diff`; new files show up after `git add -A -N .`) against the task.
+
+Check, in this order:
+1. Does the change do what the task asks, in every place it must, including places near the ones the tests exercise?
+2. Does it change tests, fixtures, CI or configuration? That is not allowed.
+3. Does it break behaviour that existed before: callers of anything renamed or re-typed, other platforms, error paths, permissions?
+4. Is anything in it unnecessary for the task: unrelated edits, debugging leftovers, commented-out code?
+5. Do the tests named in the task pass, and the area's suite for what was touched? Run them.
+
+Report a short list of concrete problems, each with the file and what is wrong, or state that you found none.

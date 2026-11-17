@@ -1,0 +1,57 @@
+# lab versions, 2026-11-15T18:08:38Z
+vm: aip-ci-01, 8 vCPU, 31 GiB, Ubuntu 24.04.5 LTS, kernel 7.0.0-1017-gcp
+docker.io: 29.1.3-0ubuntu3~24.04.2
+k3s: k3s version v1.37.2+k3s1 (f6973cb8)
+containerd: v2.3.7-k3s1
+helm: v3.22.1+gd6c1a0e
+kata-deploy chart: kata-deploy-4.3.1 4.3.1
+kata runtime: kata-runtime  : 4.3.1
+kata drop-ins (qemu): 50-user-overrides.toml 
+kube-router (network policy): Client Version: v1.37.2+k3s1 Kustomize Version: v5.8.1 Server Version: v1.37.2+k3s1 
+
+## box image aip-team-box:1
+base: ubuntu:24.04@sha256:2198e4c65076e9cb0b3d695219df667c0e3b0072da64ca3c2648aca17dcecaf5
+docker image id: sha256:e1d8308f5fb1b8f413a8eaf6eaadabcb181747da5c434ae59ece8032b5ff9ee8
+containerd: docker.io/library/aip-team-box:1 sha256:e1d8308f5fb1b8f413a8eaf6eaadabcb181747da5c434ae59ece8032b5ff9ee8 1.9GiB
+Dockerfile.box sha256: 0696249c23b9123f959aea3626251d999e8d77c6dab19d5318efca9842460f5f
+os: Ubuntu 24.04.5 LTS
+user: uid=1000(agent) gid=1000(agent) groups=1000(agent)
+HOME=/home/agent PUB_CACHE=/srv/ci/deps/pub-cache FIREBASE_EMULATORS_PATH=/opt/firebase-emulators
+Flutter 3.41.9 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 00b0c91f06 (7 months ago) • 2026-04-29 10:03:19 -0700
+Engine • hash 9161402dc0e134b3fb5adee5046b6e84b1a5e1c1 (revision 42d3d75a56) (6 months ago) • 2026-04-28 17:31:55.000Z
+Tools • Dart 3.11.5 • DevTools 2.54.2
+dart: Dart SDK version: 3.11.5 (stable) (Wed Apr 15 00:36:32 2026 -0700) on "linux_x64"
+node: v20.20.2  npm: 10.8.2
+openjdk version "21.0.13.0.3" 2026-10-24
+OpenJDK Runtime Environment (build 21.0.13.0.3+1-1-24.04.1-Ubuntu)
+OpenJDK 64-Bit Server VM (build 21.0.13.0.3+1-1-24.04.1-Ubuntu, mixed mode, sharing)
+firebase-tools: 14.27.0
+emulator files:
+9d43599ed6151199e8d604dc87fac51218e49e5f3a48519b1ae560bbe5e3382d  cloud-firestore-emulator-v1.19.8.jar
+0cd52db6f6271d62078f805220706377c849220b73bd68aa27078d977df9c900  cloud-storage-rules-runtime-v1.1.3.jar
+97d8c4c574e3f20c4d690a2ce8373eef76ab024da73279a062dba8517f88cf9a  ui-v1.15.0.zip
+python: 3.12.3  anthropic: 2.8.0
+git: git version 2.43.0
+rsync: rsync  version 3.2.7  protocol version 31
+flutter analytics:     --enable-analytics      Enable telemetry reporting each time a flutter or dart command runs.
+dart analytics: # This is the Flutter and Dart telemetry reporting
+flutter test artifacts: LICENSE.artifacts.md LICENSE.flutter_gtk.md LICENSE.font_subset.md const_finder.dart.snapshot flutter_linux flutter_tester font-subset frontend_server_aot.dart.snapshot gen_snapshot icudtl.dat impellerc isolate_snapshot.bin libflutter_linux_gtk.so libpath_ops.so libtessellator.so shader_lib vm_isolate_snapshot.bin 
+flutter cache dirs: engine gradle_wrapper ios-deploy libimobiledevice libimobiledeviceglue libplist libusbmuxd material_fonts openssl 
+
+## dependency sets (/srv/ci/deps)
+pub lock pub-0c5fce4b3d: sha256 2c9033dabfdfba8eebb4e56e52f781d01e786ae776490d51ec6ba846ea5725be, 266 packages
+pub lock pub-7ae9937f9b: sha256 207dd85760ae8509bdd060069268f46227706f0059ff3ace5066136b431404cb, 267 packages
+pub lock unpinned-2026-11-15-pub-0c5fce4b3d: sha256 fc2f68522ec2242d616e1223641d8f5e8431e736c691b490ca5d89d79996c197, 266 packages
+node set node-1c6c4a0b89: {"admin_scripts_stub": false, "functions_node_modules": true}, 479 top-level entries
+node set node-d14a9e816c: {"admin_scripts_stub": false, "functions_node_modules": true}, 479 top-level entries
+node set node-ff041fa986: {"admin_scripts_stub": false, "functions_node_modules": true}, 485 top-level entries
+pub cache: 484M
+task T1 snapshot cbc29377a71a49841b0d42f5af85f2c579f940da deps {'pub': 'pub-0c5fce4b3d', 'node': 'node-d14a9e816c'} empty dirs: ['lib/internal/firebase/admin-scripts/dashboard']
+task T2 snapshot 7db67cd7100bc03c48b65cc10a3fcd6bd933851b deps {'pub': 'pub-0c5fce4b3d', 'node': 'node-ff041fa986'} empty dirs: ['lib/internal/firebase/admin-scripts/dashboard']
+task T3 snapshot 1c041c5c1b3733d3c2c51edd8f0ea76083150a8c deps {'pub': 'pub-0c5fce4b3d', 'node': 'node-ff041fa986'} empty dirs: ['lib/internal/firebase/admin-scripts/dashboard']
+task T4 snapshot 5f5708a49d94f11747fa56d2037a713043a24d50 deps {'pub': 'pub-0c5fce4b3d'} empty dirs: []
+task T5 snapshot 6018d6350b3f80441f30f0a74d532f34c3adf8d0 deps {'pub': 'pub-0c5fce4b3d'} empty dirs: []
+task T6 snapshot 3c6d3a43d3af0248881df0cbd6376df44ee7e567 deps {'pub': 'pub-7ae9937f9b'} empty dirs: []
+task T7 snapshot 1dc861dc4a5fb82584e3a80c454921d55e322a0f deps {'pub': 'pub-0c5fce4b3d', 'node': 'node-d14a9e816c'} empty dirs: ['lib/internal/firebase/admin-scripts/dashboard']
+task T8 snapshot 78ff2f103850a77eafab5e2440b38bcc6a865027 deps {'pub': 'pub-0c5fce4b3d', 'node': 'node-1c6c4a0b89'} empty dirs: ['lib/internal/firebase/admin-scripts/dashboard']

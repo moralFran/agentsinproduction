@@ -1,0 +1,469 @@
+{
+ "spent_usd": 11.11351169999999,
+ "requests": 943,
+ "in_tok": 18125255,
+ "out_tok": 420451,
+ "reserved": {},
+ "halted": null,
+ "runs": {
+  "quote-t1-t1-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 0,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794783088.5941143,
+   "closed": 1794783258.4042954
+  },
+  "quote-t1b-t1-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.08989889999999999,
+   "calls": 15,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794783258.5544925,
+   "closed": 1794783899.8049664
+  },
+  "quote-t1b-t1-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.1477788,
+   "calls": 20,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794784839.8199496,
+   "closed": 1794785472.4885786
+  },
+  "quote-t2-t2-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.18293900000000002,
+   "calls": 17,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794795071.6341186,
+   "closed": 1794795583.568176
+  },
+  "quote-t2-t2-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.30891750000000007,
+   "calls": 36,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794799142.3637042,
+   "closed": 1794799687.4563608
+  },
+  "c1-t8-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.4243994,
+   "calls": 25,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794815925.2507162,
+   "closed": 1794816383.1596138
+  },
+  "c1-t8-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.31149530000000003,
+   "calls": 20,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794815925.2542117,
+   "closed": 1794816321.8047702
+  },
+  "c1-t6-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.2074177,
+   "calls": 18,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794815925.2565546,
+   "closed": 1794816253.0180135
+  },
+  "c1-t3-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.39623569999999997,
+   "calls": 28,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794815925.25877,
+   "closed": 1794816501.690393
+  },
+  "c1-t5-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0909245,
+   "calls": 9,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794816819.2557237,
+   "closed": 1794816981.5691183
+  },
+  "c1-t4-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.3146033,
+   "calls": 23,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794816915.729905,
+   "closed": 1794817314.087631
+  },
+  "c1-t7-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.46143990000000007,
+   "calls": 44,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794816984.0355878,
+   "closed": 1794817637.3407907
+  },
+  "c1-t4-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.25679660000000004,
+   "calls": 15,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794817305.8051925,
+   "closed": 1794817662.6637049
+  },
+  "c1-t1-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794817667.3156054,
+   "closed": 1794817695.6868384
+  },
+  "c1-t6-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794817871.9583385,
+   "closed": 1794817898.014897
+  },
+  "c1-t7-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794817910.1753118,
+   "closed": 1794817936.06658
+  },
+  "c1-t2-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794817914.166291,
+   "closed": 1794817940.1827793
+  },
+  "c1-t3-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818060.8339415,
+   "closed": 1794818084.7199209
+  },
+  "c1-t2-a-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818071.5495424,
+   "closed": 1794818095.4262578
+  },
+  "c1-t5-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818099.5853803,
+   "closed": 1794818125.8089685
+  },
+  "c1-t1-b-r1": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818151.8431787,
+   "closed": 1794818177.9570956
+  },
+  "c1-t1-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818370.0009413,
+   "closed": 1794818393.7399225
+  },
+  "c1-t5-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818370.0044286,
+   "closed": 1794818393.7332509
+  },
+  "c1-t7-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818370.0099723,
+   "closed": 1794818393.7373376
+  },
+  "c1-t2-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0,
+   "calls": 1,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794818370.0126395,
+   "closed": 1794818393.7858253
+  },
+  "c1-t4-b-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.37641280000000005,
+   "calls": 27,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794825722.1009712,
+   "closed": 1794826026.6270692
+  },
+  "c1-t7-b-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.5856906000000001,
+   "calls": 55,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794825722.10566,
+   "closed": 1794826194.3897927
+  },
+  "c1-t6-b-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.4200877,
+   "calls": 32,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794825722.13419,
+   "closed": 1794826270.495782
+  },
+  "c1-t1-a-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.07102420000000001,
+   "calls": 12,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794825722.1378002,
+   "closed": 1794826091.5944436
+  },
+  "c1-t7-a-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.3293307,
+   "calls": 25,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794826398.2879035,
+   "closed": 1794826791.004325
+  },
+  "c1-t2-b-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.35594729999999997,
+   "calls": 40,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794826548.2607327,
+   "closed": 1794827009.082637
+  },
+  "c1-t3-a-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.18599380000000001,
+   "calls": 12,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794826748.2496033,
+   "closed": 1794826862.2677455
+  },
+  "c1-t2-a-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.2253552,
+   "calls": 23,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794826838.4592328,
+   "closed": 1794827200.8542073
+  },
+  "c1-t5-b-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.13713180000000003,
+   "calls": 14,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794826924.594869,
+   "closed": 1794827180.021425
+  },
+  "c1-t1-b-r1-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.1034147,
+   "calls": 16,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794827571.9784825,
+   "closed": 1794828003.8827279
+  },
+  "c1-t1-a-r2-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.10480089999999999,
+   "calls": 17,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794828272.4462438,
+   "closed": 1794828547.7067106
+  },
+  "c1-t7-b-r2-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.5284270999999999,
+   "calls": 45,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794828272.4497347,
+   "closed": 1794828819.7227612
+  },
+  "c1-t5-b-r2-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.1556486,
+   "calls": 14,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794828272.4522753,
+   "closed": 1794828465.902308
+  },
+  "c1-t2-a-r2-t2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.1926168,
+   "calls": 20,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794828272.454824,
+   "closed": 1794828604.210321
+  },
+  "c1-t3-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.48582790000000003,
+   "calls": 28,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794828850.9255521,
+   "closed": 1794829649.6650877
+  },
+  "c1-t1-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.1224709,
+   "calls": 19,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794829064.2966852,
+   "closed": 1794829560.6143913
+  },
+  "c1-t8-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.4529984,
+   "calls": 34,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794829461.524723,
+   "closed": 1794829940.9770315
+  },
+  "c1-t6-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.2074938,
+   "calls": 18,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794829510.8470395,
+   "closed": 1794829889.2198372
+  },
+  "c1-t8-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.4254131000000001,
+   "calls": 21,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794829860.2907205,
+   "closed": 1794830290.1057112
+  },
+  "c1-t6-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.3936901,
+   "calls": 33,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794830308.6495,
+   "closed": 1794831062.763467
+  },
+  "c1-t4-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.3392068000000001,
+   "calls": 22,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794830420.3874998,
+   "closed": 1794830754.3369098
+  },
+  "c1-t4-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.5608814999999999,
+   "calls": 38,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794830474.368615,
+   "closed": 1794831013.6936302
+  },
+  "c1-t7-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.3476373,
+   "calls": 25,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794830782.6787684,
+   "closed": 1794831223.1780627
+  },
+  "c1-t2-b-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.28479599999999994,
+   "calls": 32,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794831348.5214336,
+   "closed": 1794831718.0727592
+  },
+  "c1-t3-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.43753060000000005,
+   "calls": 30,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794831530.4320686,
+   "closed": 1794832270.9019775
+  },
+  "c1-t5-a-r2": {
+   "cap_usd": 0.75,
+   "spent_usd": 0.0908365,
+   "calls": 9,
+   "model_path_failures": 0,
+   "open": false,
+   "opened": 1794831704.5223167,
+   "closed": 1794831892.244885
+  }
+ }
+}

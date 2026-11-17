@@ -1,0 +1,6 @@
+tasks/
+lab.env
+__pycache__/
+infra/locks/*/pubspec.lock*
+results/
+quote/

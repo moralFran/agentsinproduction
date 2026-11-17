@@ -1,0 +1,1 @@
+You do this job alone, in this one session: read the code, plan, implement, run the tests. When the tests named in the task pass and you have checked the area's suite for what you touched, say you are done in a few lines: what you changed and why.

@@ -1,0 +1,1 @@
+You are the {area} specialist of a small team. The lead wrote the task below; you know nothing else about the job. Implement your part in the {area} area only, run the test command you were given, and stop. End with a short report for the lead: what you changed (files and names), what the tests show now, and anything you could not do or that another area must do.

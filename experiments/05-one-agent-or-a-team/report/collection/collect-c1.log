@@ -1,0 +1,58 @@
+== c1 repetition 1 start 07:58:45 (go)
+c1-t6-a-r1 agent: finished tools 16 calls 18 s 306.63 | gateway $ 0.2074177 | validator: resolved 
+c1-t8-b-r1 agent: stopped_max_tokens tools 24 calls 20 s 376.14 | gateway $ 0.31149530000000003 | validator: not_resolved 
+c1-t8-a-r1 agent: budget_exhausted tools 31 calls 25 s 435.97 | gateway $ 0.4243994 | validator: not_resolved 
+c1-t3-b-r1 agent: finished tools 29 calls 28 s 550.55 | gateway $ 0.39623569999999997 | validator: resolved 
+c1-t5-a-r1 agent: finished tools 7 calls 9 s 141.41 | gateway $ 0.0909245 | validator: resolved 
+c1-t4-b-r1 agent: error tools 16 calls 14 s 334.89 | gateway $ 0.25679660000000004 | validator: not_resolved 
+c1-t1-a-r1 agent: error tools 0 calls 0 s 4.44 | gateway $ 0.0 | validator: not_resolved 
+c1-t4-a-r1 agent: finished tools 21 calls 23 s 377.62 | gateway $ 0.3146033 | validator: resolved 
+c1-t6-b-r1 agent: error tools 0 calls 0 s 3.5 | gateway $ 0.0 | validator: not_resolved 
+c1-t7-a-r1 agent: error tools 0 calls 0 s 4.25 | gateway $ 0.0 | validator: not_resolved 
+c1-t2-b-r1 agent: error tools 0 calls 0 s 5.23 | gateway $ 0.0 | validator: not_resolved 
+c1-t3-a-r1 agent: error tools 0 calls 0 s 3.25 | gateway $ 0.0 | validator: not_resolved 
+c1-t5-b-r1 agent: error tools 0 calls 0 s 4.08 | gateway $ 0.0 | validator: not_resolved 
+c1-t2-a-r1 agent: error tools 0 calls 0 s 3.55 | gateway $ 0.0 | validator: not_resolved 
+c1-t7-b-r1 agent: error tools 46 calls 43 s 633.12 | gateway $ 0.46143990000000007 | validator: resolved 
+c1-t1-b-r1 agent: error tools 0 calls 0 s 4.1 | gateway $ 0.0 | validator: not_resolved 
+== c1 repetition 1 done 08:39:29
+== c1 repetition 2 start 08:39:29 (go)
+== resumed 2026-11-16T10:42:01Z after E20
+== c1 repetition 1 start 10:42:01 (resume)
+run c1-t8-a-r1 already recorded; skipping
+run c1-t3-b-r1 already recorded; skipping
+run c1-t8-b-r1 already recorded; skipping
+run c1-t6-a-r1 already recorded; skipping
+run c1-t4-a-r1 already recorded; skipping
+run c1-t5-a-r1 already recorded; skipping
+c1-t1-a-r1-t2 agent: finished tools 9 calls 12 s 347.97 | gateway $ 0.07102420000000001 | validator: resolved 
+c1-t4-b-r1-t2 agent: finished tools 28 calls 27 s 283.99 | gateway $ 0.37641280000000005 | validator: resolved 
+c1-t6-b-r1-t2 agent: finished tools 32 calls 32 s 526.88 | gateway $ 0.4200877 | validator: resolved 
+c1-t7-b-r1-t2 agent: budget_exhausted tools 56 calls 55 s 450.41 | gateway $ 0.5856906000000001 | validator: resolved 
+c1-t3-a-r1-t2 agent: stopped_max_tokens tools 13 calls 12 s 92.04 | gateway $ 0.18599380000000001 | validator: not_resolved 
+c1-t7-a-r1-t2 agent: finished tools 25 calls 25 s 371.55 | gateway $ 0.3293307 | validator: resolved 
+c1-t2-b-r1-t2 agent: finished tools 41 calls 40 s 439.45 | gateway $ 0.35594729999999997 | validator: resolved 
+c1-t5-b-r1-t2 agent: finished tools 14 calls 14 s 232.43 | gateway $ 0.13713180000000003 | validator: resolved 
+c1-t2-a-r1-t2 agent: finished tools 22 calls 23 s 340.96 | gateway $ 0.2253552 | validator: resolved 
+c1-t1-b-r1-t2 agent: finished tools 15 calls 16 s 407.4 | gateway $ 0.1034147 | validator: resolved 
+== c1 repetition 1 done 11:24:32
+== c1 repetition 2 start 11:24:32 (go)
+c1-t1-a-r2-t2 agent: finished tools 15 calls 17 s 255.7 | gateway $ 0.10480089999999999 | validator: resolved 
+c1-t5-b-r2-t2 agent: finished tools 14 calls 14 s 173.03 | gateway $ 0.1556486 | validator: resolved 
+c1-t2-a-r2-t2 agent: finished tools 18 calls 20 s 311.56 | gateway $ 0.1926168 | validator: resolved 
+c1-t7-b-r2-t2 agent: finished tools 47 calls 45 s 526.49 | gateway $ 0.5284270999999999 | validator: resolved 
+c1-t1-b-r2 agent: finished tools 18 calls 19 s 472.1 | gateway $ 0.1224709 | validator: resolved 
+c1-t6-a-r2 agent: finished tools 16 calls 18 s 357.81 | gateway $ 0.2074938 | validator: resolved 
+c1-t3-b-r2 agent: finished tools 30 calls 28 s 776.55 | gateway $ 0.48582790000000003 | validator: resolved 
+c1-t8-b-r2 agent: budget_exhausted tools 37 calls 34 s 456.9 | gateway $ 0.4529984 | validator: not_resolved 
+c1-t8-a-r2 agent: budget_exhausted tools 24 calls 21 s 408.95 | gateway $ 0.4254131000000001 | validator: not_resolved 
+c1-t4-a-r2 agent: finished tools 20 calls 22 s 313.77 | gateway $ 0.3392068000000001 | validator: resolved 
+c1-t6-b-r2 agent: finished tools 33 calls 33 s 730.17 | gateway $ 0.3936901 | validator: resolved 
+c1-t4-b-r2 agent: finished tools 38 calls 38 s 518.68 | gateway $ 0.5608814999999999 | validator: resolved 
+c1-t7-a-r2 agent: finished tools 24 calls 25 s 418.4 | gateway $ 0.3476373 | validator: resolved 
+c1-t2-b-r2 agent: finished tools 34 calls 32 s 348.25 | gateway $ 0.28479599999999994 | validator: resolved 
+c1-t5-a-r2 agent: finished tools 7 calls 9 s 167.75 | gateway $ 0.0908365 | validator: resolved 
+c1-t3-a-r2 agent: finished tools 29 calls 30 s 712.91 | gateway $ 0.43753060000000005 | validator: resolved 
+== c1 repetition 2 done 12:42:11
+== c1 repetition 3 NOT started: stop: US$ 3.8865 left, repetition 3 needs US$ 6.5671
+ROUND c1: 2 complete repetition(s); 32 of 32 attempts recorded; missing: none
