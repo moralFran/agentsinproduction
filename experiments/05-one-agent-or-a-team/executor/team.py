@@ -144,7 +144,7 @@ def job_flutter(job, out):
     [t.start() for t in threads]; [t.join() for t in threads]
     dt = time.monotonic() - t0
     for i in range(procs):
-        suites, tests, done, errors = {}, {}, {}, {}
+        suites, tests, done, errors = {}, {}, {}, {}; n_fail = len(out.failures)
         with open(f"{JOBDIR}/flutter-{i}.out", encoding="utf-8", errors="replace") as f:
             for line in f:
                 if not line.startswith("{"): continue
@@ -173,6 +173,13 @@ def job_flutter(job, out):
         for file in chunks[i]:
             # a listed file that never produced a suite event (the process died or timed out before reaching it)
             if file not in seen: out.file_errors.setdefault(file, f"not run (flutter test process {i} rc={results[i][0]})")
+        # Abnormal end (added 17/11/2026 after an external review, for future runs; behaviour change, not applied to the
+        # recorded collection): a process that exits non-zero although it reported no failed case and no file error
+        # (killed by the deadline, rc 124, or crashed after its last testDone) leaves no reliable result for its files.
+        # Every file of its chunk gets a file error, so criteria E22 counts their required cases as not passed. None of
+        # the 137 Flutter samples kept in the private archive (attempts and controls) ended this way.
+        if results[i][0] != 0 and len(out.failures) == n_fail:
+            for file in chunks[i]: out.file_errors.setdefault(file, f"flutter test process {i} ended rc={results[i][0]} with no failed case reported")
     return {"rc": max(r[0] for r in results), "rcs": [r[0] for r in results], "s": round(dt, 1), "procs": procs, "files": len(files),
             "proc_s": [round(r[1], 1) for r in results], "stderr_tail": tail(f"{JOBDIR}/flutter-0.err", 1500)}
 

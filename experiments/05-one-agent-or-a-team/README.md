@@ -35,6 +35,9 @@ Edits for the public copy, all marked where they are:
 - `capture/collect_replay.py`: one line of its docstring now says where the log is in this folder.
 - `agent/agent.py`: its docstring said the setups differ "only" in how the context is split; corrected on 17/11 after
   an external review (the review also runs differently). Docstring only, marked in place.
+- `executor/team.py` (17/11, after an external review, **a behaviour change for future runs**, not what the recorded
+  collection ran): a `flutter test` process that exits non-zero although it reported no failed case now marks its files
+  dirty. Test added in `infra/test_team.py`. See [`results.md`](results.md#limits).
 
 ## Setup
 One ephemeral GCP VM (`n2-standard-8`, resized to `n2-standard-32` for the collection so 4 attempts could run at
@@ -46,7 +49,7 @@ no service-account token.
 |---|---|---|
 | **Agent** (setup A or B) | pod in `ci-agent` | only the gateway's model port (NetworkPolicy; before the agent starts, an init container checks that forbidden destinations do not connect over several consecutive rounds, which shows the rules were in force then, not for the whole attempt); no credentials, no internet, no DNS. Gets a snapshot of the app as it was just before my commit, with my commit's tests put back and **no history** (one commit, no remotes), the task text and the output of the failing tests. **Never my fix.** |
 | **Gateway** | pod in `ci-gateway` | holds the provider key; forwards only `POST /v1/messages`; a budget per attempt (US$ 0.75) shared by every agent of that attempt, plus a total budget (US$ 15); logs every call. Before each call it reserves the worst case of that call and refuses it if the attempt's budget cannot cover it. |
-| **Validator** | pods in `ci-exec` | no network at all. Applies the patch and runs, in order: path rules (no test, CI, configuration or lock-file change); my commit's test files, 3 samples, every case must pass; one sample of each touched area's suite, which must keep passing (a file that fails is rerun twice; failing again = broken). |
+| **Validator** | pods in `ci-exec` | no network allowed (NetworkPolicy; the same init-container check before the tests start, so by sampling, not continuous). Applies the patch and runs, in order: path rules (no test, CI, configuration or lock-file change); my commit's test files, 3 samples, every case must pass; one sample of each touched area's suite, which must keep passing (a file that fails is rerun twice; failing again = broken). |
 | **Blind judging** | packets built on the VM (`cases/blind_team.py`) | each patch the validator called `resolved` becomes a packet with a random id: the task as the agent got it, my commit's test files, the validator's summary, the agent's patch and my commit's code. It never shows the setup, the repetition, cost, calls, time or the agents' final text. The key stays closed until every packet has a verdict. |
 
 **Setup A, one agent** (`agent/single.txt`): one session reads, plans, implements and runs the tests. When it says it is
@@ -117,5 +120,5 @@ and its own `tasks/` folder; the VM scripts are in `infra/` (create, setup, buil
 [`infra/TEARDOWN.md`](infra/TEARDOWN.md)). The scripts read the GCP project from `AIP_PROJECT` and never use the gcloud
 default; the provider key goes from standard input straight into a cluster Secret. Local tests:
 `python3 agent/test_agent.py`, `python3 executor/test_executor.py`, `python3 gateway/test_budget.py`,
-`python3 -I infra/test_team.py`, `python3 infra/test_attempt.py` (19, 76, 25, 27 and 5 checks, all passing on the
+`python3 -I infra/test_team.py`, `python3 infra/test_attempt.py` (19, 76, 25, 28 and 5 checks, all passing on the
 public copy).

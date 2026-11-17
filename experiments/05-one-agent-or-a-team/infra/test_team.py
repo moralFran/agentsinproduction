@@ -290,6 +290,25 @@ class Verdict(unittest.TestCase):
         self.assertEqual((r["executor"]["outcome"], r["result"]), ("infra_error", None)); self.assertIn("No space left", r["executor"]["why"])
         self.assertTrue((out_dir / "result.json").exists())                                    # the original was not deleted
 
+    def test_flutter_process_that_ends_abnormally_after_passing_cases_is_dirty(self):
+        """17/11/2026: every testDone says success but the process ends rc 124 (or any non-zero code with no failed case):
+        the file is dirty, so E22 does not count its cases as passed. rc 0 with the same events stays clean."""
+        team = load("executor_team_flutter_rc", "executor/team.py"); scratch = TMP / "flutter-rc"; (scratch / "job").mkdir(parents=True, exist_ok=True)
+        team.REPO, team.JOBDIR = str(scratch / "repo"), str(scratch / "job")
+        events = [{"type": "suite", "suite": {"id": 0, "path": team.REPO + "/" + COMMIT_TEST}},
+                  {"type": "testStart", "test": {"id": 1, "name": "a", "suiteID": 0}},
+                  {"type": "testDone", "testID": 1, "result": "success", "hidden": False, "skipped": False}]
+        for rc, dirty in ((124, True), (1, True), (0, False)):
+            def fake(cmd, cwd, env, timeout, stem, rc=rc):
+                (scratch / "job" / f"{stem}.out").write_text("\n".join(json.dumps(e) for e in events) + "\n"); (scratch / "job" / f"{stem}.err").write_text("")
+                return (rc, 1.0)
+            team.run_to_files = fake
+            out = team.Cases(); r = team.job_flutter({"files": [COMMIT_TEST]}, out)
+            self.assertEqual((out.cases, r["rc"]), ({COMMIT_TEST + "::a": "pass"}, rc))
+            self.assertEqual(COMMIT_TEST in out.file_errors, dirty, rc)
+            detail = {"outcome": "sampled", "files": [], "tool": r, "cases": out.cases, "file_errors": out.file_errors, "file_times": out.files}
+            self.assertEqual(COMMIT_TEST in val.dirty_files(detail), dirty, rc)
+
     def test_fail_then_fail_is_broken(self):
         # E18: broken = fails first, in at least one rerun, passes with the owner's fix at the same time, fails again after it
         for reruns in ({("flutter-area-rr", "1"): {self.P2P: "fail"}, ("flutter-area-rr", "2"): {self.P2P: "fail"}},

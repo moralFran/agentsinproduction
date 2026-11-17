@@ -128,6 +128,13 @@ budget is not the same effective budget for the two setups**, and the bias is ag
   --json`), which runs in the same process as the code under test, so a patch could in principle print fake results.
   This run has no negative control for that (experiment 04 had one for a forced exit). The blind judging read every
   passing diff, and a scan of the lines the 32 patches add found no prints, writes to stdout, exits or reporter strings.
+- The validator read a Flutter sample from the cases it reported, not from the process's exit code: a `flutter test`
+  that reported every required case as passed and then exited non-zero (killed at its deadline, or crashed while
+  shutting down) would have counted as passing. Found by an external review of the code (17/11). In the 137 Flutter
+  samples kept in the private archive (validation samples of the attempts and of the controls), none ended that way (every non-zero exit came with
+  a failed case or a file error), so the 32 verdicts stand. Fixed for future runs in `executor/team.py`, with a test.
+- The team's reviewer has the same writable `bash` as the specialists; "do not edit files" is an instruction, not
+  enforced by the harness. Nothing showed that a reviewer edited files, but it was not checked file by file.
 - The network rules are checked by sampling: before the agent starts, an init container (`cases/pod.py`, on by
   default) tries forbidden destinations until none connects for several consecutive rounds. That shows the rules were in
   force when it looked; it does not prove they stayed in force for the whole attempt.
@@ -143,6 +150,7 @@ budget is not the same effective budget for the two setups**, and the bias is ag
 - Add a third setup, one agent plus an independent reviewer, to separate the effect of the fresh review from the
   effect of splitting the work.
 - Add a negative control for fake reporter output, as experiment 04 did for a forced exit.
+- Give the reviewer a read-only copy of the working tree, so "review only" is enforced, not asked.
 - Already in the harness since amendment E20 (16/11, during the collection): a provider refusal of the account (no
   credit, key refused) is booked by the gateway as `provider_billing` / `provider_auth`, halts it, and the try goes to
   the infrastructure file instead of the journal (`gateway/gateway.py`, `cases/attempt_team.sh`).
