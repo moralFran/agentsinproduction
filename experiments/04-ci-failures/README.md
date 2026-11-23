@@ -1,7 +1,6 @@
 # Experiment 04 · When a coding agent turns a red build green, is it a real fix?
 
-> Video: "My coding agent turned 30 red builds green. 22 were real fixes."
-> TODO: add the video link here once it is public.
+> Video: ["My coding agent turned 30 red builds green. 22 were real fixes."](https://youtu.be/jEcm3vFRfZE) (Nov 19, 2026)
 
 **The question.** A coding agent gets a real CI failure from an open-source project and makes the build green. How many
 of those green patches are real fixes, and how many hide a problem? Results: [`results.md`](results.md). Selection rules,
