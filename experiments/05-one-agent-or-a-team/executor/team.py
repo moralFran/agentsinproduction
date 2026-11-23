@@ -178,8 +178,14 @@ def job_flutter(job, out):
         # (killed by the deadline, rc 124, or crashed after its last testDone) leaves no reliable result for its files.
         # Every file of its chunk gets a file error, so criteria E22 counts their required cases as not passed. None of
         # the 137 Flutter samples kept in the private archive (attempts and controls) ended this way.
-        if results[i][0] != 0 and len(out.failures) == n_fail:
-            for file in chunks[i]: out.file_errors.setdefault(file, f"flutter test process {i} ended rc={results[i][0]} with no failed case reported")
+        # Killed (added 23/11/2026 after a third external review, for future runs; not applied to any recorded collection):
+        # a process ended by the deadline (rc 124) or by a signal (rc < 0 or > 128) leaves no reliable result for the rest
+        # of its chunk even when it had reported a failed case first. In the private archives every Flutter process of
+        # experiment 05 (137 samples) and experiment 06 (16 samples) exited 0 or 1, so no verdict changes.
+        rc = results[i][0]; killed = rc == 124 or rc < 0 or rc > 128
+        if (rc != 0 and len(out.failures) == n_fail) or killed:
+            why = f"was killed (rc={rc})" if killed else f"ended rc={rc} with no failed case reported"
+            for file in chunks[i]: out.file_errors.setdefault(file, f"flutter test process {i} {why}")
     return {"rc": max(r[0] for r in results), "rcs": [r[0] for r in results], "s": round(dt, 1), "procs": procs, "files": len(files),
             "proc_s": [round(r[1], 1) for r in results], "stderr_tail": tail(f"{JOBDIR}/flutter-0.err", 1500)}
 

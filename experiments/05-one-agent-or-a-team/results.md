@@ -133,8 +133,16 @@ budget is not the same effective budget for the two setups**, and the bias is ag
   shutting down) would have counted as passing. Found by an external review of the code (17/11). In the 137 Flutter
   samples kept in the private archive (validation samples of the attempts and of the controls), none ended that way (every non-zero exit came with
   a failed case or a file error), so the 32 verdicts stand. Fixed for future runs in `executor/team.py`, with a test.
+  A third external review (23/11) found the remaining case: a process that reported a failed case and was then killed
+  (deadline, rc 124, or a signal) still left the other files of its chunk counted as clean. Also fixed for future runs,
+  with a test. In those 137 samples every Flutter process exited 0 or 1, so it never happened here either.
 - The team's reviewer has the same writable `bash` as the specialists; "do not edit files" is an instruction, not
-  enforced by the harness. Nothing showed that a reviewer edited files, but it was not checked file by file.
+  enforced by the harness. Checked afterwards in the private record (23/11, after an external review), with nothing
+  run: of the 138 commands the reviewers ran in the 16 team attempts, none writes to the working tree. Two looked like
+  they might: a `git stash` / format check / `git stash pop` round trip that ended with exit code 0, and a
+  `dart format` with `-o none` (no output written). In all 16 the final patch touches exactly the files the last
+  specialist left. Limits of that check: 18 of the 138 commands are logged cut at 400 characters, and a file list does
+  not show content.
 - The network rules are checked by sampling: before the agent starts, an init container (`cases/pod.py`, on by
   default) tries forbidden destinations until none connects for several consecutive rounds. That shows the rules were in
   force when it looked; it does not prove they stayed in force for the whole attempt.

@@ -37,7 +37,9 @@ Edits for the public copy, all marked where they are:
   an external review (the review also runs differently). Docstring only, marked in place.
 - `executor/team.py` (17/11, after an external review, **a behaviour change for future runs**, not what the recorded
   collection ran): a `flutter test` process that exits non-zero although it reported no failed case now marks its files
-  dirty. Test added in `infra/test_team.py`. See [`results.md`](results.md#limits).
+  dirty. Test added in `infra/test_team.py`. See [`results.md`](results.md#limits). On 23/11, after a third external
+  review, also when the process is killed (rc 124 or a signal) after reporting a failed case; test added. Neither case
+  happened in this collection.
 
 ## Setup
 One ephemeral GCP VM (`n2-standard-8`, resized to `n2-standard-32` for the collection so 4 attempts could run at

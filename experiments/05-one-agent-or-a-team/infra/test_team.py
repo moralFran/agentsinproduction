@@ -309,6 +309,29 @@ class Verdict(unittest.TestCase):
             detail = {"outcome": "sampled", "files": [], "tool": r, "cases": out.cases, "file_errors": out.file_errors, "file_times": out.files}
             self.assertEqual(COMMIT_TEST in val.dirty_files(detail), dirty, rc)
 
+    def test_flutter_process_killed_after_a_reported_failure_is_dirty(self):
+        """23/11/2026: the process reported a failed case in one file, then was killed (rc 124, or a signal): the whole
+        chunk is dirty, the file whose cases passed included. A normal failing exit (rc 1) keeps that file clean."""
+        team = load("executor_team_flutter_killed", "executor/team.py"); scratch = TMP / "flutter-killed"; (scratch / "job").mkdir(parents=True, exist_ok=True)
+        team.REPO, team.JOBDIR = str(scratch / "repo"), str(scratch / "job")
+        other = "test/b_test.dart"
+        events = [{"type": "suite", "suite": {"id": 0, "path": team.REPO + "/" + COMMIT_TEST}},
+                  {"type": "suite", "suite": {"id": 1, "path": team.REPO + "/" + other}},
+                  {"type": "testStart", "test": {"id": 1, "name": "a", "suiteID": 0}},
+                  {"type": "testDone", "testID": 1, "result": "success", "hidden": False, "skipped": False},
+                  {"type": "testStart", "test": {"id": 2, "name": "b", "suiteID": 1}},
+                  {"type": "testDone", "testID": 2, "result": "failure", "hidden": False, "skipped": False}]
+        for rc, dirty in ((124, True), (-9, True), (137, True), (1, False)):
+            def fake(cmd, cwd, env, timeout, stem, rc=rc):
+                (scratch / "job" / f"{stem}.out").write_text("\n".join(json.dumps(e) for e in events) + "\n"); (scratch / "job" / f"{stem}.err").write_text("")
+                return (rc, 1.0)
+            team.run_to_files = fake
+            out = team.Cases(); r = team.job_flutter({"files": [COMMIT_TEST, other]}, out)
+            self.assertEqual((out.cases[COMMIT_TEST + "::a"], out.cases[other + "::b"], r["rc"]), ("pass", "fail", rc))
+            self.assertEqual(COMMIT_TEST in out.file_errors, dirty, rc)
+            detail = {"outcome": "sampled", "files": [], "tool": r, "cases": out.cases, "file_errors": out.file_errors, "file_times": out.files}
+            self.assertEqual(COMMIT_TEST in val.dirty_files(detail), dirty, rc)
+
     def test_fail_then_fail_is_broken(self):
         # E18: broken = fails first, in at least one rerun, passes with the owner's fix at the same time, fails again after it
         for reruns in ({("flutter-area-rr", "1"): {self.P2P: "fail"}, ("flutter-area-rr", "2"): {self.P2P: "fail"}},
