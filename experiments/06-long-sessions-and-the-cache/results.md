@@ -116,8 +116,14 @@ system prompt with its own id, so none reads another's cache. Every request answ
 - One compacted attempt was redone because the harness crashed on a byte that was not valid UTF-8 (E9); the crashed try
   is kept in the private record and its cost is in the total.
 - One attempt without compaction stopped at its run budget with US$ 1.12 of it unspent: the gateway reserves each call's
-  worst case before sending it, and that reservation counts the input as request bytes / 2, about twice the real
-  tokens of this repository's text (E9).
+  worst case before sending it, and that reservation counts the input as request bytes / 2 (about twice the real
+  tokens of this repository's text) and prices all of it as a cache write, when almost all of it was a cache read. Its
+  last calls really cost US$ 0.03 to 0.05; the next one reserved US$ 1.13. The reservation grows with the prompt, so it
+  weighs more on the condition without compaction (E9, E13).
+- The reminder of request 5 stayed in the context for the whole L0 sessions but only until the first compaction (call 7)
+  in L2: compaction replaces the history with the task text and the summary (E13).
+- Only the newest block carries a cache marker, so after each compaction the tools and the system prompt were written
+  to the cache again (cents per compaction; E13).
 - Automatic compaction (above a fixed size) and a project guide split into folders were not tested: they did not fit
   the budget (E1). The guide was not in the system prompt in any attempt (E7).
 - The cache breaks were measured by replaying recorded requests, once each, input only; the pauses were simulated.

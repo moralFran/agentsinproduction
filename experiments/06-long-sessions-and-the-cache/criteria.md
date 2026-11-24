@@ -210,6 +210,24 @@ below.
 - VM `aip-ctx-01` and its boot disk deleted (labels `owner=aip`, `experiment=aip-ctx` checked first); nothing with the
   `aip-` prefix left in the project. GCP at list price US$ 3.93 (9.34 h), logged as `A-v08-gcp-vm`.
 
+## E13 · Corrections after an external review of the public copy (24/11/2026, after the collection; no number changes)
+- **The reminder (E2) does not survive a compaction in L2.** E2 says the request-5 reminder stays "in both conditions...
+  never removed". In L2, `compact()` replaces the whole history with [task text + summary], and the task text does not
+  hold the reminder. The first compaction came at call 7 in both L2 attempts, so the reminder was in L2's context only
+  for calls 5 to 7, and in L0's for the whole session: a difference between the conditions that E2 denied. The three
+  reviewed patches passed the tests anyway. For a future run: put the reminder back after the summary.
+- **The run budget's reservation (E2, E9) prices every input token as a cache write.** The gateway reserves (request
+  bytes / 2 + 2,000) input tokens, all at the 5-minute write price (US$ 2.50 per million), plus max_tokens of output.
+  Almost all of the input was a cache read (US$ 0.10 per million): the last calls of L0 r2 really cost US$ 0.03 to
+  0.05 each, and the next one reserved US$ 1.13. The reservation grows with the prompt, so it takes more of the budget
+  from the condition without compaction, the one under test (the same tendency as in experiment 05). E9's explanation
+  named only the bytes / 2 factor. For a future run: reserve from the previous call's usage (its prefix at the read
+  price, the new bytes at the write price, plus max_tokens), and keep the halt when a real cost passes its reservation.
+- **No cache breakpoint at the end of the system prompt.** Only the newest block carries `cache_control`, so after each
+  compaction the tools and the system prompt are written to the cache again (cents per compaction). A marker on the
+  system prompt would keep them cached.
+
 ## Log of changes
+- 24/11/2026: E13, after an external review of the public copy; no number changes.
 - 23/11/2026: E11, after delegated review; mandatory pass counts unchanged, three `pior` judgments recorded.
 - 23/11/2026: this file (E1–E5a), before the VM existed.
