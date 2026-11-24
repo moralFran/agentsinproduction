@@ -203,6 +203,10 @@ def main():
         subprocess.run(["rsync", "-rl", "--no-perms", "--chmod=u+rwX", "--omit-dir-times", f"{CASE}/overlay/", f"{REPO}/"], check=True)
     if os.path.exists(f"{CASE}/overlay.list"):
         with open(f"{REPO}/.git/info/exclude", "a") as x: x.write(open(f"{CASE}/overlay.list").read())
+    # the snapshot's commit, taken before the agent runs: the patch is diffed against it, so a commit made by the agent
+    # cannot hide its work (24/11/2026, after an external review; no logged command of experiments 05-06 runs git commit)
+    base = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip() or "HEAD"
+    R["base_commit"] = base
     client = anthropic.Anthropic(base_url=os.environ["GATEWAY_URL"], api_key="held-by-the-gateway",
                                  default_headers={"x-run-token": RUN_TOKEN}, max_retries=0)
     try:
@@ -217,7 +221,7 @@ def main():
         R["patch"] = ""      # the attempt did not get its model calls: whatever is in the working copy is not a result
     else:
         subprocess.run("git add -A", shell=True, **g)
-        R["patch"] = subprocess.run("git diff --cached --binary --no-ext-diff --no-textconv", shell=True, **g).stdout
+        R["patch"] = subprocess.run(f"git diff --cached --binary --no-ext-diff --no-textconv {base}", shell=True, **g).stdout
     R["total_s"] = round(time.monotonic() - T0, 2); R["model_s"] = round(R["model_s"], 2); R["tool_s"] = round(R["tool_s"], 2)
     print("RESULT " + json.dumps(R), flush=True)
 

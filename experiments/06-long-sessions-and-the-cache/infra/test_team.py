@@ -309,6 +309,21 @@ class Verdict(unittest.TestCase):
             detail = {"outcome": "sampled", "files": [], "tool": r, "cases": out.cases, "file_errors": out.file_errors, "file_times": out.files}
             self.assertEqual(COMMIT_TEST in val.dirty_files(detail), dirty, rc)
 
+    def test_jest_process_killed_by_a_signal_is_dirty(self):
+        """24/11/2026, external review: a Jest process killed by a signal (rc < 0 from Python, 128 + n from a shell) may have
+        written a JSON report of passing cases before it died. Its file is dirty, in the executor and in the validator."""
+        team = load("executor_team_jest_killed", "executor/team.py"); scratch = TMP / "jest-killed"; jd = scratch / "job/jest"; jd.mkdir(parents=True, exist_ok=True)
+        team.REPO, team.JOBDIR = str(scratch / "repo"), str(scratch / "job"); fdir = team.REPO + "/lib/internal/firebase/functions"
+        name, pre = "tests/killed.test.js", "lib/internal/firebase/functions/"
+        (jd / "0.json").write_text(json.dumps({"testResults": [{"status": "passed", "message": "", "assertionResults": [{"fullName": "required", "status": "passed"}]}]}))
+        for rc, dirty in ((-9, True), (-15, True), (137, True), (143, True), (0, False)):
+            (jd / "status.json").write_text(json.dumps({name: {"i": 0, "rc": rc, "s": 1}}))
+            out = team.Cases(); team.collect_jest({}, out, fdir, [name])
+            self.assertEqual(out.cases, {pre + name + "::required": "pass"}, rc)
+            detail = {"outcome": "sampled", "files": [], "tool": {"rc": 0}, "cases": out.cases, "file_errors": out.file_errors, "file_times": out.files}
+            self.assertEqual(pre + name in val.dirty_files(detail), dirty, rc)
+            self.assertEqual(pre + name in val.dirty_files(dict(detail, file_errors={})), dirty, rc)   # the validator alone, from the exit code
+
     def test_flutter_process_killed_after_a_reported_failure_is_dirty(self):
         """23/11/2026: the process reported a failed case in one file, then was killed (rc 124, or a signal): the whole
         chunk is dirty, the file whose cases passed included. A normal failing exit (rc 1) keeps that file clean."""

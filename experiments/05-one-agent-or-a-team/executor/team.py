@@ -245,6 +245,8 @@ def collect_jest(job, out, fdir, files):
         except (OSError, ValueError): data = None
         if st is None: out.file_errors[file] = "not run (the job ended before this file)"; continue
         if st["rc"] == 124: out.file_errors[file] = "timeout"
+        elif isinstance(st["rc"], int) and (st["rc"] < 0 or st["rc"] > 128):   # killed by a signal (24/11/2026, external review): a JSON
+            out.file_errors[file] = f"killed (rc={st['rc']})"                    # of passing cases written before the kill is not a result
         results = (data or {}).get("testResults") or []
         if data is None or not results:
             out.file_errors.setdefault(file, f"no Jest result (rc={st['rc']})")

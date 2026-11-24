@@ -73,6 +73,7 @@ def dirty_files(res):
     for f, st in ft.items():
         if not isinstance(st, dict) or f in out: continue
         if st.get("rc") == 124: out[f] = "timeout"
+        elif isinstance(st.get("rc"), int) and (st["rc"] < 0 or st["rc"] > 128): out[f] = f"killed (rc={st['rc']})"   # 24/11/2026, external review
         elif st.get("file_status") == "failed_without_failed_case": out[f] = "file red without a failed case"
     return out
 

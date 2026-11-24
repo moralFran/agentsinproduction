@@ -114,4 +114,7 @@ r, seen = run("none", [{"tools": [B(r"printf 'caf\xe2\x28 ok\n'; printf 'caf\xc3
                        {"text": "done"}, {"text": "ok"}, {"text": "ok"}])
 check("invalid UTF-8 output", r["outcome"] == "finished" and "+new" in r["patch"], r)
 check("invalid UTF-8 replaced, valid kept", seen[1]["results"] == ["exit code 0\ncaf\ufffd( ok\ncaf\u00e9 \u2014 a\nb\n"], seen[1]["results"])
+# 6. a commit made by the agent does not hide its patch: the diff is against the snapshot's commit (24/11/2026, external review)
+r, _ = run("none", [{"tools": [B("echo new > lib.txt && git add -A && git -c user.name=a -c user.email=a@a commit -qm wip")]}, {"text": "done"}, {"text": "ok"}, {"text": "ok"}])
+check("agent's own commit", r["outcome"] == "finished" and "+new" in r["patch"], r)
 print(f"{ok} checks passed")

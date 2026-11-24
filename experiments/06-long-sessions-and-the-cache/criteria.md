@@ -227,7 +227,21 @@ below.
   compaction the tools and the system prompt are written to the cache again (cents per compaction). A marker on the
   system prompt would keep them cached.
 
+## E14 · Two harness gaps, fixed for future runs (24/11/2026, after an external review; no number changes)
+- **A Jest process killed by a signal could pass.** `executor/team.py` marked a Jest file dirty only on rc 124; a
+  process killed by a signal (rc < 0, or 128 + n from a shell) after writing a JSON report of passing cases counted
+  as passing (reproduced by the reviewer with rc -9). Now the executor marks it `killed (rc=…)` and the validator's
+  `dirty_files` refuses the same exit codes from the record; test added. In the 11 Jest samples kept from this
+  collection (55 processes) every exit code was 0 or 1.
+- **A commit by the agent could hide its patch.** `agent/agent.py` took the patch as `git diff --cached` against the
+  current HEAD, so after a `git commit` the patch came out empty and the attempt still `finished` (reproduced by the
+  reviewer). Now the snapshot's commit is read before the agent starts (`base_commit` in the result) and the diff is
+  taken against it; test added. None of the 632 logged commands (smoke, attempts and the voided try) runs `git commit`;
+  186 are cut at 400 characters, so this is a check, not a proof.
+- The same changes went into experiment 05's copies (private and public).
+
 ## Log of changes
+- 24/11/2026: E14, two harness gaps fixed for future runs; no number changes.
 - 24/11/2026: E13, after an external review of the public copy; no number changes.
 - 23/11/2026: E11, after delegated review; mandatory pass counts unchanged, three `pior` judgments recorded.
 - 23/11/2026: this file (E1–E5a), before the VM existed.

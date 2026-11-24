@@ -98,4 +98,7 @@ check("gateway", r["outcome"] == "gateway_unavailable" and r["patch"] == "", r)
 # 6. an unknown area is answered, not executed; a failing command counts as a tool error
 r, _ = run("B", [{"tools": [("dispatch", {"area": "ios", "task": "x"})]}, {"tools": [B("false")]}, {"tools": [("review", {})]}, {"text": "ok"}, {"text": "done"}])
 check("unknown area", r["dispatches"] == [] and r["tool_errors"] == 1 and r["outcome"] == "finished", r)
+# a commit made by the agent does not hide its patch: the diff is against the snapshot's commit (24/11/2026, external review)
+r, _ = run("A", [{"tools": [B("echo new > lib.txt && git add -A && git -c user.name=a -c user.email=a@a commit -qm wip")]}, {"text": "done"}, {"text": "review: no problems"}, {"text": "nothing to fix"}])
+check("agent's own commit", r["outcome"] == "finished" and "+new" in r["patch"], r)
 print(f"{ok} checks passed")

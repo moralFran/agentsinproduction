@@ -38,6 +38,10 @@ Edits for the public copy, all marked where they are:
 - `agent/agent.py`: a docstring note (24/11, docstring only) that the project guide was not in the system prompt (E7).
 - `capture/show_results.py`: one line of its docstring now says where to run it.
 - `lab.env` (the VM's internal address) is left out.
+- `executor/team.py`, `cases/validate.py`, `agent/agent.py` (24/11/2026, after an external review, **behaviour changes for
+  future runs**, made in the private copy and in experiment 05 too; tests added): a Jest process killed by a signal
+  leaves its file dirty, and the patch is taken against the snapshot's commit, so a commit made by the agent cannot
+  hide its work. Criteria E14; neither case happened in this collection.
 
 ## Setup
 One ephemeral GCP VM (`n2-standard-8`, nested virtualization, **no service account**) with k3s and Kata Containers, as
@@ -95,5 +99,5 @@ It needs a private app with the same shape (Flutter client, Firebase back end, J
 and its own `tasks/` folder; the VM scripts are in `infra/`. The scripts read the GCP project from `AIP_PROJECT` and
 never use the gcloud default; the provider key goes from standard input straight into a cluster Secret. Local tests:
 `python3 agent/test_agent.py`, `python3 executor/test_executor.py`, `python3 gateway/test_budget.py`,
-`python3 -I infra/test_team.py`, `python3 -I infra/test_attempt.py`, `python3 cases/test_replay.py` (24, 76, 31, 29, 5
+`python3 -I infra/test_team.py`, `python3 -I infra/test_attempt.py`, `python3 cases/test_replay.py` (25, 76, 31, 30, 5
 and 18 checks, all passing on the public copy).

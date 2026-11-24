@@ -40,6 +40,10 @@ Edits for the public copy, all marked where they are:
   dirty. Test added in `infra/test_team.py`. See [`results.md`](results.md#limits). On 23/11, after a third external
   review, also when the process is killed (rc 124 or a signal) after reporting a failed case; test added. Neither case
   happened in this collection.
+- 24/11, after a fourth external review, **behaviour changes for future runs**, tests added: a Jest process killed by a
+  signal leaves its file dirty (`executor/team.py`, `cases/validate.py`), and `agent/agent.py` takes the patch against
+  the snapshot's commit instead of the current `HEAD`, so a commit made by the agent cannot hide its work. See
+  [`results.md`](results.md#limits) for what the archive shows.
 
 ## Setup
 One ephemeral GCP VM (`n2-standard-8`, resized to `n2-standard-32` for the collection so 4 attempts could run at
@@ -122,5 +126,5 @@ and its own `tasks/` folder; the VM scripts are in `infra/` (create, setup, buil
 [`infra/TEARDOWN.md`](infra/TEARDOWN.md)). The scripts read the GCP project from `AIP_PROJECT` and never use the gcloud
 default; the provider key goes from standard input straight into a cluster Secret. Local tests:
 `python3 agent/test_agent.py`, `python3 executor/test_executor.py`, `python3 gateway/test_budget.py`,
-`python3 -I infra/test_team.py`, `python3 infra/test_attempt.py` (19, 76, 25, 28 and 5 checks, all passing on the
+`python3 -I infra/test_team.py`, `python3 infra/test_attempt.py` (20, 76, 25, 30 and 5 checks, all passing on the
 public copy).

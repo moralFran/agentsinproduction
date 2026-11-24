@@ -136,6 +136,15 @@ budget is not the same effective budget for the two setups**, and the bias is ag
   A third external review (23/11) found the remaining case: a process that reported a failed case and was then killed
   (deadline, rc 124, or a signal) still left the other files of its chunk counted as clean. Also fixed for future runs,
   with a test. In those 137 samples every Flutter process exited 0 or 1, so it never happened here either.
+  A fourth external review (24/11) found the same gap in Jest: a Jest process killed by a signal after writing a JSON
+  report of passing cases counted as passing (only rc 124 was handled). Fixed for future runs in `executor/team.py` and
+  in the validator's `dirty_files`, with a test. In the 78 Jest samples kept in the private archive (198 Jest
+  processes), every exit code was 0 or 1 except two timeouts (rc 124), which already counted as errors.
+- The agent's patch was the diff of its working copy against the repository's current `HEAD`, so a `git commit` made by
+  the agent would have hidden its own work. Found by the same review (24/11). None of the 804 logged commands of the 42
+  attempts (counted and voided) runs `git commit` (174 of them are cut at 400 characters, so this is a check, not a
+  proof). Fixed for future runs: the diff is taken against the snapshot's commit, read before the agent starts; with a
+  test.
 - The team's reviewer has the same writable `bash` as the specialists; "do not edit files" is an instruction, not
   enforced by the harness. Checked afterwards in the private record (23/11, after an external review), with nothing
   run: of the 138 commands the reviewers ran in the 16 team attempts, none writes to the working tree. Two looked like
