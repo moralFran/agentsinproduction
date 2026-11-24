@@ -1,0 +1,5 @@
+# git dependencies without a pinned ref in pubspec.yaml, as resolved on 2026-11-15 (per dependency set)
+pub-0c5fce4b3d  google_maps_webservice  https://github.com/ShehanYjoz/google_maps_webservice.git  ref=HEAD  resolved-ref=1588c27229ab48665635acb65c090d6a658da6fc  version=0.0.20-nullsafety.5
+pub-0c5fce4b3d  shake  https://github.com/FlutterFlow/shake.git  ref=HEAD  resolved-ref=a91187a6116b2a986e78724d30f02e04800849f6  version=2.3.0
+pub-7ae9937f9b  google_maps_webservice  https://github.com/ShehanYjoz/google_maps_webservice.git  ref=HEAD  resolved-ref=1588c27229ab48665635acb65c090d6a658da6fc  version=0.0.20-nullsafety.5
+pub-7ae9937f9b  shake  https://github.com/FlutterFlow/shake.git  ref=HEAD  resolved-ref=a91187a6116b2a986e78724d30f02e04800849f6  version=2.3.0

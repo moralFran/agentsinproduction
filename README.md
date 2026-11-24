@@ -10,12 +10,13 @@ AI agents, run for real, with the numbers you see on screen.
 | 03 | [If your coding agent gets prompt-injected, what can it reach? (Kata Containers test)](https://youtu.be/j1266kVFuGo) (Nov 18, 2026) | [`experiments/03-sandbox-boundaries`](experiments/03-sandbox-boundaries) |
 | 04 | [My coding agent turned 30 red builds green. 22 were real fixes.](https://youtu.be/jEcm3vFRfZE) (Nov 19, 2026) | [`experiments/04-ci-failures`](experiments/04-ci-failures) |
 | 05 | One agent or a team? I re-ran 8 real tasks from my app both ways (video coming soon) | [`experiments/05-one-agent-or-a-team`](experiments/05-one-agent-or-a-team) |
+| 06 | 97% of my agent's input came from cache. Here's what silently breaks it (video coming soon) | [`experiments/06-long-sessions-and-the-cache`](experiments/06-long-sessions-and-the-cache) |
 
 Each experiment folder has its own README with how to run it, the question set, the grader(s), the saved raw
 answers of every run and a `results.md` with the numbers and their limits.
 
 Secrets never live in this repo: the scripts read the API key from the macOS keychain (`run.sh`), from the
-`ANTHROPIC_API_KEY` environment variable, or (experiments 03, 04 and 05) from standard input straight into a cluster Secret;
+`ANTHROPIC_API_KEY` environment variable, or (experiments 03 to 06) from standard input straight into a cluster Secret;
 experiment 04's miner reads its GitHub token from `GH_TOKEN`.
 
 License: MIT.

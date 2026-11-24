@@ -1,0 +1,78 @@
+# Namespaces of experiment 05 (same policies as experiment 04). ci-exec (executor) has no network at all; ci-agent may reach only the gateway's model port.
+apiVersion: v1
+kind: Namespace
+metadata: {name: ci-agent}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: ci-exec}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: ci-gateway}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: deny-all, namespace: ci-exec}
+spec: {podSelector: {}, policyTypes: [Ingress, Egress]}
+---
+# The agent may open connections to the gateway pod on 8080 (model requests) and nothing else: not the admin port 8081,
+# not DNS, not the internet, not the Kubernetes API, not the metadata server.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: agent-egress-gateway-only, namespace: ci-agent}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  egress:
+  - to:
+    - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: ci-gateway}}
+      podSelector: {matchLabels: {app: gateway}}
+    ports: [{protocol: TCP, port: 8080}]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: runner, namespace: ci-agent}
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: runner, namespace: ci-exec}
+automountServiceAccountToken: false
+
+---
+# Gateway ingress from cluster pods is limited to model calls from agents. The host runner uses the admin token;
+# NetworkPolicy does not isolate traffic from the pod's own node, so authentication is required on 8081 as well.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: gateway-ingress, namespace: ci-gateway}
+spec:
+  podSelector: {matchLabels: {app: gateway}}
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: ci-agent}}
+    ports: [{protocol: TCP, port: 8080}]
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: ci-prep}
+---
+# Dependency-download egress. Deny private/link-local ranges and other case pods; Kubernetes' own-node traffic
+# exception still applies. Test enforcement on the actual CNI/runtime before collection (FUTURE-RUNS.md).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: prep-egress-public-only, namespace: ci-prep}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  egress:
+  - to:
+    - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: kube-system}}
+      podSelector: {matchLabels: {k8s-app: kube-dns}}
+    ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 169.254.0.0/16, 127.0.0.0/8, 100.64.0.0/10]
+    ports: [{protocol: TCP, port: 443}, {protocol: TCP, port: 80}]

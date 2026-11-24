@@ -1,0 +1,4 @@
+{
+ "_why": "Exact pins applied on top of the dependency resolution of 2026-11-15 (criteria E6). One entry per package whose newest version does not compile with the parent trees. Evidence per entry in infra/locks/README.md. Proposed to the main session as an amendment to E6; not in criteria.md yet.",
+ "connectivity_plus_platform_interface": "2.0.1"
+}

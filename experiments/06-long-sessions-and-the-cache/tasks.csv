@@ -1,0 +1,2 @@
+task,n,commit,snapshot_commit,snapshot_tar_sha256,areas,f2p,p2p,excluded,unstable,usable
+T8,8,a06f707b,78ff2f103850a77eafab5e2440b38bcc6a865027,fd6c508dd2039c206d04339e123940056adc7365b6921c3823cc280acbbe59bd,"flutter,functions,rules",204,13145,26,15,yes

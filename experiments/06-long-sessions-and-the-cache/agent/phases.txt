@@ -1,0 +1,1 @@
+Work in phases, in this order, skipping a phase only when the task does not touch that area: plan, rules (Firestore security rules), functions (Cloud Functions), app (the Flutter client), review. At the end of each phase, call the tool end_phase with a short summary of what the phase did and what is left. end_phase does not change any file.
