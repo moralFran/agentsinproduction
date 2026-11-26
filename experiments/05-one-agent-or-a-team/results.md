@@ -138,8 +138,9 @@ budget is not the same effective budget for the two setups**, and the bias is ag
   with a test. In those 137 samples every Flutter process exited 0 or 1, so it never happened here either.
   A fourth external review (24/11) found the same gap in Jest: a Jest process killed by a signal after writing a JSON
   report of passing cases counted as passing (only rc 124 was handled). Fixed for future runs in `executor/team.py` and
-  in the validator's `dirty_files`, with a test. In the 78 Jest samples kept in the private archive (198 Jest
-  processes), every exit code was 0 or 1 except two timeouts (rc 124), which already counted as errors.
+  in the validator's `dirty_files`, with a test. In the 113 Jest samples kept in the private archive (1,697
+  Jest processes), every exit code was 0 or 1 except two timeouts (rc 124), which already counted as errors. (This
+  note first said 78 samples / 198 processes, a count of the commit jobs only; recounted on 25/11.)
 - The agent's patch was the diff of its working copy against the repository's current `HEAD`, so a `git commit` made by
   the agent would have hidden its own work. Found by the same review (24/11). None of the 804 logged commands of the 42
   attempts (counted and voided) runs `git commit` (174 of them are cut at 400 characters, so this is a check, not a

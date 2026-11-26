@@ -231,8 +231,9 @@ below.
 - **A Jest process killed by a signal could pass.** `executor/team.py` marked a Jest file dirty only on rc 124; a
   process killed by a signal (rc < 0, or 128 + n from a shell) after writing a JSON report of passing cases counted
   as passing (reproduced by the reviewer with rc -9). Now the executor marks it `killed (rc=…)` and the validator's
-  `dirty_files` refuses the same exit codes from the record; test added. In the 11 Jest samples kept from this
-  collection (55 processes) every exit code was 0 or 1.
+  `dirty_files` refuses the same exit codes from the record; test added. In the Jest samples kept from this
+  collection (18 validation samples with 594 processes, and 10 control samples with 378) every exit code was 0 or 1.
+  This note first said 11 samples / 55 processes, a count of the commit jobs only; a later review recounted (25/11).
 - **A commit by the agent could hide its patch.** `agent/agent.py` took the patch as `git diff --cached` against the
   current HEAD, so after a `git commit` the patch came out empty and the attempt still `finished` (reproduced by the
   reviewer). Now the snapshot's commit is read before the agent starts (`base_commit` in the result) and the diff is

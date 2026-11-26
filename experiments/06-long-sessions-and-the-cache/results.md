@@ -125,8 +125,8 @@ system prompt with its own id, so none reads another's cache. Every request answ
 - Only the newest block carries a cache marker, so after each compaction the tools and the system prompt were written
   to the cache again (cents per compaction; E13).
 - Two harness gaps found after the collection by an external review (E14), fixed for future runs with tests: a Jest
-  process killed by a signal after writing a report of passing cases counted as passing (in the 11 Jest samples kept,
-  55 processes, every exit code was 0 or 1), and a `git commit` made by the agent would have hidden its patch (none of
+  process killed by a signal after writing a report of passing cases counted as passing (in the Jest samples kept,
+  18 validation samples with 594 processes and 10 control samples with 378, every exit code was 0 or 1), and a `git commit` made by the agent would have hidden its patch (none of
   the 632 logged commands, smoke and voided try included, runs `git commit`; 186 are cut at 400 characters).
 - Automatic compaction (above a fixed size) and a project guide split into folders were not tested: they did not fit
   the budget (E1). The guide was not in the system prompt in any attempt (E7).
