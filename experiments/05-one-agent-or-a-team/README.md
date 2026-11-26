@@ -1,7 +1,6 @@
 # Experiment 05 · One coding agent or a team, on 8 real changes to a production app
 
-> Video: "One agent or a team? I re-ran 8 real tasks from my app both ways"
-> TODO: add the video link here once it is public.
+> Video: ["One agent or a team? I re-ran 8 real tasks from my app both ways"](https://youtu.be/kcjKx-IvSmw) (Nov 25, 2026)
 
 **The question.** The usual advice for coding agents is to split the work into a team: a planner, a few specialists,
 a reviewer. Does that pay off on real code? I took 8 changes I really made in a production app and ran each one under
