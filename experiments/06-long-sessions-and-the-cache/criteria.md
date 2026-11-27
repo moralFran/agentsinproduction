@@ -241,7 +241,26 @@ below.
   186 are cut at 400 characters, so this is a check, not a proof.
 - The same changes went into experiment 05's copies (private and public).
 
+## E15 · Control for the errors around compactions (27/11/2026, after the collection and after the video review)
+- **Why.** The count of tool errors in the 20 model calls before and after each compaction (E5) had no control. A
+  compaction always lands right after a phase ends (its model call = the phase's last call + 1), and a new phase can bring
+  failing test runs of its own, so a rise could come from the phase change and not from the summary.
+- **What.** `cases/phase_errors.py` takes the same windows at every phase end of all four attempts. The attempts without
+  compaction end the same phases. The input is the live journal kept in the private audit archive (E12). The output is
+  `report/v1-phase-errors.json`, counts only. For the 7 compactions it reproduces the windows of `report/v1-live.json`
+  exactly.
+- **Result.**
+  - Without compaction: 14 errors before → 8 after. Errors rose at 1 of 6 phase ends, fell at 3, and stayed the same at 2.
+  - With compaction: 10 → 16. Errors rose at 5 of 7 and fell at 2.
+  - An exact one-sided permutation test on the per-point change gives p = 0.08 (1,716 splits). The points are not
+    independent (two attempts per condition, windows that can overlap), so this sizes the signal; it is not a
+    significance claim.
+- **Reading, for this task.** Compaction did not change the result: with and without it, the same requirement was
+  missed (E11). Right after a compaction, more commands failed. Both compacted attempts hit the 40-minute clock. This
+  control was chosen after seeing the compacted windows, so it is a post-hoc check.
+
 ## Log of changes
+- 27/11/2026: E15, a control for the errors around compactions (same windows at the phase ends of every attempt); the reading of section 1 changes, no earlier number changes.
 - 24/11/2026: E14, two harness gaps fixed for future runs; no number changes.
 - 24/11/2026: E13, after an external review of the public copy; no number changes.
 - 23/11/2026: E11, after delegated review; mandatory pass counts unchanged, three `pior` judgments recorded.

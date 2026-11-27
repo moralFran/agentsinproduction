@@ -28,8 +28,9 @@ only, before any live attempt (E8). Cloud VM: US$ 3.93 at list price.
   raises to notify the per-date subscribers; my tests did not cover removing the limit. Each of the two compacted
   patches also has its own gap in recovering a security token; with two attempts per condition, that is one
   observation, not a measured difference (E11).
-- **So these runs do not say whether compaction made the agent better or worse at the task:** the patch that never
-  compacted missed the same requirement.
+- **So, on this task, compaction did not change the result:** the patch that never compacted missed the same
+  requirement as the two compacted ones (two attempts per condition). What compaction did change is below: more failed
+  commands right after each compaction, and the clock.
 - The review is **not strictly blind**: a diagnostic output showed the reviewer which condition one packet came from
   before it recorded its verdicts (the decisive reviews and scenarios came before). The key was not opened until all
   verdicts were in; I approved the verdicts (E11).
@@ -59,12 +60,31 @@ run 2 overlap: the agent ended a phase right after a compaction):
 | compacted, run 2 (redo) | 110 | 170,379 | 10,609 | 3 of 19 | 4 of 14 |
 | compacted, run 2 (redo) | 114 | 11,578 | 7,045 | 1 of 17 | 4 of 12 |
 
-Errors rose after 5 of the 7 compactions and fell after 2; these are a handful of errors, the windows are not
-independent, and the attempts without compaction had the same overall error rate. I can't tell the conditions apart.
+Errors rose after 5 of the 7 compactions and fell after 2. A compaction always lands right after a phase ends, and a
+new phase can bring failing test runs of its own, so the same windows at the same points of the attempts without
+compaction are the control (E15, `cases/phase_errors.py`, `report/v1-phase-errors.json`; added after the runs):
+
+| attempt | phase end, at model call | errors in the 20 calls before | errors in the 20 calls after |
+|---|---:|---:|---:|
+| no compaction, run 1 | 7 | 1 of 7 | 0 of 21 |
+| no compaction, run 1 | 34 | 2 of 20 | 3 of 20 |
+| no compaction, run 1 | 108 | 5 of 19 | 1 of 7 |
+| no compaction, run 1 | 110 | 3 of 18 | 1 of 7 |
+| no compaction, run 2 | 15 | 1 of 15 | 1 of 20 |
+| no compaction, run 2 | 37 | 2 of 20 | 2 of 20 |
+
+| | points | errors before | errors after | rose / fell / same |
+|---|---:|---:|---:|---|
+| no compaction | 6 | 14 | 8 | 1 / 3 / 2 |
+| compacted | 7 | 10 | 16 | 5 / 2 / 0 |
+
+At the same points, errors went down without compaction and up with it. Over the whole attempt, the error rates were the
+same (table above). The signal is small: two attempts per condition, windows that are not independent, and failing test
+runs counted as errors. An exact permutation test on the per-point change gives one-sided p = 0.08, a measure of size, not a
+significance claim. Reading, for this task: right after a compaction, more commands failed.
 
 **Time.** Both compacted attempts ran into the 40-minute clock (run 1 in its review phase, run 2 in the fix step after
-its review); the only attempt that finished on its own never compacted, in 32 minutes. With two attempts each, a hint,
-not a result.
+its review); the only attempt that finished on its own never compacted, in 32 minutes (two attempts each).
 
 ## 2 · What a cache hit costs
 
